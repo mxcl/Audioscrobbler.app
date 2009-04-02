@@ -31,7 +31,7 @@ static void scrobsub_callback(int event, const char* message)
             break;
             
         case SCROBSUB_ERROR_RESPONSE:
-            NSLog( "%s", message );
+            NSLog( @"%s", message );
             break;
     }
 }
