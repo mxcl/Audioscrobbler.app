@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* main.xib */; };
+		63C9B94A0F8672940065ED7F /* Last.fm.icns in Resources */ = {isa = PBXBuildFile; fileRef = 63C9B9490F8672940065ED7F /* Last.fm.icns */; };
+		63C9B9630F867C460065ED7F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C9B9620F867C460065ED7F /* Security.framework */; };
 		63D6DAF10F8396E000F4DCAA /* StatusItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DAF00F8396E000F4DCAA /* StatusItemController.m */; };
 		63D6DB380F8399E000F4DCAA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB360F8399E000F4DCAA /* icon.png */; };
 		63D6DB390F8399E000F4DCAA /* inverted_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB370F8399E000F4DCAA /* inverted_icon.png */; };
@@ -27,6 +29,8 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* pc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pc.h; sourceTree = "<group>"; };
+		63C9B9490F8672940065ED7F /* Last.fm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Last.fm.icns; sourceTree = "<group>"; };
+		63C9B9620F867C460065ED7F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		63D6DAEF0F8396E000F4DCAA /* StatusItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemController.h; sourceTree = "<group>"; };
 		63D6DAF00F8396E000F4DCAA /* StatusItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemController.m; sourceTree = "<group>"; };
 		63D6DB360F8399E000F4DCAA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -44,6 +48,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+				63C9B9630F867C460065ED7F /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,6 +67,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63C9B9620F867C460065ED7F /* Security.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
@@ -112,6 +118,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				63C9B9490F8672940065ED7F /* Last.fm.icns */,
 				63D6DB360F8399E000F4DCAA /* icon.png */,
 				63D6DB370F8399E000F4DCAA /* inverted_icon.png */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -177,6 +184,7 @@
 				1DDD58160DA1D0A300B32029 /* main.xib in Resources */,
 				63D6DB380F8399E000F4DCAA /* icon.png in Resources */,
 				63D6DB390F8399E000F4DCAA /* inverted_icon.png in Resources */,
+				63C9B94A0F8672940065ED7F /* Last.fm.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
