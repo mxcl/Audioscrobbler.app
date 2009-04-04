@@ -91,6 +91,7 @@ static void scrobsub_callback(int event, const char* message)
                        "", // mbid
                        duration,
                        [(NSNumber*)[dict objectForKey:@"Track Number"] intValue]);
+
     }
     else if([state isEqualToString:@"Paused"])
     {
