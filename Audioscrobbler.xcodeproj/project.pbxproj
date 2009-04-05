@@ -14,7 +14,7 @@
 		63D6DB380F8399E000F4DCAA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB360F8399E000F4DCAA /* icon.png */; };
 		63D6DB390F8399E000F4DCAA /* inverted_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB370F8399E000F4DCAA /* inverted_icon.png */; };
 		63D6DB8E0F83B6F800F4DCAA /* scrobsub.c in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */; };
-		63D6DBDF0F83CE6700F4DCAA /* scrobsub.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */; };
+		63D6DBDF0F83CE6700F4DCAA /* scrobsub-cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DBDE0F83CE6700F4DCAA /* scrobsub-cocoa.m */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -37,7 +37,7 @@
 		63D6DB370F8399E000F4DCAA /* inverted_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = inverted_icon.png; sourceTree = "<group>"; };
 		63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = scrobsub.c; path = ../scrobsub.c; sourceTree = SOURCE_ROOT; };
 		63D6DB8F0F83B6FE00F4DCAA /* scrobsub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scrobsub.h; path = ../scrobsub.h; sourceTree = SOURCE_ROOT; };
-		63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = scrobsub.m; path = ../scrobsub.m; sourceTree = SOURCE_ROOT; };
+		63D6DBDE0F83CE6700F4DCAA /* scrobsub-cocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "scrobsub-cocoa.m"; path = "../scrobsub-cocoa.m"; sourceTree = SOURCE_ROOT; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Audioscrobbler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Audioscrobbler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -106,7 +106,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */,
+				63D6DBDE0F83CE6700F4DCAA /* scrobsub-cocoa.m */,
 				63D6DB8F0F83B6FE00F4DCAA /* scrobsub.h */,
 				63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */,
 				32CA4F630368D1EE00C91783 /* pc.h */,
@@ -198,7 +198,7 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				63D6DAF10F8396E000F4DCAA /* StatusItemController.m in Sources */,
 				63D6DB8E0F83B6F800F4DCAA /* scrobsub.c in Sources */,
-				63D6DBDF0F83CE6700F4DCAA /* scrobsub.m in Sources */,
+				63D6DBDF0F83CE6700F4DCAA /* scrobsub-cocoa.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

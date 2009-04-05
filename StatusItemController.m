@@ -26,12 +26,16 @@ static void scrobsub_callback(int event, const char* message)
     switch (event)
     {
         case SCROBSUB_AUTH_REQUIRED:
-            //TODO some kind of dialog
-            scrobsub_auth();
+        {
+            char url[110];
+            scrobsub_auth(url);
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[NSString stringWithCString:url]]];
+            
             break;
+        }
             
         case SCROBSUB_ERROR_RESPONSE:
-            NSLog( @"%s", message );
+            NSLog(@"%s", message);
             break;
     }
 }
@@ -53,7 +57,7 @@ static void scrobsub_callback(int event, const char* message)
                                                         selector:@selector(onPlaybackNotification:)
                                                             name:@"com.apple.iTunes.playerInfo"
                                                           object:nil];
-    
+
     scrobsub_init(scrobsub_callback);
 }
 
@@ -62,7 +66,7 @@ static void scrobsub_callback(int event, const char* message)
 {
     static int64_t pid = 0; //FIXME dunno for sure if 0 is invalid
 
-    NSDictionary *dict = [userData userInfo];
+    NSDictionary* dict = [userData userInfo];
     NSString* state = [dict objectForKey:@"Player State"];
     NSString* name = [dict objectForKey:@"Name"];
     
