@@ -12,6 +12,7 @@
 		63B5AA5E0F9356DD00DC9D8C /* Audioscrobbler.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 63B5AA5D0F9356DD00DC9D8C /* Audioscrobbler.sdef */; };
 		63C9B94A0F8672940065ED7F /* Last.fm.icns in Resources */ = {isa = PBXBuildFile; fileRef = 63C9B9490F8672940065ED7F /* Last.fm.icns */; };
 		63C9B9630F867C460065ED7F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C9B9620F867C460065ED7F /* Security.framework */; };
+		63CDD71A0F9533C800D69723 /* relay.c in Sources */ = {isa = PBXBuildFile; fileRef = 63CDD7190F9533C800D69723 /* relay.c */; };
 		63D6DAF10F8396E000F4DCAA /* StatusItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DAF00F8396E000F4DCAA /* StatusItemController.m */; };
 		63D6DB380F8399E000F4DCAA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB360F8399E000F4DCAA /* icon.png */; };
 		63D6DB390F8399E000F4DCAA /* inverted_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB370F8399E000F4DCAA /* inverted_icon.png */; };
@@ -47,6 +48,7 @@
 		63B5AA5D0F9356DD00DC9D8C /* Audioscrobbler.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.sdef; path = Audioscrobbler.sdef; sourceTree = "<group>"; };
 		63C9B9490F8672940065ED7F /* Last.fm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Last.fm.icns; sourceTree = "<group>"; };
 		63C9B9620F867C460065ED7F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
+		63CDD7190F9533C800D69723 /* relay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = relay.c; path = ../relay.c; sourceTree = SOURCE_ROOT; };
 		63D6DAEF0F8396E000F4DCAA /* StatusItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemController.h; sourceTree = "<group>"; };
 		63D6DAF00F8396E000F4DCAA /* StatusItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemController.m; sourceTree = "<group>"; };
 		63D6DB360F8399E000F4DCAA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				63D6DB8F0F83B6FE00F4DCAA /* scrobsub.h */,
 				63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */,
 				63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */,
+				63CDD7190F9533C800D69723 /* relay.c */,
 				63B5AA380F93565500DC9D8C /* md5.c */,
 				32CA4F630368D1EE00C91783 /* pc.h */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
@@ -264,6 +267,7 @@
 				63D6DB8E0F83B6F800F4DCAA /* scrobsub.c in Sources */,
 				63D6DBDF0F83CE6700F4DCAA /* scrobsub.m in Sources */,
 				63B5AA390F93565500DC9D8C /* md5.c in Sources */,
+				63CDD71A0F9533C800D69723 /* relay.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
