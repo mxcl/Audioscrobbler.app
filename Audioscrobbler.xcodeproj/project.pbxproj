@@ -8,17 +8,30 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* main.xib */; };
+		63B5AA390F93565500DC9D8C /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 63B5AA380F93565500DC9D8C /* md5.c */; };
+		63B5AA5E0F9356DD00DC9D8C /* Audioscrobbler.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 63B5AA5D0F9356DD00DC9D8C /* Audioscrobbler.sdef */; };
 		63C9B94A0F8672940065ED7F /* Last.fm.icns in Resources */ = {isa = PBXBuildFile; fileRef = 63C9B9490F8672940065ED7F /* Last.fm.icns */; };
 		63C9B9630F867C460065ED7F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C9B9620F867C460065ED7F /* Security.framework */; };
 		63D6DAF10F8396E000F4DCAA /* StatusItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DAF00F8396E000F4DCAA /* StatusItemController.m */; };
 		63D6DB380F8399E000F4DCAA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB360F8399E000F4DCAA /* icon.png */; };
 		63D6DB390F8399E000F4DCAA /* inverted_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB370F8399E000F4DCAA /* inverted_icon.png */; };
 		63D6DB8E0F83B6F800F4DCAA /* scrobsub.c in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */; };
-		63D6DBDF0F83CE6700F4DCAA /* scrobsub-cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DBDE0F83CE6700F4DCAA /* scrobsub-cocoa.m */; };
+		63D6DBDF0F83CE6700F4DCAA /* scrobsub.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */; };
+		63DA69820F938A1300206098 /* iTunes Plug-in.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6393C3CF0F93870400286602 /* iTunes Plug-in.bundle */; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6393C3CE0F93870400286602 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6393C3C70F93870400286602 /* iTunes Plug-in.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DC2667A60BD9410900B4ED68;
+			remoteInfo = "iTunes Scrobbler";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -29,6 +42,9 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* pc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pc.h; sourceTree = "<group>"; };
+		6393C3C70F93870400286602 /* iTunes Plug-in.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "iTunes Plug-in.xcodeproj"; path = "../iTunes/iTunes Plug-in.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		63B5AA380F93565500DC9D8C /* md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = md5.c; path = ../portable/md5.c; sourceTree = SOURCE_ROOT; };
+		63B5AA5D0F9356DD00DC9D8C /* Audioscrobbler.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.sdef; path = Audioscrobbler.sdef; sourceTree = "<group>"; };
 		63C9B9490F8672940065ED7F /* Last.fm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Last.fm.icns; sourceTree = "<group>"; };
 		63C9B9620F867C460065ED7F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		63D6DAEF0F8396E000F4DCAA /* StatusItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemController.h; sourceTree = "<group>"; };
@@ -37,7 +53,7 @@
 		63D6DB370F8399E000F4DCAA /* inverted_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = inverted_icon.png; sourceTree = "<group>"; };
 		63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = scrobsub.c; path = ../scrobsub.c; sourceTree = SOURCE_ROOT; };
 		63D6DB8F0F83B6FE00F4DCAA /* scrobsub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scrobsub.h; path = ../scrobsub.h; sourceTree = SOURCE_ROOT; };
-		63D6DBDE0F83CE6700F4DCAA /* scrobsub-cocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "scrobsub-cocoa.m"; path = "../scrobsub-cocoa.m"; sourceTree = SOURCE_ROOT; };
+		63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = scrobsub.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Audioscrobbler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Audioscrobbler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -94,6 +110,7 @@
 		29B97314FDCFA39411CA2CEA /* Audioscrobbler */ = {
 			isa = PBXGroup;
 			children = (
+				6393C3C70F93870400286602 /* iTunes Plug-in.xcodeproj */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -106,11 +123,13 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
-				63D6DBDE0F83CE6700F4DCAA /* scrobsub-cocoa.m */,
 				63D6DB8F0F83B6FE00F4DCAA /* scrobsub.h */,
 				63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */,
+				63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */,
+				63B5AA380F93565500DC9D8C /* md5.c */,
 				32CA4F630368D1EE00C91783 /* pc.h */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
+				63B5AA5D0F9356DD00DC9D8C /* Audioscrobbler.sdef */,
 			);
 			name = "Other Sources";
 			sourceTree = "<group>";
@@ -137,6 +156,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		6393C3C80F93870400286602 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6393C3CF0F93870400286602 /* iTunes Plug-in.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -147,6 +174,7 @@
 				8D1107290486CEB800E47090 /* Resources */,
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
+				63B5AA670F93577400DC9D8C /* Compile Audioscrobbler.sdef */,
 			);
 			buildRules = (
 			);
@@ -168,6 +196,12 @@
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Audioscrobbler */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 6393C3C80F93870400286602 /* Products */;
+					ProjectRef = 6393C3C70F93870400286602 /* iTunes Plug-in.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* Audioscrobbler */,
@@ -175,20 +209,50 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		6393C3CF0F93870400286602 /* iTunes Plug-in.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "iTunes Plug-in.bundle";
+			remoteRef = 6393C3CE0F93870400286602 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
 /* Begin PBXResourcesBuildPhase section */
 		8D1107290486CEB800E47090 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				63DA69820F938A1300206098 /* iTunes Plug-in.bundle in Resources */,
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* main.xib in Resources */,
 				63D6DB380F8399E000F4DCAA /* icon.png in Resources */,
 				63D6DB390F8399E000F4DCAA /* inverted_icon.png in Resources */,
 				63C9B94A0F8672940065ED7F /* Last.fm.icns in Resources */,
+				63B5AA5E0F9356DD00DC9D8C /* Audioscrobbler.sdef in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		63B5AA670F93577400DC9D8C /* Compile Audioscrobbler.sdef */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Compile Audioscrobbler.sdef";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "sdp -f st -o $BUILT_PRODUCTS_DIR/$EXECUTABLE_FOLDER_PATH/../Resources $SOURCE_ROOT/Audioscrobbler.sdef";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8D11072C0486CEB800E47090 /* Sources */ = {
@@ -198,7 +262,8 @@
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				63D6DAF10F8396E000F4DCAA /* StatusItemController.m in Sources */,
 				63D6DB8E0F83B6F800F4DCAA /* scrobsub.c in Sources */,
-				63D6DBDF0F83CE6700F4DCAA /* scrobsub-cocoa.m in Sources */,
+				63D6DBDF0F83CE6700F4DCAA /* scrobsub.m in Sources */,
+				63B5AA390F93565500DC9D8C /* md5.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

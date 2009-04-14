@@ -21,6 +21,37 @@
 #include "../scrobsub.h"
 
 
+static void install_plugin()
+{
+    NSString* dst = [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/iTunes/iTunes Plug-ins/Audioscrobbler.bundle"];
+    NSString* src = [[NSBundle mainBundle] pathForResource:@"iTunes Plug-in" ofType:@"bundle"];
+    NSFileManager* fm = [NSFileManager defaultManager];
+
+    if([fm fileExistsAtPath:dst])
+    {
+        NSString* dstv = [[NSBundle bundleWithPath:dst] objectForInfoDictionaryKey:@"CFBundleVersion"];
+        NSString* srcv = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+
+        if([dstv isEqualToString:srcv])
+            return;
+        
+    	NSInteger tag = 0;
+        bool result = [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation
+                                                                   source:[dst stringByDeletingLastPathComponent]
+                                                              destination:@""
+                                                                    files:[NSArray arrayWithObject:[dst lastPathComponent]]
+                                                                      tag:&tag];
+        if(!result){
+            NSLog(@"Couldn't trash %@", dst);
+            return;
+        }
+    }
+    
+    //install
+	[fm copyPath:src toPath:dst handler:nil];
+}
+
+
 static void scrobsub_callback(int event, const char* message)
 {
     switch (event)
@@ -57,7 +88,8 @@ static void scrobsub_callback(int event, const char* message)
                                                         selector:@selector(onPlaybackNotification:)
                                                             name:@"com.apple.iTunes.playerInfo"
                                                           object:nil];
-
+    install_plugin();
+    
     scrobsub_init(scrobsub_callback);
 }
 
@@ -84,7 +116,7 @@ static void scrobsub_callback(int event, const char* message)
         int64_t const oldpid = pid;
         pid = [(NSNumber*)[dict objectForKey:@"PersistentID"] longLongValue];
         if(oldpid == pid){
-            if (scrobsub_state() == SCROBSUB_PAUSED)
+            if(scrobsub_state() == SCROBSUB_PAUSED)
                 scrobsub_resume();
             return;
         }
@@ -92,9 +124,9 @@ static void scrobsub_callback(int event, const char* message)
         scrobsub_start([[dict objectForKey:@"Artist"] UTF8String],
                        [name UTF8String],
                        [[dict objectForKey:@"Album"] UTF8String],
-                       "", // mbid
                        duration,
-                       [(NSNumber*)[dict objectForKey:@"Track Number"] intValue]);
+                       [(NSNumber*)[dict objectForKey:@"Track Number"] intValue],
+                       "" /*mbid*/);
 
     }
     else if([state isEqualToString:@"Paused"])

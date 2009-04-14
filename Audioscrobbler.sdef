@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dictionary SYSTEM "file://localhost/System/Library/DTDs/sdef.dtd">
+<dictionary title="">
+  <suite name="Scrobbling Suite" code="AsSS"
+    description="Commands and classes for Audioscrobbler Scripting">
+    <classes>
+      <class name="application" code="capp" description="" 
+        inherits="NSCoreSuite.NSApplication">
+        <cocoa class="NSApplication"/>
+          <properties>
+            <property name="circle text" code="crtx" type="string" 
+              description="The text that gets spun into a circle">
+              <cocoa method="circleText"/>
+            </property>
+          </properties>
+        </class>
+      </classes>
+  </suite>
+</dictionary>

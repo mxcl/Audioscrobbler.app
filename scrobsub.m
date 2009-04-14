@@ -54,13 +54,6 @@ bool scrobsub_retrieve_credentials()
     return true;
 } 
 
-void scrobsub_md5(char out[33], const char* in)
-{
-    unsigned char d[CC_MD5_DIGEST_LENGTH];
-	CC_MD5(in, strlen(in), d);
-    snprintf(out, 33, "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x", d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8], d[9], d[10], d[11], d[12], d[13], d[14], d[15]);
-}
-
 void scrobsub_get(char response[256], const char* url)
 {
     NSStringEncoding encoding;
