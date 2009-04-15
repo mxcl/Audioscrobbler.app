@@ -19,8 +19,26 @@
 
 // Created by Max Howell <max@last.fm>
 
+//TODO NotificationCenter
+//TODO DistributedNotificationCenter
+
 #import <Cocoa/Cocoa.h>
 
-@interface Mediator:NSObject{
+@interface PlayerConnection:NSObject{
+    NSString* name;
+    NSString* title;
+    NSString* artist;
+    uint duration;
+    int state;
 }
+@end
+
+@interface Mediator:NSObject{
+    PlayerConnection* current;
+    NSMutableArray* stack;
+}
+
+-(void)add:(PlayerConnection*);
+-(Mediator*)sharedMediator;
+
 @end
