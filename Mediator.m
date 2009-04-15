@@ -19,17 +19,35 @@
 
 // Created by Max Howell <max@last.fm>
 
-#import <Cocoa/Cocoa.h>
+#import "Mediator.h"
 
 
-@interface StatusItemController : NSObject
-{
-    NSStatusItem* status_item;
-    IBOutlet NSMenu* menu;   
-    
-    NSMutableArray* tracks;
+
+@interface ASScriptCommand:NSScriptCommand{
 }
+@end
 
--(void)awakeFromNib;
+@implementation ASScriptCommand
 
+-(id)performDefaultImplementation
+{
+    switch([[self commandDescription] appleEventCode]){
+        case(FourCharCode)'strt':
+        {
+            NSString* client = [self directParameter];
+            NSString* title = [[self evaluatedArguments] objectForKey:@"title"];
+            NSString* artist = [[self evaluatedArguments] objectForKey:@"artist"];
+            NSNumber* duration = [[self evaluatedArguments] objectForKey:@"duration"];
+            NSLog( @"%@", duration );
+            break;
+        }
+        case(FourCharCode)'paus':
+            break;
+        case(FourCharCode)'rsme':
+            break;
+        case(FourCharCode)'stop':
+            break;
+    }
+    return nil;
+}
 @end

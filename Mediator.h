@@ -21,14 +21,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-
-@interface ASTrack:NSObject{
-    NSString* title;
-    NSString* artist;
-    NSNumber* duration;
-    NSString* album;
-    NSNumber* trackNumber; // -1 means unknown track number
-    NSString* mbid;
+@interface Mediator:NSObject{
 }
-
 @end

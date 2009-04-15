@@ -1,46 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE dictionary SYSTEM "file://localhost/System/Library/DTDs/sdef.dtd">
 <dictionary title="">
-  <suite name="Scrobbling Suite" code="AsSS" description="">
-    
-    <class name="application" code="capp" description="" inherits="NSCoreSuite.NSApplication">
-      <cocoa class="NSApplication"/>
-    </class>
-    
-    <class name="track" code="ctrk" description="">
-			<cocoa class="ASTrack"/>
-			<property name="title" code="pTIT" description="" type="text">
+	<suite name="Scrobbling Suite" code="AsSS">
+		<class name="application" code="capp" inherits="NSCoreSuite.NSApplication">
+			<cocoa class="NSApplication"/>
+		</class>
+		<command name="start" code="AsSSstrt">
+			<cocoa class="ASScriptCommand"/>
+			<direct-parameter description="The client identifier, eg. Songbird" type="text"/>
+			<parameter name="with" code="stra" type="text">
 				<cocoa key="title"/>
-			</property>
-			<property name="artist" code="pART" description="" type="text">
+			</parameter>
+			<parameter name="by" code="strb" type="text">
 				<cocoa key="artist"/>
-			</property>
-			<property name="duration" code="pDUR" description="" type="number">
+			</parameter>
+			<parameter name="duration" code="strc" type="number">
 				<cocoa key="duration"/>
-			</property>
-			<property name="album" code="pALB" description="" type="text">
-				<cocoa key="album"/>
-			</property>
-			<property name="track number" code="pNUM" description="" type="number">
-				<cocoa key="trackNumber"/>
-			</property>
-			<property name="mbid" code="MBID" type="text">
-				<cocoa key="mbid"/>
-			</property>
-			<responds-to name="start">
-				<cocoa method="start:"/>
-			</responds-to>
-		</class>    
-    
-    <command name="stop" code="AsSSstop" description="The user stopped the track">
-			<cocoa class="ASScriptCommand"/>
+			</parameter>
 		</command>
-    <command name="pause" code="AsSSpaus" description="The user paused the track">
+		
+		<command name="pause" code="AsSSpaus">
 			<cocoa class="ASScriptCommand"/>
-		</command>    
-    <command name="resume" code="AsSSrsme" description="The user resumed the paused track">
+			<direct-parameter description="The client identifier, eg. Songbird" type="text"/>
+		</command>
+
+		<command name="resume" code="AsSSrsme">
 			<cocoa class="ASScriptCommand"/>
-		</command>    
-  
-  </suite>
+			<direct-parameter description="The client identifier, eg. Songbird" type="text"/>
+		</command>
+		
+		<command name="stop" code="AsSSstop">
+			<cocoa class="ASScriptCommand"/>
+			<direct-parameter description="The client identifier, eg. Songbird" type="text"/>
+		</command>		
+	</suite>
 </dictionary>

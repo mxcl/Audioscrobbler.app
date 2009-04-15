@@ -75,6 +75,7 @@ static void scrobsub_callback(int event, const char* message)
 }
 
 
+#import "ASTrack.h"
 @implementation StatusItemController
 
 - (void)awakeFromNib
@@ -128,8 +129,8 @@ static void scrobsub_callback(int event, const char* message)
 
         scrobsub_start([[dict objectForKey:@"Artist"] UTF8String],
                        [name UTF8String],
-                       [[dict objectForKey:@"Album"] UTF8String],
                        duration,
+                       [[dict objectForKey:@"Album"] UTF8String],
                        [(NSNumber*)[dict objectForKey:@"Track Number"] intValue],
                        "" /*mbid*/);
 
@@ -149,24 +150,3 @@ static void scrobsub_callback(int event, const char* message)
 
 @end
 
-
-
-@interface ASScriptCommand:NSScriptCommand{
-}
-@end
-
-@implementation ASScriptCommand
-
--(id)performDefaultImplementation
-{
-    switch([[self commandDescription] appleEventCode]){
-        case(FourCharCode)'paus':
-            break;
-        case(FourCharCode)'rsme':
-            break;
-        case(FourCharCode)'stop':
-            break;
-    }
-    return nil;
-}
-@end
