@@ -17,8 +17,11 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
+// Created by Max Howell <max@last.fm>
+
 #import "StatusItemController.h"
 #include "../scrobsub.h"
+StatusItemController* instance; //TODO sucks
 
 
 static void install_plugin()
@@ -76,6 +79,8 @@ static void scrobsub_callback(int event, const char* message)
 
 - (void)awakeFromNib
 {
+    instance = self;
+    
     NSBundle* bundle = [NSBundle mainBundle];
     status_item = [[[NSStatusBar systemStatusBar] statusItemWithLength:27] retain];
     [status_item setHighlightMode:YES];
@@ -142,4 +147,26 @@ static void scrobsub_callback(int event, const char* message)
     }
 }
 
+@end
+
+
+
+@interface ASScriptCommand:NSScriptCommand{
+}
+@end
+
+@implementation ASScriptCommand
+
+-(id)performDefaultImplementation
+{
+    switch([[self commandDescription] appleEventCode]){
+        case(FourCharCode)'paus':
+            break;
+        case(FourCharCode)'rsme':
+            break;
+        case(FourCharCode)'stop':
+            break;
+    }
+    return nil;
+}
 @end

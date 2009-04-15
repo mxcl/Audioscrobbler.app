@@ -13,6 +13,8 @@
 		63C9B94A0F8672940065ED7F /* Last.fm.icns in Resources */ = {isa = PBXBuildFile; fileRef = 63C9B9490F8672940065ED7F /* Last.fm.icns */; };
 		63C9B9630F867C460065ED7F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C9B9620F867C460065ED7F /* Security.framework */; };
 		63CDD71A0F9533C800D69723 /* relay.c in Sources */ = {isa = PBXBuildFile; fileRef = 63CDD7190F9533C800D69723 /* relay.c */; };
+		63CDD7360F95453C00D69723 /* Mediator.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CDD7350F95453C00D69723 /* Mediator.m */; };
+		63CDD77C0F95547200D69723 /* ASTrack.m in Sources */ = {isa = PBXBuildFile; fileRef = 63CDD77B0F95547200D69723 /* ASTrack.m */; };
 		63D6DAF10F8396E000F4DCAA /* StatusItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DAF00F8396E000F4DCAA /* StatusItemController.m */; };
 		63D6DB380F8399E000F4DCAA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB360F8399E000F4DCAA /* icon.png */; };
 		63D6DB390F8399E000F4DCAA /* inverted_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB370F8399E000F4DCAA /* inverted_icon.png */; };
@@ -49,6 +51,10 @@
 		63C9B9490F8672940065ED7F /* Last.fm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Last.fm.icns; sourceTree = "<group>"; };
 		63C9B9620F867C460065ED7F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		63CDD7190F9533C800D69723 /* relay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = relay.c; path = ../relay.c; sourceTree = SOURCE_ROOT; };
+		63CDD7340F95453C00D69723 /* Mediator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mediator.h; sourceTree = "<group>"; };
+		63CDD7350F95453C00D69723 /* Mediator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mediator.m; sourceTree = "<group>"; };
+		63CDD77A0F95547200D69723 /* ASTrack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASTrack.h; sourceTree = "<group>"; };
+		63CDD77B0F95547200D69723 /* ASTrack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASTrack.m; sourceTree = "<group>"; };
 		63D6DAEF0F8396E000F4DCAA /* StatusItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemController.h; sourceTree = "<group>"; };
 		63D6DAF00F8396E000F4DCAA /* StatusItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemController.m; sourceTree = "<group>"; };
 		63D6DB360F8399E000F4DCAA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -78,6 +84,10 @@
 			children = (
 				63D6DAEF0F8396E000F4DCAA /* StatusItemController.h */,
 				63D6DAF00F8396E000F4DCAA /* StatusItemController.m */,
+				63CDD7340F95453C00D69723 /* Mediator.h */,
+				63CDD7350F95453C00D69723 /* Mediator.m */,
+				63CDD77A0F95547200D69723 /* ASTrack.h */,
+				63CDD77B0F95547200D69723 /* ASTrack.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -268,6 +278,8 @@
 				63D6DBDF0F83CE6700F4DCAA /* scrobsub.m in Sources */,
 				63B5AA390F93565500DC9D8C /* md5.c in Sources */,
 				63CDD71A0F9533C800D69723 /* relay.c in Sources */,
+				63CDD7360F95453C00D69723 /* Mediator.m in Sources */,
+				63CDD77C0F95547200D69723 /* ASTrack.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

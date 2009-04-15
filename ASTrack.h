@@ -22,12 +22,13 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface StatusItemController : NSObject
-{
-    NSStatusItem* status_item;
-    IBOutlet NSMenu* menu;   
+@interface ASTrack:NSObject{
+    NSString* title;
+    NSString* artist;
+    NSNumber* duration;
+    NSString* album;
+    NSNumber* trackNumber; // -1 means unknown track number
+    NSString* mbid;
 }
-
--(void)awakeFromNib;
 
 @end
