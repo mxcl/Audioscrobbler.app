@@ -22,5 +22,20 @@
 #import <Cocoa/Cocoa.h>
 
 @interface Mediator:NSObject{
+    NSMutableArray* stack;
+    NSMutableDictionary* tracks;
+    NSString* active;
 }
++(id)sharedMediator;
+
+-(void)start:(NSString*)clientId withTrack:(NSDictionary*)track;
+-(void)pause:(NSString*)clientId
+-(void)resume:(NSString*)clientId
+-(void)stop:(NSString*)clientId
+@end
+
+@interface ITunesListener{
+    int64_t pid;
+}
+-(id)init;
 @end

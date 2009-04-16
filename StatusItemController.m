@@ -90,17 +90,18 @@ static void scrobsub_callback(int event, const char* message)
     [status_item setEnabled:YES];
     [status_item setMenu:menu];
 
-    [[NSDistributedNotificationCenter defaultCenter] addObserver:self
-                                                        selector:@selector(onPlaybackNotification:)
-                                                            name:@"com.apple.iTunes.playerInfo"
-                                                          object:nil];
-    install_plugin();
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onPlayerInfo:)
+                                                 name:@"playerInfo"
+                                               object:nil];
     scrobsub_init(scrobsub_callback);
+    [[ITunesListener alloc] init];
+
+    install_plugin();
 }
 
 
--(void)onPlaybackNotification:(NSNotification*)userData
+-(void)onPlayerInfo:(NSNotification*)userData
 {
     static int64_t pid = 0; //FIXME dunno for sure if 0 is invalid
 
