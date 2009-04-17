@@ -35,6 +35,8 @@
 -(void)resume:(NSString*)clientId;
 -(void)stop:(NSString*)clientId;
 
+-(IBAction)onScrobblingEnabledChanged:(id)sender;
+
 @end
 
 @interface ITunesListener:NSObject{

@@ -8,7 +8,7 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="469"/>
+			<integer value="468"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -172,6 +172,9 @@
 			<object class="NSCustomObject" id="232807562">
 				<string key="NSClassName">HistoryMenuController</string>
 			</object>
+			<object class="NSCustomObject" id="52689697">
+				<string key="NSClassName">Mediator</string>
+			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
 			<object class="NSMutableArray" key="connectionRecords">
@@ -226,14 +229,6 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
-						<string key="label">historyMenuItem</string>
-						<reference key="source" ref="1050762845"/>
-						<reference key="destination" ref="1020011467"/>
-					</object>
-					<int key="connectionID">472</int>
-				</object>
-				<object class="IBConnectionRecord">
-					<object class="IBOutletConnection" key="connection">
 						<string key="label">menu</string>
 						<reference key="source" ref="232807562"/>
 						<reference key="destination" ref="1020011467"/>
@@ -247,6 +242,14 @@
 						<reference key="destination" ref="601601618"/>
 					</object>
 					<int key="connectionID">478</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">onScrobblingEnabledChanged:</string>
+						<reference key="source" ref="52689697"/>
+						<reference key="destination" ref="259145875"/>
+					</object>
+					<int key="connectionID">480</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -391,6 +394,11 @@
 						<reference key="object" ref="604207796"/>
 						<reference key="parent" ref="1020011467"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">479</int>
+						<reference key="object" ref="52689697"/>
+						<reference key="parent" ref="1049"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -419,6 +427,7 @@
 					<string>475.IBPluginDependency</string>
 					<string>476.IBPluginDependency</string>
 					<string>477.IBPluginDependency</string>
+					<string>479.IBPluginDependency</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -439,6 +448,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>{{583, 1013}, {206, 53}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -466,7 +476,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">478</int>
+			<int key="maxID">480</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -485,6 +495,18 @@
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>
 						<string key="minorKey">HistoryMenuController.h</string>
+					</object>
+				</object>
+				<object class="IBPartialClassDescription">
+					<string key="className">Mediator</string>
+					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">onScrobblingEnabledChanged:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">Mediator.h</string>
 					</object>
 				</object>
 				<object class="IBPartialClassDescription">

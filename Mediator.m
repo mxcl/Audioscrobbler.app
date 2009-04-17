@@ -31,21 +31,21 @@ static NSNumber* now()
     return [NSNumber numberWithUnsignedInt:t];    
 }
 
+static Mediator* sharedMediator;
+
 
 @implementation Mediator
 
--(id)init
+-(void)awakeFromNib
 {
     stack=[[NSMutableArray alloc] initWithCapacity:1];
     tracks=[[NSMutableDictionary alloc] initWithCapacity:1];
-    return self;
+    sharedMediator = self;
 }
 
 +(id)sharedMediator
 {
-    static Mediator*m=nil;
-    if(!m)m=[[Mediator alloc]init];
-    return m;
+    return sharedMediator;
 }
 
 -(void)announce:(NSDictionary*)track
@@ -153,6 +153,10 @@ static NSNumber* now()
             }
         }
     }
+}
+
+-(void)onScrobblingEnabledChanged:(id)sender
+{
 }
 
 @end

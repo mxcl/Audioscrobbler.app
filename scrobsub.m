@@ -44,13 +44,13 @@ bool scrobsub_retrieve_credentials()
                                                   &n,
                                                   &key,
                                                   NULL);
+    if(err != noErr)return false;
+
     scrobsub_session_key = malloc(n+1);
     memcpy(scrobsub_session_key, key, n);
     scrobsub_session_key[n] = '\0';
-    
+
     SecKeychainItemFreeContent(NULL, key);
-    (void)err; //TODO
-    
     return true;
 } 
 
@@ -95,7 +95,7 @@ void scrobsub_auth(char out_url[110])
     }
 
     strcpy(out_url, "http://www.last.fm/api/auth/?api_key=" SCROBSUB_API_KEY "&token=");
-    strcpy(&out_url[38+32+7], [token UTF8String]);
+    strcat(out_url, [token UTF8String]);
 }
 
 //TODO localise and get webservice error
