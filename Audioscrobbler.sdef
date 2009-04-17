@@ -9,13 +9,13 @@
 			<cocoa class="ASScriptCommand"/>
 			<direct-parameter description="The client identifier, eg. Songbird" type="text"/>
 			<parameter name="with" code="stra" type="text">
-				<cocoa key="title"/>
+				<cocoa key="Name"/>
 			</parameter>
 			<parameter name="by" code="strb" type="text">
-				<cocoa key="artist"/>
+				<cocoa key="Artist"/>
 			</parameter>
 			<parameter name="duration" code="strc" type="number">
-				<cocoa key="duration"/>
+				<cocoa key="Total Time"/>
 			</parameter>
 		</command>
 		

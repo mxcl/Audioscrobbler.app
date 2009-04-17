@@ -19,26 +19,26 @@
 
 // Created by Max Howell <max@last.fm>
 
-//TODO NotificationCenter
 //TODO DistributedNotificationCenter
 
 #import <Cocoa/Cocoa.h>
 
-@interface PlayerConnection:NSObject{
-    NSString* name;
-    NSString* title;
-    NSString* artist;
-    uint duration;
-    int state;
+@interface Mediator:NSObject{
+    NSMutableArray* stack;
+    NSMutableDictionary* tracks;
+    NSString* active;
 }
++(id)sharedMediator;
+
+-(void)start:(NSString*)clientId withTrack:(NSMutableDictionary*)track;
+-(void)pause:(NSString*)clientId;
+-(void)resume:(NSString*)clientId;
+-(void)stop:(NSString*)clientId;
+
 @end
 
-@interface Mediator:NSObject{
-    PlayerConnection* current;
-    NSMutableArray* stack;
+@interface ITunesListener:NSObject{
+    int64_t pid;
 }
-
--(void)add:(PlayerConnection*);
--(Mediator*)sharedMediator;
-
+-(id)init;
 @end
