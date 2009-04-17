@@ -97,6 +97,33 @@
 							<string key="NSTitle">History</string>
 							<object class="NSMutableArray" key="NSMenuItems">
 								<bool key="EncodedWithXMLCoder">YES</bool>
+								<object class="NSMenuItem" id="604207796">
+									<reference key="NSMenu" ref="1020011467"/>
+									<bool key="NSIsDisabled">YES</bool>
+									<string key="NSTitle">No Recent Tracks</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="794915978"/>
+									<reference key="NSMixedImage" ref="273203663"/>
+								</object>
+								<object class="NSMenuItem" id="1017483345">
+									<reference key="NSMenu" ref="1020011467"/>
+									<bool key="NSIsDisabled">YES</bool>
+									<bool key="NSIsSeparator">YES</bool>
+									<string key="NSTitle"/>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="794915978"/>
+									<reference key="NSMixedImage" ref="273203663"/>
+								</object>
+								<object class="NSMenuItem" id="601601618">
+									<reference key="NSMenu" ref="1020011467"/>
+									<string type="base64-UTF8" key="NSTitle">TW9yZSBSZWNlbnQgSGlzdG9yeeKApg</string>
+									<string key="NSKeyEquiv"/>
+									<int key="NSMnemonicLoc">2147483647</int>
+									<reference key="NSOnImage" ref="794915978"/>
+									<reference key="NSMixedImage" ref="273203663"/>
+								</object>
 							</object>
 						</object>
 					</object>
@@ -141,6 +168,9 @@
 			</object>
 			<object class="NSCustomObject" id="1050762845">
 				<string key="NSClassName">StatusItemController</string>
+			</object>
+			<object class="NSCustomObject" id="232807562">
+				<string key="NSClassName">HistoryMenuController</string>
 			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -201,6 +231,22 @@
 						<reference key="destination" ref="1020011467"/>
 					</object>
 					<int key="connectionID">472</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">menu</string>
+						<reference key="source" ref="232807562"/>
+						<reference key="destination" ref="1020011467"/>
+					</object>
+					<int key="connectionID">474</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBActionConnection" key="connection">
+						<string key="label">moreRecentHistory:</string>
+						<reference key="source" ref="232807562"/>
+						<reference key="destination" ref="601601618"/>
+					</object>
+					<int key="connectionID">478</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -319,8 +365,31 @@
 						<reference key="object" ref="1020011467"/>
 						<object class="NSMutableArray" key="children">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<reference ref="1017483345"/>
+							<reference ref="601601618"/>
+							<reference ref="604207796"/>
 						</object>
 						<reference key="parent" ref="6461142"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">473</int>
+						<reference key="object" ref="232807562"/>
+						<reference key="parent" ref="1049"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">475</int>
+						<reference key="object" ref="601601618"/>
+						<reference key="parent" ref="1020011467"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">476</int>
+						<reference key="object" ref="1017483345"/>
+						<reference key="parent" ref="1020011467"/>
+					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">477</int>
+						<reference key="object" ref="604207796"/>
+						<reference key="parent" ref="1020011467"/>
 					</object>
 				</object>
 			</object>
@@ -346,6 +415,10 @@
 					<string>468.IBPluginDependency</string>
 					<string>469.IBEditorWindowLastContentRect</string>
 					<string>469.IBPluginDependency</string>
+					<string>473.IBPluginDependency</string>
+					<string>475.IBPluginDependency</string>
+					<string>476.IBPluginDependency</string>
+					<string>477.IBPluginDependency</string>
 				</object>
 				<object class="NSMutableArray" key="dict.values">
 					<bool key="EncodedWithXMLCoder">YES</bool>
@@ -365,7 +438,11 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{583, 1060}, {64, 6}}</string>
+					<string>{{583, 1013}, {206, 53}}</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 				</object>
 			</object>
@@ -389,11 +466,27 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">472</int>
+			<int key="maxID">478</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<bool key="EncodedWithXMLCoder">YES</bool>
+				<object class="IBPartialClassDescription">
+					<string key="className">HistoryMenuController</string>
+					<string key="superclassName">NSObject</string>
+					<object class="NSMutableDictionary" key="actions">
+						<string key="NS.key.0">moreRecentHistory:</string>
+						<string key="NS.object.0">id</string>
+					</object>
+					<object class="NSMutableDictionary" key="outlets">
+						<string key="NS.key.0">menu</string>
+						<string key="NS.object.0">NSMenu</string>
+					</object>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">HistoryMenuController.h</string>
+					</object>
+				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">StatusItemController</string>
 					<string key="superclassName">NSObject</string>
@@ -413,17 +506,8 @@
 						</object>
 					</object>
 					<object class="NSMutableDictionary" key="outlets">
-						<bool key="EncodedWithXMLCoder">YES</bool>
-						<object class="NSMutableArray" key="dict.sortedKeys">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>historyMenuItem</string>
-							<string>menu</string>
-						</object>
-						<object class="NSMutableArray" key="dict.values">
-							<bool key="EncodedWithXMLCoder">YES</bool>
-							<string>NSMenu</string>
-							<string>NSMenu</string>
-						</object>
+						<string key="NS.key.0">menu</string>
+						<string key="NS.object.0">NSMenu</string>
 					</object>
 					<object class="IBClassDescriptionSource" key="sourceIdentifier">
 						<string key="majorKey">IBProjectSource</string>

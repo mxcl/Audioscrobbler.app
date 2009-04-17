@@ -27,10 +27,7 @@
 {
     NSStatusItem* status_item;
     IBOutlet NSMenu* menu;
-    IBOutlet NSMenu* historyMenuItem;
 }
-
--(void)awakeFromNib;
 
 -(IBAction)love:(id)sender;
 -(IBAction)tag:(id)sender;

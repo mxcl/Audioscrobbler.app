@@ -27,16 +27,18 @@ static NSString* encode(NSString* s)
     // removed () from included chars as they are legal unencoded and Last.fm seems to be OK with it
     #define escape(s, excluding) (NSString*) CFURLCreateStringByAddingPercentEscapes(nil, (CFStringRef)s, excluding, CFSTR("!*';:@&=+$,/?%#[]"), kCFStringEncodingUTF8);
 
+    bool double_escape = [s rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"&/;+#%"]].location != NSNotFound;
+    
     // RFC 2396 encode, but also use pluses rather than %20s, it's more legible
     s = escape(s, CFSTR(" "));
     s = [s stringByReplacingOccurrencesOfString:@" " withString:@"+"];
 
     // Last.fm has odd double encoding rules
-    NSRange range = [s rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"&/;+#%"]];
-    if(range.location != NSNotFound)
+    if(double_escape)
         s = escape(s, nil);
 
     return s;
+    #undef escape
 }
 
 
@@ -58,6 +60,12 @@ static NSString* encode(NSString* s)
     [s appendString:@" – "]; // this string is UTF8, neat eh?
     [s appendString:[track objectForKey:@"Name"]];
     return s;
+}
+
++(NSURL*)urlForUser:(NSString*)username
+{
+    //TODO localise URL, maybe auth ws gives that? otherwise OS level locale
+    return [NSURL URLWithString:[@"http://www.last.fm/user/" stringByAppendingString:encode(username)]];
 }
 
 @end

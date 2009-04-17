@@ -19,7 +19,6 @@
 
 // Created by Max Howell <max@last.fm>
 
-#import "HistoryMenuController.h"
 #import "lastfm.h"
 #import "Mediator.h"
 #import "scrobsub.h"
@@ -77,7 +76,7 @@ static void scrobsub_callback(int event, const char* message)
 
 @implementation StatusItemController
 
-- (void)awakeFromNib
+-(void)awakeFromNib
 {   
     NSBundle* bundle = [NSBundle mainBundle];
     status_item = [[[NSStatusBar systemStatusBar] statusItemWithLength:27] retain];
@@ -93,7 +92,6 @@ static void scrobsub_callback(int event, const char* message)
                                                object:nil];
     scrobsub_init(scrobsub_callback);
     [[ITunesListener alloc] init];
-    [[HistoryMenuController alloc] initWithMenu:historyMenuItem];
 
     [GrowlApplicationBridge setGrowlDelegate:self];
     

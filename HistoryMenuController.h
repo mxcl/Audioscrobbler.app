@@ -23,11 +23,11 @@
 
 
 @interface HistoryMenuController:NSObject{
+    IBOutlet NSMenu* menu;
     NSMutableArray* tracks;
-    NSMenu* menu;
     NSDictionary* currentTrack;
 }
 
--(void)initWithMenu:(NSMenu*)historyMenu;
+-(IBAction)moreRecentHistory:(id)sender;
 
 @end

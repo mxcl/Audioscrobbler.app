@@ -21,28 +21,30 @@
 
 #import "HistoryMenuController.h"
 #import "lastfm.h"
+#import "scrobsub.h"
 
 
 @implementation HistoryMenuController
 
--(void)initWithMenu:(NSMenu*)historyMenu
+-(void)awakeFromNib
 {
     tracks = [NSMutableArray arrayWithCapacity:5];
-    menu = historyMenu;
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onPlayerInfo:)
                                                  name:@"playerInfo"
-                                               object:nil];    
+                                               object:nil];
 }
 
 -(void)insert:(NSDictionary*)track
 {
+    NSMenuItem* item = [menu itemAtIndex:0];
+    if([item isEnabled] == false)
+        [menu removeItem:item];
+    
     NSURL* url = [lastfm urlForTrack:[track objectForKey:@"Name"] by:[track objectForKey:@"Artist"]];
     
-    //[menu setEnabled:true];
-    
-    NSMenuItem* item = [[NSMenuItem alloc] initWithTitle:[lastfm titleForTrack:track] action:@selector(clicked:) keyEquivalent:@""];
+    item = [[NSMenuItem alloc] initWithTitle:[lastfm titleForTrack:track] action:@selector(clicked:) keyEquivalent:@""];
     [item setTarget:self];
     [item setRepresentedObject:url];
     [menu insertItem:item atIndex:0];
@@ -54,17 +56,20 @@
     NSString* state = [track objectForKey:@"Player State"];
     
     if([state isEqualToString:@"Playing"]){
-        if(currentTrack) 
+        if(currentTrack)
             [self insert:currentTrack];
         currentTrack = track;
     }
-    
-    
 }
 
 -(void)clicked:(id)sender
 {
     [[NSWorkspace sharedWorkspace] openURL:[sender representedObject]];
+}
+
+-(void)moreRecentHistory:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:[lastfm urlForUser:[NSString stringWithUTF8String:scrobsub_username]]];
 }
 
 @end
