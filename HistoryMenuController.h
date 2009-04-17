@@ -19,21 +19,15 @@
 
 // Created by Max Howell <max@last.fm>
 
-#import <Growl/GrowlApplicationBridge.h>
 #import <Cocoa/Cocoa.h>
 
 
-@interface StatusItemController : NSObject <GrowlApplicationBridgeDelegate>
-{
-    NSStatusItem* status_item;
-    IBOutlet NSMenu* menu;
-    IBOutlet NSMenu* historyMenuItem;
+@interface HistoryMenuController:NSObject{
+    NSMutableArray* tracks;
+    NSMenu* menu;
+    NSDictionary* currentTrack;
 }
 
--(void)awakeFromNib;
-
--(IBAction)love:(id)sender;
--(IBAction)tag:(id)sender;
--(IBAction)share:(id)sender;
+-(void)initWithMenu:(NSMenu*)historyMenu;
 
 @end

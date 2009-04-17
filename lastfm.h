@@ -25,5 +25,6 @@
 @interface lastfm:NSObject{
 }
 +(NSURL*)urlForTrack:(NSString*)track by:(NSString*)artist;
++(NSString*)titleForTrack:(NSDictionary*)track;
 
 @end

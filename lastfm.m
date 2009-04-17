@@ -51,4 +51,12 @@ static NSString* encode(NSString* s)
     return [NSURL URLWithString:path];
 }
 
++(NSString*)titleForTrack:(NSDictionary*)track
+{
+    NSMutableString* s = [[track objectForKey:@"Artist"] mutableCopy];
+    [s appendString:@" — "]; // this string is UTF8, neat eh?
+    [s appendString:[track objectForKey:@"Name"]];
+    return s;
+}
+
 @end

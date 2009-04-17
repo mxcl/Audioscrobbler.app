@@ -19,10 +19,11 @@
 
 // Created by Max Howell <max@last.fm>
 
-#import "StatusItemController.h"
-#import "Mediator.h"
+#import "HistoryMenuController.h"
 #import "lastfm.h"
+#import "Mediator.h"
 #import "scrobsub.h"
+#import "StatusItemController.h"
 
 
 static void install_plugin()
@@ -92,6 +93,7 @@ static void scrobsub_callback(int event, const char* message)
                                                object:nil];
     scrobsub_init(scrobsub_callback);
     [[ITunesListener alloc] init];
+    [[HistoryMenuController alloc] initWithMenu:historyMenuItem];
 
     [GrowlApplicationBridge setGrowlDelegate:self];
     
@@ -107,6 +109,9 @@ static void scrobsub_callback(int event, const char* message)
     if([state isEqualToString:@"Playing"]){
         uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
         [[menu itemAtIndex:0] setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
+        [[menu itemAtIndex:2] setEnabled:true];
+        [[menu itemAtIndex:3] setEnabled:true];
+        [[menu itemAtIndex:4] setEnabled:true];
         
         [GrowlApplicationBridge notifyWithTitle:name
                                     description:[dict objectForKey:@"Artist"]
@@ -114,16 +119,19 @@ static void scrobsub_callback(int event, const char* message)
                                        iconData:nil
                                        priority:0
                                        isSticky:false
-                                   clickContext:dict];
+                                   clickContext:dict];        
     }
     else if([state isEqualToString:@"Paused"]){
         [[menu itemAtIndex:0] setTitle:[name stringByAppendingString:@" [paused]"]];
     }
     else if([state isEqualToString:@"Stopped"]){
         [[menu itemAtIndex:0] setTitle:@"Ready"];
-
+        [[menu itemAtIndex:2] setEnabled:false];
+        [[menu itemAtIndex:3] setEnabled:false];
+        [[menu itemAtIndex:4] setEnabled:false];
+        
         [GrowlApplicationBridge notifyWithTitle:@"Playlist Ended"
-                                    description:@"The playlist came to its natural conclusion, I hope you enjoyed it."
+                                    description:@"The playlist came to its natural conclusion, I hope you enjoyed it :)"
                                notificationName:@"Playlist Ended"
                                        iconData:nil
                                        priority:0
@@ -135,6 +143,20 @@ static void scrobsub_callback(int event, const char* message)
 -(void)growlNotificationWasClicked:(id)dict
 {
     [[NSWorkspace sharedWorkspace] openURL:[lastfm urlForTrack:[dict objectForKey:@"Name"] by:[dict objectForKey:@"Artist"]]];
+}
+
+-(void)love:(id)sender
+{
+    
+}
+
+-(void)tag:(id)sender
+{
+    
+}
+
+-(void)share:(id)sender
+{
 }
 
 @end

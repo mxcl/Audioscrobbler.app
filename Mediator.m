@@ -21,6 +21,16 @@
 
 #import "Mediator.h"
 #import "scrobsub.h"
+#import <time.h>
+
+static NSNumber* now()
+{
+    time_t t;
+    time(&t);
+    mktime(gmtime(&t));
+    return [NSNumber numberWithUnsignedInt:t];    
+}
+
 
 @implementation Mediator
 
@@ -86,7 +96,8 @@
     [tracks setObject:track forKey:id];
     [track setObject:@"Playing" forKey:@"Player State"];
     [track setObject:id forKey:@"Client ID"];
-
+    [track setObject:now() forKey:@"Start Time"];
+    
     if(!active)
         active = id;
     if([active isEqualToString:id]){

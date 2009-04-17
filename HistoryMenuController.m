@@ -19,21 +19,52 @@
 
 // Created by Max Howell <max@last.fm>
 
-#import <Growl/GrowlApplicationBridge.h>
-#import <Cocoa/Cocoa.h>
+#import "HistoryMenuController.h"
+#import "lastfm.h"
 
 
-@interface StatusItemController : NSObject <GrowlApplicationBridgeDelegate>
+@implementation HistoryMenuController
+
+-(void)initWithMenu:(NSMenu*)historyMenu
 {
-    NSStatusItem* status_item;
-    IBOutlet NSMenu* menu;
-    IBOutlet NSMenu* historyMenuItem;
+    tracks = [NSMutableArray arrayWithCapacity:5];
+    menu = historyMenu;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onPlayerInfo:)
+                                                 name:@"playerInfo"
+                                               object:nil];    
 }
 
--(void)awakeFromNib;
+-(void)insert:(NSDictionary*)track
+{
+    NSURL* url = [lastfm urlForTrack:[track objectForKey:@"Name"] by:[track objectForKey:@"Artist"]];
+    
+    //[menu setEnabled:true];
+    
+    NSMenuItem* item = [[NSMenuItem alloc] initWithTitle:[lastfm titleForTrack:track] action:@selector(clicked) keyEquivalent:@""];
+    [item setTarget:self];
+    [item setRepresentedObject:url];
+    [menu insertItem:item atIndex:0];
+}
 
--(IBAction)love:(id)sender;
--(IBAction)tag:(id)sender;
--(IBAction)share:(id)sender;
+-(void)onPlayerInfo:(NSNotification*)not
+{
+    NSDictionary* track = [not userInfo];
+    NSString* state = [track objectForKey:@"Player State"];
+    
+    if([state isEqualToString:@"Playing"]){
+        if(currentTrack) 
+            [self insert:currentTrack];
+        currentTrack = track;
+    }
+    
+    
+}
+
+-(void)clicked:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:[sender representedObject]];
+}
 
 @end
