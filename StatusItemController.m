@@ -20,8 +20,9 @@
 // Created by Max Howell <max@last.fm>
 
 #import "StatusItemController.h"
-#include "../scrobsub.h"
-StatusItemController* instance; //TODO sucks
+#import "Mediator.h"
+#import "lastfm.h"
+#import "scrobsub.h"
 
 
 static void install_plugin()
@@ -54,7 +55,6 @@ static void install_plugin()
 	[fm copyPath:src toPath:dst handler:nil];
 }
 
-
 static void scrobsub_callback(int event, const char* message)
 {
     switch (event)
@@ -64,7 +64,6 @@ static void scrobsub_callback(int event, const char* message)
             char url[110];
             scrobsub_auth(url);
             [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[NSString stringWithCString:url]]];
-            
             break;
         }
             
@@ -75,13 +74,10 @@ static void scrobsub_callback(int event, const char* message)
 }
 
 
-#import "ASTrack.h"
 @implementation StatusItemController
 
 - (void)awakeFromNib
-{
-    instance = self;
-    
+{   
     NSBundle* bundle = [NSBundle mainBundle];
     status_item = [[[NSStatusBar systemStatusBar] statusItemWithLength:27] retain];
     [status_item setHighlightMode:YES];
@@ -97,57 +93,48 @@ static void scrobsub_callback(int event, const char* message)
     scrobsub_init(scrobsub_callback);
     [[ITunesListener alloc] init];
 
+    [GrowlApplicationBridge setGrowlDelegate:self];
+    
     install_plugin();
 }
 
-
 -(void)onPlayerInfo:(NSNotification*)userData
 {
-    static int64_t pid = 0; //FIXME dunno for sure if 0 is invalid
-
     NSDictionary* dict = [userData userInfo];
     NSString* state = [dict objectForKey:@"Player State"];
     NSString* name = [dict objectForKey:@"Name"];
     
-    NSLog(@"%@ - %@", state, name);
-    
-    if([state isEqualToString:@"Playing"])
-    {
-        uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
+    if([state isEqualToString:@"Playing"]){
+        uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
         [[menu itemAtIndex:0] setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
         
-        // pid may be the same as iTunes send this if the metadata is changed by
-        // the user for instance
-        //TODO if user restarts the track near the end we should count it is as scrobbled and start again
-        //TODO if the user has a playlist that is just the track that should work too!
-        int64_t const oldpid = pid;
-        pid = [(NSNumber*)[dict objectForKey:@"PersistentID"] longLongValue];
-        if(oldpid == pid){
-            if(scrobsub_state() == SCROBSUB_PAUSED)
-                scrobsub_resume();
-            return;
-        }
-
-        scrobsub_start([[dict objectForKey:@"Artist"] UTF8String],
-                       [name UTF8String],
-                       duration,
-                       [[dict objectForKey:@"Album"] UTF8String],
-                       [(NSNumber*)[dict objectForKey:@"Track Number"] intValue],
-                       "" /*mbid*/);
-
+        [GrowlApplicationBridge notifyWithTitle:name
+                                    description:[dict objectForKey:@"Artist"]
+                               notificationName:@"Track Started"
+                                       iconData:nil
+                                       priority:0
+                                       isSticky:false
+                                   clickContext:dict];
     }
-    else if([state isEqualToString:@"Paused"])
-    {
-        scrobsub_pause();
+    else if([state isEqualToString:@"Paused"]){
         [[menu itemAtIndex:0] setTitle:[name stringByAppendingString:@" [paused]"]];
     }
-    else if([state isEqualToString:@"Stopped"])
-    {
-        scrobsub_stop();
+    else if([state isEqualToString:@"Stopped"]){
         [[menu itemAtIndex:0] setTitle:@"Ready"];
-        pid = 0;
+
+        [GrowlApplicationBridge notifyWithTitle:@"Playlist Ended"
+                                    description:@"The playlist came to its natural conclusion, I hope you enjoyed it."
+                               notificationName:@"Playlist Ended"
+                                       iconData:nil
+                                       priority:0
+                                       isSticky:false
+                                   clickContext:nil];        
     }
 }
 
-@end
+-(void)growlNotificationWasClicked:(id)dict
+{
+    [[NSWorkspace sharedWorkspace] openURL:[lastfm urlForTrack:[dict objectForKey:@"Name"] by:[dict objectForKey:@"Artist"]]];
+}
 
+@end

@@ -19,16 +19,11 @@
 
 // Created by Max Howell <max@last.fm>
 
-#import <Growl/GrowlApplicationBridge.h>
 #import <Cocoa/Cocoa.h>
 
 
-@interface StatusItemController : NSObject <GrowlApplicationBridgeDelegate>
-{
-    NSStatusItem* status_item;
-    IBOutlet NSMenu* menu;
+@interface lastfm:NSObject{
 }
-
--(void)awakeFromNib;
++(NSURL*)urlForTrack:(NSString*)track by:(NSString*)artist;
 
 @end

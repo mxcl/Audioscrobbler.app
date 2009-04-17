@@ -28,13 +28,13 @@
 }
 +(id)sharedMediator;
 
--(void)start:(NSString*)clientId withTrack:(NSDictionary*)track;
--(void)pause:(NSString*)clientId
--(void)resume:(NSString*)clientId
--(void)stop:(NSString*)clientId
+-(void)start:(NSString*)clientId withTrack:(NSMutableDictionary*)track;
+-(void)pause:(NSString*)clientId;
+-(void)resume:(NSString*)clientId;
+-(void)stop:(NSString*)clientId;
 @end
 
-@interface ITunesListener{
+@interface ITunesListener:NSObject{
     int64_t pid;
 }
 -(id)init;

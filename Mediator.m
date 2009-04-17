@@ -20,24 +20,33 @@
 // Created by Max Howell <max@last.fm>
 
 #import "Mediator.h"
+#import "scrobsub.h"
 
 @implementation Mediator
 
-+(void)sharedMediator
+-(id)init
 {
-    static Mediator* m = [Mediator alloc];
+    stack=[[NSMutableArray alloc] initWithCapacity:1];
+    tracks=[[NSMutableDictionary alloc] initWithCapacity:1];
+    return self;
+}
+
++(id)sharedMediator
+{
+    static Mediator*m=nil;
+    if(!m)m=[[Mediator alloc]init];
     return m;
 }
 
--(void)announce:(NSDictionary)track
+-(void)announce:(NSDictionary*)track
 {
-    NSNotification* notification = [NSNotification notificationWithName:@"playerInfo"
-                                                                 object:self
-                                                               userInfo:track];
-    [[NSNotificationQueue defaultQueue] enqueueNotification:notification
-                                               postingStyle:NSPostNow
-                                               coalesceMask:NSNotificationCoalescingOnName
-                                                   forModes:nil];
+    NSNotification*notification=[NSNotification notificationWithName:@"playerInfo"
+                                                              object:self
+                                                            userInfo:track];
+    [[NSNotificationQueue defaultQueue]enqueueNotification:notification
+                                              postingStyle:NSPostNow
+                                              coalesceMask:NSNotificationCoalescingOnName
+                                                  forModes:nil];
 }
 
 -(void)scrobsub_start:(NSDictionary*)dict
@@ -45,26 +54,45 @@
     scrobsub_start([[dict objectForKey:@"Artist"] UTF8String],
                    [[dict objectForKey:@"Name"] UTF8String],
         [(NSNumber*)[dict objectForKey:@"Total Time"] unsignedIntValue],
-                   [[dict objectForKey:@"Album"] UTF8String],
+        "",
+//                   [[dict objectForKey:@"Album"] UTF8String],
         [(NSNumber*)[dict objectForKey:@"Track Number"] unsignedIntValue],
-                   [[dict objectForKey:@"MusicBrainz ID"] UTF8String]);
+                   "");
+//                   [[dict objectForKey:@"MusicBrainz ID"] UTF8String]);
 }
 
--(void)start:(NSString*)id withTrack:(NSDictionary*)track
+-(void)jig
+{
+    NSEnumerator* i = [stack objectEnumerator];
+    NSString* o;
+    while(o = [i nextObject]){
+        NSDictionary* track = [tracks objectForKey:o];
+        if([[track objectForKey:@"Player State"] isEqualToString:@"Playing"]){
+            active = o;
+            [self announce:track];
+            [self scrobsub_start:track];
+            return;
+        }
+    }
+    if(active)
+        [self announce:[tracks objectForKey:active]]; // nothing to jig, so announce
+}
+
+-(void)start:(NSString*)id withTrack:(NSMutableDictionary*)track
 {
     if(![stack containsObject:id])
         [stack addObject:id];
     
     [tracks setObject:track forKey:id];
-    [track setObject:"Playing" forKey:@"Player State"];
-    
+    [track setObject:@"Playing" forKey:@"Player State"];
+    [track setObject:id forKey:@"Client ID"];
+
     if(!active)
         active = id;
     if([active isEqualToString:id]){
-        [announce track];
-        [scrobsub_start track];
+        [self announce:track];
+        [self scrobsub_start:track];
     }
-            
 }
 
 -(void)pause:(NSString*)id
@@ -85,16 +113,16 @@
     if(![stack containsObject:id])
         NSLog(@"Invalid action: resuming an unknown player connection");
     else{
-        NSDictionary* track = [tracks objectForKey:id];
+        NSMutableDictionary* track = [tracks objectForKey:id];
         [track setObject:@"Playing" forKey:@"Player State"];
-        if(active == id){
-            [announce track];
+        if([active isEqualToString:id]){
+            [self announce:track];
             scrobsub_resume();
         }
         if(!active){
             active = id;
-            [announce track];
-            [self scrobsub_start];
+            [self announce:track];
+            [self scrobsub_start:track];
         }
     }
 }
@@ -104,33 +132,16 @@
     if(![stack containsObject:id])
         NSLog(@"Invalid action: resuming an unknown player connection");
     else{
-        NSDictionary* track = [tracks objectForKey:id];
+        NSMutableDictionary* track = [tracks objectForKey:id];
         [track setObject:@"Stopped" forKey:@"Player State"];
-        if(id == active){
+        if([id isEqualToString:active]){
             [self jig];
-            if(id == active){
+            if([id isEqualToString:active]){
                 scrobsub_stop();
                 active = nil;
             }
         }
     }
-}
-
--(void)jig
-{
-    NSEnumerator* i = [stack objectEnumerator];
-    NSObject* o;
-    while(o = [i nextObject]){
-        NSDictionary* track = [tracks objectForKey:o];
-        if([[track objectForKey:@"Player State"] isEqualToString:@"Playing"]){
-            active = o;
-            [announce track];
-            [scrobsub_start track];
-            return;
-        }
-    }
-    if(active)
-        [announce [tracks objectForKey:active]]; // nothing to jig, so announce
 }
 
 @end
@@ -146,7 +157,7 @@
 {
     switch([[self commandDescription] appleEventCode]){
         case(FourCharCode)'strt':
-            [[Mediator sharedMediator] start:[self directParameter] withTrack:[self evaluatedArguments];
+            [[Mediator sharedMediator] start:[self directParameter] withTrack:[[self evaluatedArguments] mutableCopy]];
             break;
         case(FourCharCode)'paus':
             [[Mediator sharedMediator] pause:[self directParameter]];
@@ -175,7 +186,7 @@
     return self;
 }
 
--(void)onPlaybackNotification:(NSNotification*)userData
+-(void)onPlayerInfo:(NSNotification*)userData
 {
     NSString* state = [[userData userInfo] objectForKey:@"Player State"];
 
@@ -189,8 +200,7 @@
         if(oldpid == pid)
             [[Mediator sharedMediator] resume:@"osx"];
         else{
-            NSMutableDictionary* dict = [NSMutableDictionary alloc];
-            [dict setDictionary:[userData userInfo]];
+            NSMutableDictionary* dict = [[userData userInfo] mutableCopy];
             uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
             [dict setObject:[NSNumber numberWithUnsignedInt:duration] forKey:@"Total Time"];
             [[Mediator sharedMediator] start:@"osx" withTrack:dict];

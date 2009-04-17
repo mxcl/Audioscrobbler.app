@@ -14,13 +14,16 @@
 		63C9B94A0F8672940065ED7F /* Last.fm.icns in Resources */ = {isa = PBXBuildFile; fileRef = 63C9B9490F8672940065ED7F /* Last.fm.icns */; };
 		63C9B9630F867C460065ED7F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C9B9620F867C460065ED7F /* Security.framework */; };
 		63CDD71A0F9533C800D69723 /* relay.c in Sources */ = {isa = PBXBuildFile; fileRef = 63CDD7190F9533C800D69723 /* relay.c */; };
+		63D1D09F0F97FDB3004FBC05 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63D1D09E0F97FDB3004FBC05 /* Growl.framework */; };
+		63D1D0C40F97FF9B004FBC05 /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 63D1D09E0F97FDB3004FBC05 /* Growl.framework */; };
+		63D1D0DB0F980171004FBC05 /* Growl Registration Ticket.growlRegDict in Resources */ = {isa = PBXBuildFile; fileRef = 63D1D0DA0F980171004FBC05 /* Growl Registration Ticket.growlRegDict */; };
+		63D1D1040F980532004FBC05 /* lastfm.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D1D1030F980532004FBC05 /* lastfm.m */; };
 		63D6DAF10F8396E000F4DCAA /* StatusItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DAF00F8396E000F4DCAA /* StatusItemController.m */; };
 		63D6DB380F8399E000F4DCAA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB360F8399E000F4DCAA /* icon.png */; };
 		63D6DB390F8399E000F4DCAA /* inverted_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB370F8399E000F4DCAA /* inverted_icon.png */; };
 		63D6DB8E0F83B6F800F4DCAA /* scrobsub.c in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */; };
 		63D6DBDF0F83CE6700F4DCAA /* scrobsub.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */; };
 		63DA69820F938A1300206098 /* iTunes Plug-in.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 6393C3CF0F93870400286602 /* iTunes Plug-in.bundle */; };
-		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -35,8 +38,21 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		63D1D0C50F97FFB9004FBC05 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				63D1D0C40F97FF9B004FBC05 /* Growl.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/main.xib; sourceTree = "<group>"; };
@@ -52,6 +68,10 @@
 		63C9B9490F8672940065ED7F /* Last.fm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Last.fm.icns; sourceTree = "<group>"; };
 		63C9B9620F867C460065ED7F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		63CDD7190F9533C800D69723 /* relay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = relay.c; path = ../relay.c; sourceTree = SOURCE_ROOT; };
+		63D1D09E0F97FDB3004FBC05 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Growl.framework; sourceTree = "<group>"; };
+		63D1D0DA0F980171004FBC05 /* Growl Registration Ticket.growlRegDict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Growl Registration Ticket.growlRegDict"; sourceTree = "<group>"; };
+		63D1D1020F980532004FBC05 /* lastfm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lastfm.h; sourceTree = "<group>"; };
+		63D1D1030F980532004FBC05 /* lastfm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = lastfm.m; sourceTree = "<group>"; };
 		63D6DAEF0F8396E000F4DCAA /* StatusItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemController.h; sourceTree = "<group>"; };
 		63D6DAF00F8396E000F4DCAA /* StatusItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemController.m; sourceTree = "<group>"; };
 		63D6DB360F8399E000F4DCAA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -70,6 +90,7 @@
 			files = (
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				63C9B9630F867C460065ED7F /* Security.framework in Frameworks */,
+				63D1D09F0F97FDB3004FBC05 /* Growl.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +104,8 @@
 				63024AE90F964063001B8E9B /* Mediator.h */,
 				63D6DAEF0F8396E000F4DCAA /* StatusItemController.h */,
 				63D6DAF00F8396E000F4DCAA /* StatusItemController.m */,
+				63D1D1020F980532004FBC05 /* lastfm.h */,
+				63D1D1030F980532004FBC05 /* lastfm.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -90,6 +113,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63D1D09E0F97FDB3004FBC05 /* Growl.framework */,
 				63C9B9620F867C460065ED7F /* Security.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
 			);
@@ -149,8 +173,8 @@
 				63D6DB360F8399E000F4DCAA /* icon.png */,
 				63D6DB370F8399E000F4DCAA /* inverted_icon.png */,
 				8D1107310486CEB800E47090 /* Info.plist */,
-				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				1DDD58140DA1D0A300B32029 /* main.xib */,
+				63D1D0DA0F980171004FBC05 /* Growl Registration Ticket.growlRegDict */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -183,6 +207,7 @@
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				63B5AA670F93577400DC9D8C /* Compile Audioscrobbler.sdef */,
+				63D1D0C50F97FFB9004FBC05 /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
@@ -233,12 +258,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				63DA69820F938A1300206098 /* iTunes Plug-in.bundle in Resources */,
-				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* main.xib in Resources */,
 				63D6DB380F8399E000F4DCAA /* icon.png in Resources */,
 				63D6DB390F8399E000F4DCAA /* inverted_icon.png in Resources */,
 				63C9B94A0F8672940065ED7F /* Last.fm.icns in Resources */,
 				63B5AA5E0F9356DD00DC9D8C /* Audioscrobbler.sdef in Resources */,
+				63D1D0DB0F980171004FBC05 /* Growl Registration Ticket.growlRegDict in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,20 +299,13 @@
 				63B5AA390F93565500DC9D8C /* md5.c in Sources */,
 				63CDD71A0F9533C800D69723 /* relay.c in Sources */,
 				63024AEC0F9640A8001B8E9B /* Mediator.m in Sources */,
+				63D1D1040F980532004FBC05 /* lastfm.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				089C165DFE840E0CC02AAC07 /* English */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 		1DDD58140DA1D0A300B32029 /* main.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -305,6 +323,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(NATIVE_ARCH)";
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -323,6 +345,10 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = pc.h;

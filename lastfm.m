@@ -19,16 +19,36 @@
 
 // Created by Max Howell <max@last.fm>
 
-#import <Growl/GrowlApplicationBridge.h>
-#import <Cocoa/Cocoa.h>
+#import "lastfm.h"
 
 
-@interface StatusItemController : NSObject <GrowlApplicationBridgeDelegate>
+static NSString* encode(NSString* s)
 {
-    NSStatusItem* status_item;
-    IBOutlet NSMenu* menu;
+    #define escape(s, excluding) (NSString*) CFURLCreateStringByAddingPercentEscapes(nil, (CFStringRef)s, excluding, CFSTR("!*'();:@&=+$,/?%#[]"), kCFStringEncodingUTF8);
+
+    // RFC 2396 encode, but also use pluses rather than %20s, it's more legible
+    s = escape(s, CFSTR(" "));
+    s = [s stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+
+    // Last.fm has odd double encoding rules
+    NSRange range = [s rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"&/;+#%"]];
+    if(range.location != NSNotFound)
+        s = escape(s, nil);
+
+    return s;
 }
 
--(void)awakeFromNib;
+
+@implementation lastfm
+
++(NSURL*)urlForTrack:(NSString*)track by:(NSString*)artist
+{
+    //TODO localise URL, maybe auth ws gives that? otherwise OS level locale
+    NSMutableString* path = [@"http://www.last.fm/music/" mutableCopy];
+    [path appendString:encode(artist)];
+    [path appendString:@"/_/"];
+    [path appendString:encode(track)];
+    return [NSURL URLWithString:path];
+}
 
 @end
