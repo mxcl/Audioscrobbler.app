@@ -17,9 +17,8 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-#include "scrobsub.h"
-
-#include <Cocoa/Cocoa.h>
+#import "scrobsub.h"
+#import <Cocoa/Cocoa.h>
 
 //TODO should be per application, not per machine
 #define KEYCHAIN_NAME "fm.last.Audioscrobbler"
@@ -30,6 +29,11 @@ extern void(*scrobsub_callback)(int event, const char* message);
 
 bool scrobsub_retrieve_credentials()
 {
+#if __DEBUGGING__
+    scrobsub_username = "testuser";
+    scrobsub_session_key = "d20e0c83aa4252d8bcb945fbaa4aec2a";
+    return true;
+#else
     NSString* username = [[NSUserDefaults standardUserDefaults] stringForKey:@"Username"];
     if(!username) return false;
     scrobsub_username = strdup([username UTF8String]);
@@ -52,7 +56,8 @@ bool scrobsub_retrieve_credentials()
 
     SecKeychainItemFreeContent(NULL, key);
     return true;
-} 
+#endif
+}
 
 void scrobsub_get(char response[256], const char* url)
 {

@@ -19,6 +19,10 @@
 		63D1D0DB0F980171004FBC05 /* Growl Registration Ticket.growlRegDict in Resources */ = {isa = PBXBuildFile; fileRef = 63D1D0DA0F980171004FBC05 /* Growl Registration Ticket.growlRegDict */; };
 		63D1D1040F980532004FBC05 /* lastfm.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D1D1030F980532004FBC05 /* lastfm.m */; };
 		63D1D1A20F989847004FBC05 /* HistoryMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D1D1A10F989847004FBC05 /* HistoryMenuController.m */; };
+		63D1D2360F99E3B8004FBC05 /* MetadataWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63D1D2350F99E3B8004FBC05 /* MetadataWindow.xib */; };
+		63D1D2540F99FC2F004FBC05 /* MetadataWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D1D2530F99FC2F004FBC05 /* MetadataWindowController.m */; };
+		63D1D2990F9A0CB1004FBC05 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63D1D2980F9A0CB1004FBC05 /* Carbon.framework */; };
+		63D1D39F0F9A3EB1004FBC05 /* TagWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63D1D39E0F9A3EB1004FBC05 /* TagWindow.xib */; };
 		63D6DAF10F8396E000F4DCAA /* StatusItemController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DAF00F8396E000F4DCAA /* StatusItemController.m */; };
 		63D6DB380F8399E000F4DCAA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB360F8399E000F4DCAA /* icon.png */; };
 		63D6DB390F8399E000F4DCAA /* inverted_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB370F8399E000F4DCAA /* inverted_icon.png */; };
@@ -75,6 +79,11 @@
 		63D1D1030F980532004FBC05 /* lastfm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = lastfm.m; sourceTree = "<group>"; };
 		63D1D1A00F989847004FBC05 /* HistoryMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryMenuController.h; sourceTree = "<group>"; };
 		63D1D1A10F989847004FBC05 /* HistoryMenuController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HistoryMenuController.m; sourceTree = "<group>"; };
+		63D1D2350F99E3B8004FBC05 /* MetadataWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MetadataWindow.xib; sourceTree = "<group>"; };
+		63D1D2520F99FC2F004FBC05 /* MetadataWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetadataWindowController.h; sourceTree = "<group>"; };
+		63D1D2530F99FC2F004FBC05 /* MetadataWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetadataWindowController.m; sourceTree = "<group>"; };
+		63D1D2980F9A0CB1004FBC05 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		63D1D39E0F9A3EB1004FBC05 /* TagWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TagWindow.xib; sourceTree = "<group>"; };
 		63D6DAEF0F8396E000F4DCAA /* StatusItemController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StatusItemController.h; sourceTree = "<group>"; };
 		63D6DAF00F8396E000F4DCAA /* StatusItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemController.m; sourceTree = "<group>"; };
 		63D6DB360F8399E000F4DCAA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -94,6 +103,7 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				63C9B9630F867C460065ED7F /* Security.framework in Frameworks */,
 				63D1D09F0F97FDB3004FBC05 /* Growl.framework in Frameworks */,
+				63D1D2990F9A0CB1004FBC05 /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,6 +113,8 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				63D1D2520F99FC2F004FBC05 /* MetadataWindowController.h */,
+				63D1D2530F99FC2F004FBC05 /* MetadataWindowController.m */,
 				63024AEB0F9640A8001B8E9B /* Mediator.m */,
 				63024AE90F964063001B8E9B /* Mediator.h */,
 				63D6DAEF0F8396E000F4DCAA /* StatusItemController.h */,
@@ -118,6 +130,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				63D1D2980F9A0CB1004FBC05 /* Carbon.framework */,
 				63D1D09E0F97FDB3004FBC05 /* Growl.framework */,
 				63C9B9620F867C460065ED7F /* Security.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
@@ -179,6 +192,8 @@
 				63D6DB370F8399E000F4DCAA /* inverted_icon.png */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				1DDD58140DA1D0A300B32029 /* main.xib */,
+				63D1D2350F99E3B8004FBC05 /* MetadataWindow.xib */,
+				63D1D39E0F9A3EB1004FBC05 /* TagWindow.xib */,
 				63D1D0DA0F980171004FBC05 /* Growl Registration Ticket.growlRegDict */,
 			);
 			name = Resources;
@@ -269,6 +284,8 @@
 				63C9B94A0F8672940065ED7F /* Last.fm.icns in Resources */,
 				63B5AA5E0F9356DD00DC9D8C /* Audioscrobbler.sdef in Resources */,
 				63D1D0DB0F980171004FBC05 /* Growl Registration Ticket.growlRegDict in Resources */,
+				63D1D2360F99E3B8004FBC05 /* MetadataWindow.xib in Resources */,
+				63D1D39F0F9A3EB1004FBC05 /* TagWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,6 +323,7 @@
 				63024AEC0F9640A8001B8E9B /* Mediator.m in Sources */,
 				63D1D1040F980532004FBC05 /* lastfm.m in Sources */,
 				63D1D1A20F989847004FBC05 /* HistoryMenuController.m in Sources */,
+				63D1D2540F99FC2F004FBC05 /* MetadataWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -372,6 +390,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "__DEBUGGING__=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;

@@ -23,12 +23,12 @@
 #import "scrobsub.h"
 #import <time.h>
 
-static NSNumber* now()
+static time_t now()
 {
     time_t t;
     time(&t);
     mktime(gmtime(&t));
-    return [NSNumber numberWithUnsignedInt:t];    
+    return t;
 }
 
 static Mediator* sharedMediator;
@@ -41,6 +41,7 @@ static Mediator* sharedMediator;
     stack=[[NSMutableArray alloc] initWithCapacity:1];
     tracks=[[NSMutableDictionary alloc] initWithCapacity:1];
     sharedMediator = self;
+    previous_start = 0;
 }
 
 +(id)sharedMediator
@@ -78,7 +79,7 @@ static Mediator* sharedMediator;
     while(o = [i nextObject]){
         NSDictionary* track = [tracks objectForKey:o];
         if([[track objectForKey:@"Player State"] isEqualToString:@"Playing"]){
-            active = o;
+            active = o;           
             [self announce:track];
             [self scrobsub_start:track];
             return;
@@ -88,21 +89,39 @@ static Mediator* sharedMediator;
         [self announce:[tracks objectForKey:active]]; // nothing to jig, so announce
 }
 
+-(void)startActive
+{
+    NSDictionary* track = [tracks objectForKey:active];
+    [self announce:track];
+    [self scrobsub_start:track];
+}
+
 -(void)start:(NSString*)id withTrack:(NSMutableDictionary*)track
 {
     if(![stack containsObject:id])
         [stack addObject:id];
     
+    time_t time = now();
+    
     [tracks setObject:track forKey:id];
     [track setObject:@"Playing" forKey:@"Player State"];
     [track setObject:id forKey:@"Client ID"];
-    [track setObject:now() forKey:@"Start Time"];
+    [track setObject:[NSNumber numberWithUnsignedInt:time] forKey:@"Start Time"];
     
     if(!active)
         active = id;
     if([active isEqualToString:id]){
-        [self announce:track];
-        [self scrobsub_start:track];
+        // we wait 4 seconds so that we don't spam Last.fm and so that stuff
+        // like Growl doesn't fill the screen when you skip-skip-skip
+        if(time-previous_start < 4){
+            [NSObject cancelPreviousPerformRequestsWithTarget:self];
+            [self performSelector:@selector(startActive) withObject:nil afterDelay:4];
+        }
+        else{
+            [self announce:track];
+            [self scrobsub_start:track];
+        }
+        previous_start = time;
     }
 }
 
@@ -157,6 +176,7 @@ static Mediator* sharedMediator;
 
 -(void)onScrobblingEnabledChanged:(id)sender
 {
+    //TODO
 }
 
 @end

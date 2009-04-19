@@ -19,19 +19,13 @@
 
 // Created by Max Howell <max@last.fm>
 
-#import <Growl/GrowlApplicationBridge.h>
 #import <Cocoa/Cocoa.h>
 
 
-@interface StatusItemController : NSObject <GrowlApplicationBridgeDelegate>
-{
-    NSStatusItem* status_item;
-    IBOutlet NSMenu* menu;
-    NSWindowController* metadataWindow;
+@interface MetadataWindowController:NSObject{
+    IBOutlet NSImageView* image;
+    IBOutlet NSTextField* bio;
+    IBOutlet NSTextField* name;
 }
-
--(IBAction)love:(id)sender;
--(IBAction)tag:(id)sender;
--(IBAction)share:(id)sender;
 
 @end

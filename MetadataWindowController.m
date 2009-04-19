@@ -19,19 +19,31 @@
 
 // Created by Max Howell <max@last.fm>
 
-#import <Growl/GrowlApplicationBridge.h>
-#import <Cocoa/Cocoa.h>
+#import "MetadataWindowController.h"
 
 
-@interface StatusItemController : NSObject <GrowlApplicationBridgeDelegate>
+@implementation MetadataWindowController
+
+-(void)awakeFromNib
 {
-    NSStatusItem* status_item;
-    IBOutlet NSMenu* menu;
-    NSWindowController* metadataWindow;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onPlayerInfo:)
+                                                 name:@"playerInfo"
+                                               object:nil];    
 }
 
--(IBAction)love:(id)sender;
--(IBAction)tag:(id)sender;
--(IBAction)share:(id)sender;
+-(void)onPlayerInfo:(NSNotification*)userData
+{
+    NSDictionary* dict = [userData userInfo];
+    NSString* artist = [dict objectForKey:@"artist"];
+    
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://ws.audioscrobbler.com/2.0/?method=artist.getInfo&artist=%@&api_key=" SCROBSUB_API_KEY, artist]];
+    NSXMLDocument* xml = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:nil];
+    NSError* err;
+    NSString* html = [[[[xml rootElement] nodesForXPath:@"/lfm/artist/bio/content" error:&err] lastObject] stringValue];
+    
+//    [bio
+    
+}    
 
 @end

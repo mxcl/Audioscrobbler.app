@@ -27,6 +27,7 @@
     NSMutableArray* stack;
     NSMutableDictionary* tracks;
     NSString* active;
+    time_t previous_start;
 }
 +(id)sharedMediator;
 

@@ -23,6 +23,7 @@
 #import "Mediator.h"
 #import "scrobsub.h"
 #import "StatusItemController.h"
+#import <Carbon/Carbon.h>
 
 
 static void install_plugin()
@@ -73,6 +74,13 @@ static void scrobsub_callback(int event, const char* message)
     }
 }
 
+static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userdata)
+{
+    [(StatusItemController*)userdata tag:userdata];
+    return noErr;
+}
+
+
 
 @implementation StatusItemController
 
@@ -92,10 +100,21 @@ static void scrobsub_callback(int event, const char* message)
                                                object:nil];
     scrobsub_init(scrobsub_callback);
     [[ITunesListener alloc] init];
-
+    [menu setDelegate:self];
     [GrowlApplicationBridge setGrowlDelegate:self];
-    
     install_plugin();
+
+/// global shortcut
+    EventTypeSpec type;
+    type.eventClass = kEventClassKeyboard;
+    type.eventKind = kEventHotKeyPressed;    
+    InstallApplicationEventHandler(&MyHotKeyHandler, 1, &type, self, NULL);
+
+    EventHotKeyID kid;
+    kid.signature='htk1';
+    kid.id=1;
+    EventHotKeyRef kref;
+    RegisterEventHotKey(kVK_ANSI_T, cmdKey+optionKey+controlKey, kid, GetApplicationEventTarget(), 0, &kref);
 }
 
 -(void)onPlayerInfo:(NSNotification*)userData
@@ -117,7 +136,7 @@ static void scrobsub_callback(int event, const char* message)
                                        iconData:nil
                                        priority:0
                                        isSticky:false
-                                   clickContext:dict];        
+                                   clickContext:dict];
     }
     else if([state isEqualToString:@"Paused"]){
         [[menu itemAtIndex:0] setTitle:[name stringByAppendingString:@" [paused]"]];
@@ -150,11 +169,24 @@ static void scrobsub_callback(int event, const char* message)
 
 -(void)tag:(id)sender
 {
-    
+    [[[NSWindowController alloc] initWithWindowNibName:@"TagWindow"] showWindow:self];
 }
 
 -(void)share:(id)sender
 {
+}
+
+-(void)menuWillOpen:(NSMenu*)target
+{
+    if(!metadataWindow)
+        metadataWindow = [[NSWindowController alloc] initWithWindowNibName:@"MetadataWindow"];
+    [metadataWindow showWindow:self];
+}
+
+-(void)menuDidClose:(NSMenu*)target
+{
+    [[metadataWindow window] performClose:self];
+    [[metadataWindow window] orderOut:self];
 }
 
 @end
