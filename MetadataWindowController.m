@@ -20,30 +20,102 @@
 // Created by Max Howell <max@last.fm>
 
 #import "MetadataWindowController.h"
+#import "Mediator.h"
 
 
 @implementation MetadataWindowController
 
--(void)awakeFromNib
+-(id)init
 {
+    [super initWithWindowNibName:@"MetadataWindow"];
+    // do when nib loaded
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(onPlayerInfo:)
                                                  name:@"playerInfo"
-                                               object:nil];    
+                                               object:nil];
+    return self;
+}
+
+-(void)awakeFromNib
+{
+    [bio setLinkTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                [NSColor colorWithCalibratedRed:0 green:0.682 blue:0.937 alpha:1.0], NSForegroundColorAttributeName,
+                                [NSNumber numberWithInt: NSSingleUnderlineStyle], NSUnderlineStyleAttributeName,
+                                [NSCursor pointingHandCursor], NSCursorAttributeName, nil]];    
+
+    current_artist = [[[Mediator sharedMediator] currentTrack] objectForKey:@"Artist"];
+    [self update];
 }
 
 -(void)onPlayerInfo:(NSNotification*)userData
 {
     NSDictionary* dict = [userData userInfo];
-    NSString* artist = [dict objectForKey:@"artist"];
     
-    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://ws.audioscrobbler.com/2.0/?method=artist.getInfo&artist=%@&api_key=" SCROBSUB_API_KEY, artist]];
+    if([[dict objectForKey:@"Player State"] isEqualToString:@"Stopped"])
+        [self close];
+    else{
+        NSString* artist = [dict objectForKey:@"Artist"];
+        if([artist isEqualToString:current_artist])return;    
+        current_artist = artist;
+        
+        if([self window])
+            [self update];
+    }
+}
+
+-(void)update
+{
+    if(!current_artist)return;
+    
+    NSString* artist = (NSString*)CFURLCreateStringByAddingPercentEscapes(nil, (CFStringRef)current_artist, NULL, CFSTR("!*';:@&=+$,/?%#[]"), kCFStringEncodingUTF8);
+    
+    NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:
+                                       @"http://ws.audioscrobbler.com/2.0/?method=artist.getInfo&artist=%@&api_key="SCROBSUB_API_KEY,
+                                       artist]];
+    
     NSXMLDocument* xml = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:nil];
     NSError* err;
     NSString* html = [[[[xml rootElement] nodesForXPath:@"/lfm/artist/bio/content" error:&err] lastObject] stringValue];
+    NSString* image_url = [[[[xml rootElement] nodesForXPath:@"/lfm/artist/image[@size='large']" error:&err] lastObject] stringValue];
     
-//    [bio
+    image_url = [image_url stringByReplacingOccurrencesOfString:@"/126/" withString:@"/252/"];
     
-}    
+    NSImageRep* imgrep = [NSImageRep imageRepWithContentsOfURL:[NSURL URLWithString:image_url]];
+    
+    NSLog(@"%@", image_url);
+    
+    int const d = [image frame].size.height - [imgrep pixelsHigh];
+    NSRect frame = [bio frame];
+    frame.origin.y += d;
+    [bio setFrame:frame];
+    
+    NSSize size;
+    size.height = [imgrep pixelsHigh];
+    size.width = [image frame].size.width;
+    [image setFrameSize:size];
+    
+    NSLog(@"%f, %f", size.width, size.height);
+
+    [[self window] setTitle:current_artist];
+    
+    NSImage* img = [[NSImage alloc] init];
+    [img addRepresentation:imgrep];
+    [image setImage:img];
+    
+    html = [html stringByReplacingOccurrencesOfString:@"\r" withString:@"<br>"]; // Last.fm sucks
+    
+    NSAttributedString *attrs = [[NSAttributedString alloc] initWithHTML:[html dataUsingEncoding:NSUTF8StringEncoding] 
+                                                                 options:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                                          [NSNumber numberWithUnsignedInt:NSUTF8StringEncoding],
+                                                                          @"CharacterEncoding", nil] 
+                                                      documentAttributes:nil];
+    [[bio textStorage] setAttributedString:attrs];
+    
+    // you have to set these everytime you change the text in a NSTextView
+    // nice one Apple
+    [bio setFont:[NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSSmallControlSize]]];
+    [bio setTextColor:[NSColor whiteColor]];
+    [attrs release];
+}
 
 @end

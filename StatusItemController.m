@@ -23,6 +23,7 @@
 #import "Mediator.h"
 #import "scrobsub.h"
 #import "StatusItemController.h"
+#import "MetadataWindowController.h"
 #import <Carbon/Carbon.h>
 
 
@@ -179,14 +180,17 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
 -(void)menuWillOpen:(NSMenu*)target
 {
     if(!metadataWindow)
-        metadataWindow = [[NSWindowController alloc] initWithWindowNibName:@"MetadataWindow"];
-    [metadataWindow showWindow:self];
+        metadataWindow = [[MetadataWindowController alloc] init];
+    [(NSPanel*)[metadataWindow window] setBecomesKeyOnlyIfNeeded:false];
+    
+    [[metadataWindow window] orderFront:self];
+    [[metadataWindow window] makeKeyWindow];
 }
 
 -(void)menuDidClose:(NSMenu*)target
 {
-    [[metadataWindow window] performClose:self];
-    [[metadataWindow window] orderOut:self];
+    if(![[metadataWindow window] isKeyWindow])
+        [metadataWindow close];
 }
 
 @end

@@ -22,10 +22,13 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface MetadataWindowController:NSObject{
+@interface MetadataWindowController:NSWindowController{
     IBOutlet NSImageView* image;
-    IBOutlet NSTextField* bio;
-    IBOutlet NSTextField* name;
+    IBOutlet NSTextView* bio;
+    NSString* current_artist;
 }
+
+-(id)init;
+-(void)update;
 
 @end

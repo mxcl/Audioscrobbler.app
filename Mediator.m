@@ -179,6 +179,11 @@ static Mediator* sharedMediator;
     //TODO
 }
 
+-(NSDictionary*)currentTrack
+{
+    return [tracks objectForKey:active];
+}
+
 @end
 
 

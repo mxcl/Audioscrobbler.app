@@ -38,6 +38,8 @@
 
 -(IBAction)onScrobblingEnabledChanged:(id)sender;
 
+-(NSDictionary*)currentTrack;
+
 @end
 
 @interface ITunesListener:NSObject{
