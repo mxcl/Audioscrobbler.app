@@ -27,5 +27,6 @@
 +(NSURL*)urlForTrack:(NSString*)track by:(NSString*)artist;
 +(NSString*)titleForTrack:(NSDictionary*)track;
 +(NSURL*)urlForUser:(NSString*)username;
++(void)love:(NSDictionary*)track;
 
 @end

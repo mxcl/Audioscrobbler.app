@@ -166,6 +166,7 @@
 						<reference key="NSMixedImage" ref="273203663"/>
 					</object>
 				</object>
+				<bool key="NSNoAutoenable">YES</bool>
 			</object>
 			<object class="NSCustomObject" id="1050762845">
 				<string key="NSClassName">StatusItemController</string>
