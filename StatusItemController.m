@@ -126,9 +126,10 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     if([state isEqualToString:@"Playing"]){
         uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
         [[menu itemAtIndex:0] setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
+        [[menu itemAtIndex:1] setEnabled:true]; //TODO can't do this on RESUME
         [[menu itemAtIndex:2] setEnabled:true];
         [[menu itemAtIndex:3] setEnabled:true];
-        [[menu itemAtIndex:4] setEnabled:true];
+        [[menu itemAtIndex:1] setTitle:@"Love"]; //TODO can't do this on RESUME
         
         [GrowlApplicationBridge notifyWithTitle:name
                                     description:[dict objectForKey:@"Artist"]
@@ -143,10 +144,11 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     }
     else if([state isEqualToString:@"Stopped"]){
         [[menu itemAtIndex:0] setTitle:@"Ready"];
+        [[menu itemAtIndex:1] setEnabled:false];
         [[menu itemAtIndex:2] setEnabled:false];
         [[menu itemAtIndex:3] setEnabled:false];
-        [[menu itemAtIndex:4] setEnabled:false];
-        
+        [[menu itemAtIndex:1] setTitle:@"Love"];
+
         [GrowlApplicationBridge notifyWithTitle:@"Playlist Ended"
                                     description:@"The playlist came to its natural conclusion, I hope you enjoyed it :)"
                                notificationName:@"Playlist Ended"
@@ -164,7 +166,11 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
 
 -(void)love:(id)sender
 {
+    [lastfm love:[[Mediator sharedMediator] currentTrack]];
+    scrobsub_love();
     
+    [[menu itemAtIndex:1] setEnabled:false];
+    [[menu itemAtIndex:1] setTitle:@"Loved"];
 }
 
 -(void)tag:(id)sender

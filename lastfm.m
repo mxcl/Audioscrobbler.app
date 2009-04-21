@@ -20,6 +20,7 @@
 // Created by Max Howell <max@last.fm>
 
 #import "lastfm.h"
+#import "scrobsub.h"
 
 
 static NSString* encode(NSString* s)
@@ -66,6 +67,60 @@ static NSString* encode(NSString* s)
 {
     //TODO localise URL, maybe auth ws gives that? otherwise OS level locale
     return [NSURL URLWithString:[@"http://www.last.fm/user/" stringByAppendingString:encode(username)]];
+}
+
+
+static NSData* signed_post_body(NSDictionary* vars)
+{
+    NSArray* keys = [[vars allKeys] sortedArrayUsingSelector:@selector(caseSensitiveCompare:)];
+    NSMutableString* s = [NSMutableString stringWithCapacity:256];
+    for(id key in keys){
+        [s appendString:key];
+        [s appendString:[vars objectForKey:key]];
+    }
+    [s appendString:@SCROBSUB_SHARED_SECRET];
+    char out[33];
+    scrobsub_md5(out, [s UTF8String]);
+    NSString* sig = [NSString stringWithUTF8String:out];
+    
+    [s setString:@""];
+    for(id key in vars)
+        [s appendFormat:@"%@=%@&", key, [vars objectForKey:key]];
+    [s appendString:@"api_sig="];
+    [s appendString:sig];
+    return [s dataUsingEncoding:NSUTF8StringEncoding];
+}
+
++(void)post:(NSMutableDictionary*)vars to:(NSString*)method
+{
+    [vars setObject:@SCROBSUB_API_KEY forKey:@"api_key"];
+    [vars setObject:[NSString stringWithUTF8String:scrobsub_session_key] forKey:@"sk"];
+    [vars setObject:method forKey:@"method"];
+    
+    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://ws.audioscrobbler.com/2.0/"]
+                                                           cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                       timeoutInterval:10];
+    
+    NSData* body = signed_post_body(vars);
+    
+    [request setHTTPMethod:@"POST"];
+    [request setHTTPBody:body];
+    [request setValue:@"fm.last.Audioscrobbler" forHTTPHeaderField:@"User-Agent"];
+    [request setValue:[[NSNumber numberWithInteger:[body length]] stringValue] forHTTPHeaderField:@"Content-Length"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
+    
+    NSURLResponse* headers;
+    [NSURLConnection sendSynchronousRequest:request returningResponse:&headers error:nil];
+}
+
+
++(void)love:(NSDictionary*)track
+{
+    NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:5];
+    [dict setObject:[track valueForKey:@"Name"] forKey:@"track"];
+    [dict setObject:[track valueForKey:@"Artist"] forKey:@"artist"];
+    
+    [lastfm post:dict to:@"track.love"];
 }
 
 @end
