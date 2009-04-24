@@ -89,11 +89,9 @@ static Mediator* sharedMediator;
         [self announce:[tracks objectForKey:active]]; // nothing to jig, so announce
 }
 
--(void)startActive
+-(void)scrobsub_start_active
 {
-    NSDictionary* track = [tracks objectForKey:active];
-    [self announce:track];
-    [self scrobsub_start:track];
+    [self scrobsub_start:[tracks objectForKey:active]];
 }
 
 -(void)start:(NSString*)id withTrack:(NSMutableDictionary*)track
@@ -115,12 +113,13 @@ static Mediator* sharedMediator;
         // like Growl doesn't fill the screen when you skip-skip-skip
         if(time-previous_start < 4){
             [NSObject cancelPreviousPerformRequestsWithTarget:self];
-            [self performSelector:@selector(startActive) withObject:nil afterDelay:4];
+            [self performSelector:@selector(scrobsub_start_active) withObject:nil afterDelay:4];
         }
-        else{
-            [self announce:track];
+        else
             [self scrobsub_start:track];
-        }
+        
+        // we fixed growl filling the screen with a coalescing identifier
+        [self announce:track];
         previous_start = time;
     }
 }
