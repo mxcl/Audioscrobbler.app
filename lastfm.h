@@ -28,5 +28,5 @@
 +(NSString*)titleForTrack:(NSDictionary*)track;
 +(NSURL*)urlForUser:(NSString*)username;
 +(void)love:(NSDictionary*)track;
-
++(void)share:(NSDictionary*)track with:(NSString*)username;
 @end

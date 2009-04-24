@@ -181,6 +181,9 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
 
 -(void)share:(id)sender
 {
+    NSWindowController* share = [[ShareWindowController alloc] initWithWindowNibName:@"ShareWindow"];
+    [share showWindow:self];
+    [[share window] makeKeyWindow];
 }
 
 -(void)menuWillOpen:(NSMenu*)target
@@ -197,6 +200,17 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
 {
     if(![[metadataWindow window] isKeyWindow])
         [metadataWindow close];
+}
+
+@end
+
+
+
+@implementation ShareWindowController
+
+-(void)submit:(id)sender
+{
+    [lastfm share:[[Mediator sharedMediator] currentTrack] with:[username stringValue]];
 }
 
 @end

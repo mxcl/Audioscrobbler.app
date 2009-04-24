@@ -35,3 +35,11 @@
 -(IBAction)share:(id)sender;
 
 @end
+
+
+@interface ShareWindowController:NSWindowController
+{
+    IBOutlet NSTextField* username;
+}
+-(IBAction)submit:(id)sender;
+@end

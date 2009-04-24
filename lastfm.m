@@ -72,7 +72,7 @@ static NSString* encode(NSString* s)
 
 static NSData* signed_post_body(NSDictionary* vars)
 {
-    NSArray* keys = [[vars allKeys] sortedArrayUsingSelector:@selector(caseSensitiveCompare:)];
+    NSArray* keys = [[vars allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     NSMutableString* s = [NSMutableString stringWithCapacity:256];
     for(id key in keys){
         [s appendString:key];
@@ -113,7 +113,6 @@ static NSData* signed_post_body(NSDictionary* vars)
     [NSURLConnection sendSynchronousRequest:request returningResponse:&headers error:nil];
 }
 
-
 +(void)love:(NSDictionary*)track
 {
     NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:5];
@@ -121,6 +120,16 @@ static NSData* signed_post_body(NSDictionary* vars)
     [dict setObject:[track valueForKey:@"Artist"] forKey:@"artist"];
     
     [lastfm post:dict to:@"track.love"];
+}
+
++(void)share:(NSDictionary*)track with:(NSString*)username
+{
+    NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:5];
+    [dict setObject:[track valueForKey:@"Name"] forKey:@"track"];
+    [dict setObject:[track valueForKey:@"Artist"] forKey:@"artist"];
+    [dict setObject:username forKey:@"recipient"];
+    
+    [lastfm post:dict to:@"track.share"];
 }
 
 @end
