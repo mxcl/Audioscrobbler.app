@@ -62,14 +62,13 @@ static Mediator* sharedMediator;
 
 -(void)scrobsub_start:(NSDictionary*)dict
 {
-    scrobsub_start([[dict objectForKey:@"Artist"] UTF8String],
-                   [[dict objectForKey:@"Name"] UTF8String],
-        [(NSNumber*)[dict objectForKey:@"Total Time"] unsignedIntValue],
-        "",
-//                   [[dict objectForKey:@"Album"] UTF8String],
-        [(NSNumber*)[dict objectForKey:@"Track Number"] unsignedIntValue],
-                   "");
-//                   [[dict objectForKey:@"MusicBrainz ID"] UTF8String]);
+    if(dict)
+        scrobsub_start([[dict objectForKey:@"Artist"] UTF8String],
+                       [[dict objectForKey:@"Name"] UTF8String],
+            [(NSNumber*)[dict objectForKey:@"Total Time"] unsignedIntValue],
+                       "",//[[dict objectForKey:@"Album"] UTF8String],
+            [(NSNumber*)[dict objectForKey:@"Track Number"] unsignedIntValue],
+                       "");//[[dict objectForKey:@"MusicBrainz ID"] UTF8String]);
 }
 
 -(void)jig
