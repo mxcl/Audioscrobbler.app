@@ -212,6 +212,7 @@ static Mediator* sharedMediator;
 
 -(id)init
 {
+    waspaused = false;
     [[NSDistributedNotificationCenter defaultCenter] addObserver:self
                                                         selector:@selector(onPlayerInfo:)
                                                             name:@"com.apple.iTunes.playerInfo"
@@ -230,19 +231,22 @@ static Mediator* sharedMediator;
         //TODO if the user has a playlist that is just the track that should work too!
         int64_t const oldpid = pid;
         pid = [(NSNumber*)[[userData userInfo] objectForKey:@"PersistentID"] longLongValue];
-        if(oldpid == pid)
+        if(oldpid == pid && waspaused)
             [[Mediator sharedMediator] resume:@"osx"];
         else{
             NSMutableDictionary* dict = [[userData userInfo] mutableCopy];
             uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
             [dict setObject:[NSNumber numberWithUnsignedInt:duration] forKey:@"Total Time"];
             [[Mediator sharedMediator] start:@"osx" withTrack:dict];
-        }}
-    else if([state isEqualToString:@"Paused"])
+        }
+        waspaused = false;
+    }else if([state isEqualToString:@"Paused"]){
         [[Mediator sharedMediator] pause:@"osx"];
-    else if([state isEqualToString:@"Stopped"]){
+        waspaused = true;
+    }else if([state isEqualToString:@"Stopped"]){
         [[Mediator sharedMediator] stop:@"osx"];
         pid = 0;
+        waspaused = false;
     }
 }
 
