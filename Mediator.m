@@ -62,14 +62,13 @@ static Mediator* sharedMediator;
 
 -(void)scrobsub_start:(NSDictionary*)dict
 {
-    scrobsub_start([[dict objectForKey:@"Artist"] UTF8String],
-                   [[dict objectForKey:@"Name"] UTF8String],
-        [(NSNumber*)[dict objectForKey:@"Total Time"] unsignedIntValue],
-        "",
-//                   [[dict objectForKey:@"Album"] UTF8String],
-        [(NSNumber*)[dict objectForKey:@"Track Number"] unsignedIntValue],
-                   "");
-//                   [[dict objectForKey:@"MusicBrainz ID"] UTF8String]);
+    if(dict)
+        scrobsub_start([[dict objectForKey:@"Artist"] UTF8String],
+                       [[dict objectForKey:@"Name"] UTF8String],
+            [(NSNumber*)[dict objectForKey:@"Total Time"] unsignedIntValue],
+                       "",//[[dict objectForKey:@"Album"] UTF8String],
+            [(NSNumber*)[dict objectForKey:@"Track Number"] unsignedIntValue],
+                       "");//[[dict objectForKey:@"MusicBrainz ID"] UTF8String]);
 }
 
 -(void)jig
@@ -89,11 +88,9 @@ static Mediator* sharedMediator;
         [self announce:[tracks objectForKey:active]]; // nothing to jig, so announce
 }
 
--(void)startActive
+-(void)scrobsub_start_active
 {
-    NSDictionary* track = [tracks objectForKey:active];
-    [self announce:track];
-    [self scrobsub_start:track];
+    [self scrobsub_start:[tracks objectForKey:active]];
 }
 
 -(void)start:(NSString*)id withTrack:(NSMutableDictionary*)track
@@ -115,12 +112,13 @@ static Mediator* sharedMediator;
         // like Growl doesn't fill the screen when you skip-skip-skip
         if(time-previous_start < 4){
             [NSObject cancelPreviousPerformRequestsWithTarget:self];
-            [self performSelector:@selector(startActive) withObject:nil afterDelay:4];
+            [self performSelector:@selector(scrobsub_start_active) withObject:nil afterDelay:4];
         }
-        else{
-            [self announce:track];
+        else
             [self scrobsub_start:track];
-        }
+        
+        // we fixed growl filling the screen with a coalescing identifier
+        [self announce:track];
         previous_start = time;
     }
 }
@@ -219,6 +217,7 @@ static Mediator* sharedMediator;
 
 -(id)init
 {
+    waspaused = false;
     [[NSDistributedNotificationCenter defaultCenter] addObserver:self
                                                         selector:@selector(onPlayerInfo:)
                                                             name:@"com.apple.iTunes.playerInfo"
@@ -237,19 +236,22 @@ static Mediator* sharedMediator;
         //TODO if the user has a playlist that is just the track that should work too!
         int64_t const oldpid = pid;
         pid = [(NSNumber*)[[userData userInfo] objectForKey:@"PersistentID"] longLongValue];
-        if(oldpid == pid)
+        if(oldpid == pid && waspaused)
             [[Mediator sharedMediator] resume:@"osx"];
         else{
             NSMutableDictionary* dict = [[userData userInfo] mutableCopy];
             uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
             [dict setObject:[NSNumber numberWithUnsignedInt:duration] forKey:@"Total Time"];
             [[Mediator sharedMediator] start:@"osx" withTrack:dict];
-        }}
-    else if([state isEqualToString:@"Paused"])
+        }
+        waspaused = false;
+    }else if([state isEqualToString:@"Paused"]){
         [[Mediator sharedMediator] pause:@"osx"];
-    else if([state isEqualToString:@"Stopped"]){
+        waspaused = true;
+    }else if([state isEqualToString:@"Stopped"]){
         [[Mediator sharedMediator] stop:@"osx"];
         pid = 0;
+        waspaused = false;
     }
 }
 

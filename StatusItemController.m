@@ -138,7 +138,8 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
                                        iconData:nil
                                        priority:0
                                        isSticky:false
-                                   clickContext:dict];
+                                   clickContext:dict
+                                     identifier:@"Coalesce Me ID"];
     }
     else if([state isEqualToString:@"Paused"]){
         [[menu itemAtIndex:0] setTitle:[name stringByAppendingString:@" [paused]"]];

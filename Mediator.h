@@ -44,6 +44,7 @@
 
 @interface ITunesListener:NSObject{
     int64_t pid;
+    bool waspaused;
 }
 -(id)init;
 @end
