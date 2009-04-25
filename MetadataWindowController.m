@@ -59,7 +59,7 @@
         current_artist = artist;
         
         if([self window])
-            [self update];
+            [self performSelectorOnMainThread:@selector(update) withObject:nil waitUntilDone:YES];
     }
 }
 
@@ -82,19 +82,15 @@
     
     NSImageRep* imgrep = [NSImageRep imageRepWithContentsOfURL:[NSURL URLWithString:image_url]];
     
-    NSLog(@"%@", image_url);
-    
-    int const d = [image frame].size.height - [imgrep pixelsHigh];
-    NSRect frame = [bio frame];
+/// layout
+    NSRect frame = [image frame];
+    int const d = frame.size.height - [imgrep pixelsHigh];
+    frame.size.height = [imgrep pixelsHigh];
     frame.origin.y += d;
+    [image setFrame:frame];
+    frame.size.height = frame.origin.y;
+    frame.origin.y = 0;
     [bio setFrame:frame];
-    
-    NSSize size;
-    size.height = [imgrep pixelsHigh];
-    size.width = [image frame].size.width;
-    [image setFrameSize:size];
-    
-    NSLog(@"%f, %f", size.width, size.height);
 
     [[self window] setTitle:current_artist];
     
@@ -102,6 +98,7 @@
     [img addRepresentation:imgrep];
     [image setImage:img];
     
+/// bio
     html = [html stringByReplacingOccurrencesOfString:@"\r" withString:@"<br>"]; // Last.fm sucks
     
     NSAttributedString *attrs = [[NSAttributedString alloc] initWithHTML:[html dataUsingEncoding:NSUTF8StringEncoding] 
@@ -116,6 +113,7 @@
     [bio setFont:[NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSSmallControlSize]]];
     [bio setTextColor:[NSColor whiteColor]];
     [attrs release];
+    
 }
 
 @end
