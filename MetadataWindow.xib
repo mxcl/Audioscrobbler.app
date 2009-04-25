@@ -35,6 +35,7 @@
 				<string key="NSWindowClass">NSPanel</string>
 				<nil key="NSViewClass"/>
 				<string key="NSWindowContentMaxSize">{3.40282e+38, 3.40282e+38}</string>
+				<string key="NSWindowContentMinSize">{292, 300}</string>
 				<object class="NSView" key="NSWindowView" id="1006">
 					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
@@ -55,7 +56,7 @@
 									<string>NeXT TIFF v4.0 pasteboard type</string>
 								</object>
 							</object>
-							<string key="NSFrame">{{20, 171}, {252, 252}}</string>
+							<string key="NSFrame">{{20, 182}, {252, 252}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSImageCell" key="NSCell" id="384335408">
@@ -97,7 +98,7 @@
 										<object class="NSTextView" id="371518471">
 											<reference key="NSNextResponder" ref="90067385"/>
 											<int key="NSvFlags">2322</int>
-											<string key="NSFrameSize">{292, 35}</string>
+											<string key="NSFrameSize">{252, 25}</string>
 											<reference key="NSSuperview" ref="90067385"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="890250299">
 												<object class="NSLayoutManager" key="NSLayoutManager">
@@ -115,7 +116,7 @@
 													<nil key="NSDelegate"/>
 												</object>
 												<reference key="NSTextView" ref="371518471"/>
-												<double key="NSWidth">2.920000e+02</double>
+												<double key="NSWidth">2.520000e+02</double>
 												<int key="NSTCFlags">1</int>
 											</object>
 											<object class="NSTextViewSharedData" key="NSSharedData">
@@ -171,18 +172,18 @@
 															<int key="NSColorSpace">1</int>
 															<bytes key="NSRGB">MCAwIDEAA</bytes>
 														</object>
-														<integer value="1"/>
+														<integer value="1" id="9"/>
 													</object>
 												</object>
 												<nil key="NSDefaultParagraphStyle"/>
 											</object>
 											<int key="NSTVFlags">6</int>
-											<string key="NSMaxSize">{504, 1e+07}</string>
+											<string key="NSMaxSize">{586, 1e+07}</string>
 											<string key="NSMinize">{223, 0}</string>
 											<nil key="NSDelegate"/>
 										</object>
 									</object>
-									<string key="NSFrame">{{1, 1}, {292, 162}}</string>
+									<string key="NSFrameSize">{252, 154}</string>
 									<reference key="NSSuperview" ref="88866761"/>
 									<reference key="NSNextKeyView" ref="371518471"/>
 									<reference key="NSDocView" ref="371518471"/>
@@ -217,10 +218,10 @@
 									<double key="NSPercent">9.456522e-01</double>
 								</object>
 							</object>
-							<string key="NSFrame">{{-1, -1}, {294, 164}}</string>
+							<string key="NSFrame">{{20, 20}, {252, 154}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSNextKeyView" ref="90067385"/>
-							<int key="NSsFlags">1</int>
+							<int key="NSsFlags">0</int>
 							<reference key="NSVScroller" ref="669567919"/>
 							<reference key="NSHScroller" ref="476766786"/>
 							<reference key="NSContentView" ref="90067385"/>
@@ -230,6 +231,7 @@
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSMinSize">{292, 319}</string>
 				<string key="NSMaxSize">{3.40282e+38, 3.40282e+38}</string>
 				<string key="NSFrameAutosaveName"/>
 			</object>
@@ -255,11 +257,19 @@
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBOutletConnection" key="connection">
+						<string key="label">bio_view</string>
+						<reference key="source" ref="1001"/>
+						<reference key="destination" ref="88866761"/>
+					</object>
+					<int key="connectionID">32</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
 						<string key="label">bio</string>
 						<reference key="source" ref="1001"/>
 						<reference key="destination" ref="371518471"/>
 					</object>
-					<int key="connectionID">30</int>
+					<int key="connectionID">33</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -371,6 +381,8 @@
 					<string>1.NSWindowTemplate.visibleAtLaunch</string>
 					<string>1.WindowOrigin</string>
 					<string>1.editorWindowContentRectSynchronizationRect</string>
+					<string>1.windowTemplate.hasMinSize</string>
+					<string>1.windowTemplate.minSize</string>
 					<string>11.IBPluginDependency</string>
 					<string>11.IBViewIntegration.shadowColor</string>
 					<string>2.IBPluginDependency</string>
@@ -386,12 +398,14 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilderKit</string>
 					<string>com.apple.InterfaceBuilderKit</string>
-					<string>{{559, 517}, {292, 443}}</string>
+					<string>{{833, 663}, {292, 443}}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
-					<string>{{559, 517}, {292, 443}}</string>
+					<string>{{833, 663}, {292, 443}}</string>
 					<integer value="0"/>
 					<string>{196, 240}</string>
 					<string>{{202, 428}, {480, 270}}</string>
+					<reference ref="9"/>
+					<string>{292, 300}</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<reference ref="164962179"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
@@ -423,7 +437,7 @@
 				</object>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">30</int>
+			<int key="maxID">33</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -436,11 +450,13 @@
 						<object class="NSMutableArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>bio</string>
+							<string>bio_view</string>
 							<string>image</string>
 						</object>
 						<object class="NSMutableArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSTextView</string>
+							<string>NSScrollView</string>
 							<string>NSImageView</string>
 						</object>
 					</object>

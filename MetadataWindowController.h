@@ -24,6 +24,7 @@
 
 @interface MetadataWindowController:NSWindowController{
     IBOutlet NSImageView* image;
+    IBOutlet NSScrollView* bio_view;
     IBOutlet NSTextView* bio;
     NSString* current_artist;
 }

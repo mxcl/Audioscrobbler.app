@@ -88,9 +88,10 @@
     frame.size.height = [imgrep pixelsHigh];
     frame.origin.y += d;
     [image setFrame:frame];
-    frame.size.height = frame.origin.y;
-    frame.origin.y = 0;
-    [bio setFrame:frame];
+    int const y = [bio_view frame].origin.y;
+    frame.size.height = frame.origin.y - 8 - y;
+    frame.origin.y = y;
+    [bio_view setFrame:frame];
 
     [[self window] setTitle:current_artist];
     
