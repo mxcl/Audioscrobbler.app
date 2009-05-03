@@ -10,3 +10,11 @@
 #include "../_configure.h"
 #define SCROBSUB_CLIENT_ID "ass"
 #define SCROBSUB_NO_RELAY 1
+
+
+enum ASTransition{
+    TrackStarted,
+    TrackPaused,
+    TrackResumed,
+    PlaybackStopped
+};

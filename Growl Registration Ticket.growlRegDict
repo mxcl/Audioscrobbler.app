@@ -7,14 +7,19 @@
   <key>AllNotifications</key>
   <array>
     <string>Track Started</string>
+    <string>Track Paused</string>
+    <string>Track Resumed</string>
+    <string>Playlist Ended</string>
+    
     <string>Scrobble Submission Successful</string>
     <string>Scrobble Submission Failed</string>    
-    <string>Playlist Ended</string>
+    
     <string>iPod Detected</string>
   </array>
   <key>DefaultNotifications</key>
   <array>
     <string>Track Started</string>
+    <string>Track Resumed</string>
     <string>Playlist Ended</string>
   </array>
 </dict>

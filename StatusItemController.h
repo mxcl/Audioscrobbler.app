@@ -27,12 +27,14 @@
 {
     NSStatusItem* status_item;
     IBOutlet NSMenu* menu;
+    IBOutlet NSMenuItem* autohide;
     NSWindowController* metadataWindow;
 }
 
 -(IBAction)love:(id)sender;
 -(IBAction)tag:(id)sender;
 -(IBAction)share:(id)sender;
+-(IBAction)toggle:(id)sender;
 
 @end
 

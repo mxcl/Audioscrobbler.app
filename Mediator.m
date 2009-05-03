@@ -49,11 +49,14 @@ static Mediator* sharedMediator;
     return sharedMediator;
 }
 
--(void)announce:(NSDictionary*)track
+-(void)announce:(NSDictionary*)track withTransition:(uint)transition
 {
+    NSMutableDictionary* dict = [track mutableCopy];
+    [dict setObject:[NSNumber numberWithUnsignedInt:transition] forKey:@"Transition"];
+    
     NSNotification*notification=[NSNotification notificationWithName:@"playerInfo"
                                                               object:self
-                                                            userInfo:track];
+                                                            userInfo:dict];
     [[NSNotificationQueue defaultQueue]enqueueNotification:notification
                                               postingStyle:NSPostNow
                                               coalesceMask:NSNotificationCoalescingOnName
@@ -73,19 +76,19 @@ static Mediator* sharedMediator;
 
 -(void)jig
 {
+    // a player just stopped or paused, find the next active connection
+    
     NSEnumerator* i = [stack objectEnumerator];
     NSString* o;
     while(o = [i nextObject]){
         NSDictionary* track = [tracks objectForKey:o];
         if([[track objectForKey:@"Player State"] isEqualToString:@"Playing"]){
             active = o;           
-            [self announce:track];
+            [self announce:track withTransition:TrackStarted];
             [self scrobsub_start:track];
             return;
         }
     }
-    if(active)
-        [self announce:[tracks objectForKey:active]]; // nothing to jig, so announce
 }
 
 -(void)scrobsub_start_active
@@ -118,7 +121,7 @@ static Mediator* sharedMediator;
             [self scrobsub_start:track];
         
         // we fixed growl filling the screen with a coalescing identifier
-        [self announce:track];
+        [self announce:track withTransition:TrackStarted];
         previous_start = time;
     }
 }
@@ -131,8 +134,10 @@ static Mediator* sharedMediator;
         [[tracks objectForKey:id] setObject:@"Paused" forKey:@"Player State"];
         NSString* old_id = id;
         [self jig];
-        if(old_id == active)
+        if(old_id == active){
             scrobsub_pause();
+            [self announce:[tracks objectForKey:active] withTransition:TrackPaused];
+        }
     }
 }
 
@@ -144,12 +149,12 @@ static Mediator* sharedMediator;
         NSMutableDictionary* track = [tracks objectForKey:id];
         [track setObject:@"Playing" forKey:@"Player State"];
         if([active isEqualToString:id]){
-            [self announce:track];
+            [self announce:track withTransition:TrackResumed];
             scrobsub_resume();
         }
         if(!active){
             active = id;
-            [self announce:track];
+            [self announce:track withTransition:TrackStarted];
             [self scrobsub_start:track];
         }
     }
@@ -242,6 +247,7 @@ static Mediator* sharedMediator;
             NSMutableDictionary* dict = [[userData userInfo] mutableCopy];
             uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
             [dict setObject:[NSNumber numberWithUnsignedInt:duration] forKey:@"Total Time"];
+            [dict setObject:@"iTunes" forKey:@"Player Name"];
             [[Mediator sharedMediator] start:@"osx" withTrack:dict];
         }
         waspaused = false;

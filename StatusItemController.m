@@ -121,30 +121,46 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
 -(void)onPlayerInfo:(NSNotification*)userData
 {
     NSDictionary* dict = [userData userInfo];
-    NSString* state = [dict objectForKey:@"Player State"];
+    uint transition = [[dict objectForKey:@"Transition"] unsignedIntValue];
     NSString* name = [dict objectForKey:@"Name"];
     
-    if([state isEqualToString:@"Playing"]){
-        uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
-        [[menu itemAtIndex:0] setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
-        [[menu itemAtIndex:1] setEnabled:true]; //TODO can't do this on RESUME
+    NSString* notificationName = @"Track Resumed";
+    
+    switch(transition){
+    case TrackStarted:
+        [[menu itemAtIndex:1] setEnabled:true];
         [[menu itemAtIndex:2] setEnabled:true];
         [[menu itemAtIndex:3] setEnabled:true];
-        [[menu itemAtIndex:1] setTitle:@"Love"]; //TODO can't do this on RESUME
+        [[menu itemAtIndex:1] setTitle:@"Love"];
+        notificationName = @"Track Started";
+        
+    case TrackResumed:{
+        uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
+        [[menu itemAtIndex:0] setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
         
         [GrowlApplicationBridge notifyWithTitle:name
                                     description:[dict objectForKey:@"Artist"]
-                               notificationName:@"Track Started"
+                               notificationName:notificationName
                                        iconData:nil
                                        priority:0
                                        isSticky:false
                                    clickContext:dict
                                      identifier:@"Coalesce Me ID"];
-    }
-    else if([state isEqualToString:@"Paused"]){
+        break;}
+    
+    case TrackPaused:
         [[menu itemAtIndex:0] setTitle:[name stringByAppendingString:@" [paused]"]];
-    }
-    else if([state isEqualToString:@"Stopped"]){
+        [GrowlApplicationBridge notifyWithTitle:@"Playback Paused"
+                                    description:[[dict objectForKey:@"Player Name"] stringByAppendingString:@" paused"]
+                               notificationName:@"Track Paused"
+                                       iconData:nil
+                                       priority:0
+                                       isSticky:true
+                                   clickContext:dict
+                                     identifier:@"Coalesce Me ID"];
+        break;
+        
+    case PlaybackStopped:
         [[menu itemAtIndex:0] setTitle:@"Ready"];
         [[menu itemAtIndex:1] setEnabled:false];
         [[menu itemAtIndex:2] setEnabled:false];
@@ -157,7 +173,8 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
                                        iconData:nil
                                        priority:0
                                        isSticky:false
-                                   clickContext:nil];        
+                                   clickContext:nil];
+        break;
     }
 }
 
@@ -187,6 +204,14 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     [[share window] makeKeyWindow];
 }
 
+-(IBAction)toggle:(id)sender
+{
+    if(sender!=autohide)return;
+
+    uint newstate = [autohide state] == NSOnState ? NSOffState : NSOnState;
+    [autohide setState:newstate];
+}
+
 -(void)menuWillOpen:(NSMenu*)target
 {
     if(!metadataWindow)
@@ -197,10 +222,15 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     [[metadataWindow window] makeKeyWindow];
 }
 
+-(void)closeMetadataWindow
+{
+    if([autohide state] == NSOnState)
+        [metadataWindow close];
+}
+
 -(void)menuDidClose:(NSMenu*)target
 {
-    if(![[metadataWindow window] isKeyWindow])
-        [metadataWindow close];
+    [self performSelector:@selector(closeMetadataWindow) withObject:nil afterDelay:0];
 }
 
 @end
