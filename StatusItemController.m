@@ -109,6 +109,9 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     [GrowlApplicationBridge setGrowlDelegate:self];
     install_plugin();
 
+    metadataWindow = [[MetadataWindowController alloc] init];
+    [(NSPanel*)[metadataWindow window] setBecomesKeyOnlyIfNeeded:false];
+    
 /// global shortcut
     EventTypeSpec type;
     type.eventClass = kEventClassKeyboard;
@@ -140,8 +143,8 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
         [[menu itemAtIndex:3] setEnabled:true];
         [[menu itemAtIndex:1] setTitle:@"Love"];
         notificationName = @"Track Started";
-        [self menuWillOpen:menu]; //shows metadata window if appropriate
-        
+        if([autohide state] == NSOffState) [metadataWindow showWindow:self];
+        // fall through
     case TrackResumed:{
         uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
         [[menu itemAtIndex:0] setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
@@ -223,10 +226,6 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
 
 -(void)menuWillOpen:(NSMenu*)target
 {
-    if(!metadataWindow)
-        metadataWindow = [[MetadataWindowController alloc] init];
-    [(NSPanel*)[metadataWindow window] setBecomesKeyOnlyIfNeeded:false];
-    
     if([[Mediator sharedMediator] currentTrack]){
         [[metadataWindow window] orderFront:self];
         [[metadataWindow window] makeKeyWindow];
