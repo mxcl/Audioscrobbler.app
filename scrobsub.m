@@ -65,7 +65,8 @@ void scrobsub_get(char response[256], const char* url)
     NSString *output = [NSString stringWithContentsOfURL:[NSURL URLWithString:[NSString stringWithUTF8String:url]]
                                             usedEncoding:&encoding
                                                    error:nil];
-    strncpy(response, [output UTF8String], 256);
+    if(output)
+        strncpy(response, [output UTF8String], 256);
 }
 
 void scrobsub_post(char response[256], const char* url, const char* post_data)
