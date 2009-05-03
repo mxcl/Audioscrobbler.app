@@ -77,10 +77,18 @@ static void scrobsub_callback(int event, const char* message)
 
 static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userdata)
 {
-    [(StatusItemController*)userdata tag:userdata];
+    EventHotKeyID hkid;
+    GetEventParameter(e, kEventParamDirectObject, typeEventHotKeyID, NULL, sizeof(hkid), NULL, &hkid);
+    switch(hkid.id){
+        case 1:
+            [(StatusItemController*)userdata tag:userdata];
+            break;
+        case 2:
+            [(StatusItemController*)userdata share:userdata];
+            break;
+    }
     return noErr;
 }
-
 
 
 @implementation StatusItemController
@@ -112,10 +120,13 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     InstallApplicationEventHandler(&MyHotKeyHandler, 1, &type, self, NULL);
 
     EventHotKeyID kid;
+    EventHotKeyRef kref;
     kid.signature='htk1';
     kid.id=1;
-    EventHotKeyRef kref;
     RegisterEventHotKey(kVK_ANSI_T, cmdKey+optionKey+controlKey, kid, GetApplicationEventTarget(), 0, &kref);
+    kid.signature='htk2';
+    kid.id=2;
+    RegisterEventHotKey(kVK_ANSI_S, cmdKey+optionKey+controlKey, kid, GetApplicationEventTarget(), 0, &kref);
 }
 
 -(void)onPlayerInfo:(NSNotification*)userData
