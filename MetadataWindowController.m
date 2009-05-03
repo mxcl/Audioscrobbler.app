@@ -100,7 +100,15 @@
     [image setImage:img];
     
 /// bio
-    html = [html stringByReplacingOccurrencesOfString:@"\r" withString:@"<br>"]; // Last.fm sucks
+    //TODO remove trailing margin caused by last p bottom margin, prolly some useful css to do this
+    NSMutableCharacterSet* whitespace = [[NSCharacterSet whitespaceAndNewlineCharacterSet] mutableCopy];
+    [whitespace addCharactersInString:@"\r\n"];
+
+    html = [html stringByTrimmingCharactersInSet:whitespace];
+    html = [@"<p>" stringByAppendingString:html];
+    html = [html stringByReplacingOccurrencesOfString:@"\r \r" withString:@"<p>"]; // Last.fm sucks
+    html = [html stringByReplacingOccurrencesOfString:@"\r" withString:@"<p>"]; // Last.fm sucks more
+    html = [html stringByAppendingString:@"</p>"];
     
     NSAttributedString *attrs = [[NSAttributedString alloc] initWithHTML:[html dataUsingEncoding:NSUTF8StringEncoding] 
                                                                  options:[NSDictionary dictionaryWithObjectsAndKeys:
