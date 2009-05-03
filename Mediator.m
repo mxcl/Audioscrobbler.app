@@ -171,6 +171,7 @@ static Mediator* sharedMediator;
             [self jig];
             if([id isEqualToString:active]){
                 scrobsub_stop();
+                [self announce:track withTransition:PlaybackStopped];
                 active = nil;
             }
         }

@@ -59,16 +59,12 @@ static void install_plugin()
 
 static void scrobsub_callback(int event, const char* message)
 {
-    switch (event)
-    {
-        case SCROBSUB_AUTH_REQUIRED:
-        {
+    switch(event){
+        case SCROBSUB_AUTH_REQUIRED:{
             char url[110];
             scrobsub_auth(url);
             [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[NSString stringWithCString:url]]];
-            break;
-        }
-            
+            break;}
         case SCROBSUB_ERROR_RESPONSE:
             NSLog(@"%s", message);
             break;
@@ -144,6 +140,7 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
         [[menu itemAtIndex:3] setEnabled:true];
         [[menu itemAtIndex:1] setTitle:@"Love"];
         notificationName = @"Track Started";
+        [self menuWillOpen:menu]; //shows metadata window if appropriate
         
     case TrackResumed:{
         uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
@@ -185,6 +182,7 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
                                        priority:0
                                        isSticky:false
                                    clickContext:nil];
+        [metadataWindow close];
         break;
     }
 }
@@ -229,8 +227,10 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
         metadataWindow = [[MetadataWindowController alloc] init];
     [(NSPanel*)[metadataWindow window] setBecomesKeyOnlyIfNeeded:false];
     
-    [[metadataWindow window] orderFront:self];
-    [[metadataWindow window] makeKeyWindow];
+    if([[Mediator sharedMediator] currentTrack]){
+        [[metadataWindow window] orderFront:self];
+        [[metadataWindow window] makeKeyWindow];
+    }
 }
 
 -(void)closeMetadataWindow
