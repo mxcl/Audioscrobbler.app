@@ -67,12 +67,12 @@ static Mediator* sharedMediator;
 {
     if(!dict)return;
     
-    #define nonullthx(x) NSString* x=[dict objectForKey:@#x]; if(!x)x=@"";
+    #define nonullthx(x) NSString* ns##x=[dict objectForKey:@#x]; const char*x=!ns##x?"":[ns##x UTF8String];
     nonullthx(Artist);
     nonullthx(Name);
     
-    scrobsub_start([Artist UTF8String],
-                   [Name UTF8String],
+    scrobsub_start(Artist,
+                   Name,
                    [(NSNumber*)[dict objectForKey:@"Total Time"] unsignedIntValue],
                    "",//[[dict objectForKey:@"Album"] UTF8String],
                    [(NSNumber*)[dict objectForKey:@"Track Number"] unsignedIntValue],
@@ -193,6 +193,28 @@ static Mediator* sharedMediator;
     return [tracks objectForKey:active];
 }
 
+
+-(void)changeMetadata:(NSString*)id
+             forTrack:(NSString*)title
+               artist:(NSString*)artist
+                album:(NSString*)album
+{
+    if(![stack containsObject:id])
+        NSLog(@"Invalid action: resuming an unknown player connection");
+    else{
+        NSMutableDictionary* dict = [tracks objectForKey:id];
+        [dict setObject:title forKey:@"Name"];
+        [dict setObject:artist forKey:@"Artist"];
+        [dict setObject:album forKey:@"Album"];
+        if([active isEqualToString:id]){
+            nonullthx(Artist);
+            nonullthx(Album);
+            nonullthx(Name);
+            scrobsub_change_metadata(Artist, Name, Album);
+        }
+    }
+}
+
 @end
 
 
@@ -246,12 +268,17 @@ static Mediator* sharedMediator;
         //TODO if user restarts the track near the end we should count it is as scrobbled and start again
         //TODO if the user has a playlist that is just the track that should work too!
         int64_t const oldpid = pid;
-        pid = [(NSNumber*)[[userData userInfo] objectForKey:@"PersistentID"] longLongValue];
+        NSMutableDictionary* dict = [[userData userInfo] mutableCopy];
+        pid = [[dict objectForKey:@"PersistentID"] longLongValue];
         if(oldpid == pid){
             if(waspaused)
                 [[Mediator sharedMediator] resume:@"osx"];
+            else
+                [[Mediator sharedMediator] changeMetadata:@"osx" 
+                                                 forTrack:[dict objectForKey:@"Name"]
+                                                   artist:[dict objectForKey:@"Artist"]
+                                                    album:[dict objectForKey:@"Album"]];
         }else{
-            NSMutableDictionary* dict = [[userData userInfo] mutableCopy];
             uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
             [dict setObject:[NSNumber numberWithUnsignedInt:duration] forKey:@"Total Time"];
             [dict setObject:@"iTunes" forKey:@"Player Name"];
