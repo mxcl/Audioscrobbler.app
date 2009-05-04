@@ -10,11 +10,8 @@
     <string>Track Paused</string>
     <string>Track Resumed</string>
     <string>Playlist Ended</string>
-    
-    <string>Scrobble Submission Successful</string>
-    <string>Scrobble Submission Failed</string>    
-    
-    <string>iPod Detected</string>
+    <string>Scrobble Submission Status</string>
+    <string>iPod Scrobbling Status</string>
   </array>
   <key>DefaultNotifications</key>
   <array>

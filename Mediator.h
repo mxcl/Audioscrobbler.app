@@ -36,15 +36,24 @@
 -(void)resume:(NSString*)clientId;
 -(void)stop:(NSString*)clientId;
 
+-(void)changeMetadata:(NSString*)clientId
+            forTrack:(NSString*)track
+              artist:(NSString*)artist
+               album:(NSString*)album;
+
 -(IBAction)onScrobblingEnabledChanged:(id)sender;
 
 -(NSDictionary*)currentTrack;
 
 @end
 
+
+@class ITunesApplication;
+
 @interface ITunesListener:NSObject{
     int64_t pid;
     bool waspaused;
+    ITunesApplication* itunes;
 }
 -(id)init;
 @end

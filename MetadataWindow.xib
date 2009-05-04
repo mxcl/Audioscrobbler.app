@@ -98,7 +98,7 @@
 										<object class="NSTextView" id="371518471">
 											<reference key="NSNextResponder" ref="90067385"/>
 											<int key="NSvFlags">2322</int>
-											<string key="NSFrameSize">{252, 25}</string>
+											<string key="NSFrameSize">{252, 14}</string>
 											<reference key="NSSuperview" ref="90067385"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="890250299">
 												<object class="NSLayoutManager" key="NSLayoutManager">
@@ -127,7 +127,7 @@
 												</object>
 												<object class="NSColor" key="NSInsertionColor">
 													<int key="NSColorSpace">1</int>
-													<bytes key="NSRGB">MSAxIDEAA</bytes>
+													<bytes key="NSRGB">MSAxIDEgMAA</bytes>
 												</object>
 												<object class="NSDictionary" key="NSSelectedAttributes">
 													<bool key="EncodedWithXMLCoder">YES</bool>

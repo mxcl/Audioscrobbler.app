@@ -53,12 +53,14 @@
 -(void)onPlayerInfo:(NSNotification*)not
 {
     NSDictionary* track = [not userInfo];
-    NSString* state = [track objectForKey:@"Player State"];
+    uint transition = [[track objectForKey:@"Transition"] unsignedIntValue];
     
-    if([state isEqualToString:@"Playing"]){
-        if(currentTrack)
-            [self insert:currentTrack];
-        currentTrack = track;
+    switch(transition){
+        case TrackStarted:
+        case PlaybackStopped:
+            if(currentTrack)
+                [self insert:currentTrack];
+            currentTrack = track;
     }
 }
 

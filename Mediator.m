@@ -211,6 +211,8 @@ static Mediator* sharedMediator;
             nonullthx(Album);
             nonullthx(Name);
             scrobsub_change_metadata(Artist, Name, Album);
+            
+            [self announce:dict withTransition:TrackMetadataChanged];
         }
     }
 }
@@ -245,6 +247,7 @@ static Mediator* sharedMediator;
 @end
 
 
+#import "iTunes.h"
 
 @implementation ITunesListener
 
@@ -255,6 +258,7 @@ static Mediator* sharedMediator;
                                                         selector:@selector(onPlayerInfo:)
                                                             name:@"com.apple.iTunes.playerInfo"
                                                           object:nil];
+    itunes = [SBApplication applicationWithBundleIdentifier:@"com.apple.iTunes"];
     return self;
 }
 
@@ -270,15 +274,22 @@ static Mediator* sharedMediator;
         int64_t const oldpid = pid;
         NSMutableDictionary* dict = [[userData userInfo] mutableCopy];
         pid = [[dict objectForKey:@"PersistentID"] longLongValue];
-        if(oldpid == pid){
-            if(waspaused)
-                [[Mediator sharedMediator] resume:@"osx"];
-            else
-                [[Mediator sharedMediator] changeMetadata:@"osx" 
-                                                 forTrack:[dict objectForKey:@"Name"]
-                                                   artist:[dict objectForKey:@"Artist"]
-                                                    album:[dict objectForKey:@"Album"]];
-        }else{
+        bool const sametrack = oldpid == pid;
+        if(sametrack && waspaused)
+            [[Mediator sharedMediator] resume:@"osx"];
+        else if(sametrack && itunes.playerPosition > 0)
+            // iTunes sends this message if:
+            //   1) track started
+            //   2) track restarted
+            //   3) track metadata altered
+            // so this branch is a guess for (3)
+            [[Mediator sharedMediator] changeMetadata:@"osx" 
+                                             forTrack:[dict objectForKey:@"Name"]
+                                               artist:[dict objectForKey:@"Artist"]
+                                                album:[dict objectForKey:@"Album"]];
+        else{
+            NSImage* img = [(ITunesArtwork*)[itunes.currentTrack.artworks objectAtIndex:0] data];
+            [dict setObject:img forKey:@"Album Art"];
             uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
             [dict setObject:[NSNumber numberWithUnsignedInt:duration] forKey:@"Total Time"];
             [dict setObject:@"iTunes" forKey:@"Player Name"];

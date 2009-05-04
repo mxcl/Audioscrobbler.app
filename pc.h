@@ -16,5 +16,7 @@ enum ASTransition{
     TrackStarted,
     TrackPaused,
     TrackResumed,
-    PlaybackStopped
+    PlaybackStopped,
+
+    TrackMetadataChanged
 };

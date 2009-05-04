@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* main.xib */; };
 		63024AEC0F9640A8001B8E9B /* Mediator.m in Sources */ = {isa = PBXBuildFile; fileRef = 63024AEB0F9640A8001B8E9B /* Mediator.m */; };
+		637F066B0FADD0F7006EE129 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 637F066A0FADD0F7006EE129 /* Preferences.xib */; };
+		637F066E0FADD118006EE129 /* PreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 637F066D0FADD118006EE129 /* PreferencesWindowController.m */; };
+		637F074E0FAF20AD006EE129 /* ScriptingBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 637F074D0FAF20AD006EE129 /* ScriptingBridge.framework */; };
 		63906F0C0F9DE71E00797A14 /* ShareWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63906F0B0F9DE71E00797A14 /* ShareWindow.xib */; };
 		63B5AA390F93565500DC9D8C /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 63B5AA380F93565500DC9D8C /* md5.c */; };
 		63B5AA5E0F9356DD00DC9D8C /* Audioscrobbler.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 63B5AA5D0F9356DD00DC9D8C /* Audioscrobbler.sdef */; };
@@ -68,6 +71,11 @@
 		32CA4F630368D1EE00C91783 /* pc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pc.h; sourceTree = "<group>"; };
 		63024AE90F964063001B8E9B /* Mediator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mediator.h; sourceTree = "<group>"; };
 		63024AEB0F9640A8001B8E9B /* Mediator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mediator.m; sourceTree = "<group>"; };
+		637F066A0FADD0F7006EE129 /* Preferences.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
+		637F066C0FADD118006EE129 /* PreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesWindowController.h; sourceTree = "<group>"; };
+		637F066D0FADD118006EE129 /* PreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesWindowController.m; sourceTree = "<group>"; };
+		637F07050FAF180F006EE129 /* iTunes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iTunes.h; sourceTree = "<group>"; };
+		637F074D0FAF20AD006EE129 /* ScriptingBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScriptingBridge.framework; path = /System/Library/Frameworks/ScriptingBridge.framework; sourceTree = "<absolute>"; };
 		63906F0B0F9DE71E00797A14 /* ShareWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShareWindow.xib; sourceTree = "<group>"; };
 		6393C3C70F93870400286602 /* iTunes Plug-in.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "iTunes Plug-in.xcodeproj"; path = "../iTunes/iTunes Plug-in.xcodeproj"; sourceTree = SOURCE_ROOT; };
 		63B5AA380F93565500DC9D8C /* md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = md5.c; path = ../portable/md5.c; sourceTree = SOURCE_ROOT; };
@@ -106,6 +114,7 @@
 				63C9B9630F867C460065ED7F /* Security.framework in Frameworks */,
 				63D1D09F0F97FDB3004FBC05 /* Growl.framework in Frameworks */,
 				63D1D2990F9A0CB1004FBC05 /* Carbon.framework in Frameworks */,
+				637F074E0FAF20AD006EE129 /* ScriptingBridge.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -117,6 +126,8 @@
 			children = (
 				63D1D2520F99FC2F004FBC05 /* MetadataWindowController.h */,
 				63D1D2530F99FC2F004FBC05 /* MetadataWindowController.m */,
+				637F066C0FADD118006EE129 /* PreferencesWindowController.h */,
+				637F066D0FADD118006EE129 /* PreferencesWindowController.m */,
 				63024AEB0F9640A8001B8E9B /* Mediator.m */,
 				63024AE90F964063001B8E9B /* Mediator.h */,
 				63D6DAEF0F8396E000F4DCAA /* StatusItemController.h */,
@@ -125,7 +136,6 @@
 				63D1D1030F980532004FBC05 /* lastfm.m */,
 				63D1D1A00F989847004FBC05 /* HistoryMenuController.h */,
 				63D1D1A10F989847004FBC05 /* HistoryMenuController.m */,
-				29B97315FDCFA39411CA2CEA /* Other Sources */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -133,6 +143,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				637F074D0FAF20AD006EE129 /* ScriptingBridge.framework */,
 				63D1D2980F9A0CB1004FBC05 /* Carbon.framework */,
 				63D1D09E0F97FDB3004FBC05 /* Growl.framework */,
 				63C9B9620F867C460065ED7F /* Security.framework */,
@@ -164,6 +175,7 @@
 			children = (
 				6393C3C70F93870400286602 /* iTunes Plug-in.xcodeproj */,
 				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
@@ -174,6 +186,7 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				637F07050FAF180F006EE129 /* iTunes.h */,
 				63D6DB8F0F83B6FE00F4DCAA /* scrobsub.h */,
 				63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */,
 				63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */,
@@ -197,6 +210,7 @@
 				63D1D2350F99E3B8004FBC05 /* MetadataWindow.xib */,
 				63D1D39E0F9A3EB1004FBC05 /* TagWindow.xib */,
 				63906F0B0F9DE71E00797A14 /* ShareWindow.xib */,
+				637F066A0FADD0F7006EE129 /* Preferences.xib */,
 				63D1D0DA0F980171004FBC05 /* Growl Registration Ticket.growlRegDict */,
 			);
 			name = Resources;
@@ -290,6 +304,7 @@
 				63D1D2360F99E3B8004FBC05 /* MetadataWindow.xib in Resources */,
 				63D1D39F0F9A3EB1004FBC05 /* TagWindow.xib in Resources */,
 				63906F0C0F9DE71E00797A14 /* ShareWindow.xib in Resources */,
+				637F066B0FADD0F7006EE129 /* Preferences.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -328,6 +343,7 @@
 				63D1D1040F980532004FBC05 /* lastfm.m in Sources */,
 				63D1D1A20F989847004FBC05 /* HistoryMenuController.m in Sources */,
 				63D1D2540F99FC2F004FBC05 /* MetadataWindowController.m in Sources */,
+				637F066E0FADD118006EE129 /* PreferencesWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -128,8 +128,15 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     RegisterEventHotKey(kVK_ANSI_S, cmdKey+optionKey+controlKey, kid, GetApplicationEventTarget(), 0, &kref);
 }
 
+-(bool)autohide
+{
+    return false;
+}
+
 -(void)onPlayerInfo:(NSNotification*)userData
 {
+    static uint count = 0;
+    
     NSDictionary* dict = [userData userInfo];
     uint transition = [[dict objectForKey:@"Transition"] unsignedIntValue];
     NSString* name = [dict objectForKey:@"Name"];
@@ -137,56 +144,73 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     NSString* notificationName = @"Track Resumed";
     
     switch(transition){
-    case TrackStarted:
-        [[menu itemAtIndex:1] setEnabled:true];
-        [[menu itemAtIndex:2] setEnabled:true];
-        [[menu itemAtIndex:3] setEnabled:true];
-        [[menu itemAtIndex:1] setTitle:@"Love"];
-        notificationName = @"Track Started";
-        if([autohide state] == NSOffState) [metadataWindow showWindow:self];
-        // fall through
-    case TrackResumed:{
-        uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
-        [[menu itemAtIndex:0] setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
+        case TrackStarted:
+            [[menu itemAtIndex:1] setEnabled:true];
+            [[menu itemAtIndex:2] setEnabled:true];
+            [[menu itemAtIndex:3] setEnabled:true];
+            [[menu itemAtIndex:1] setTitle:@"Love"];
+            notificationName = @"Track Started";
+            if(![self autohide]) [metadataWindow showWindow:self];
+            count++;
+            // fall through
+        case TrackResumed:{
+            uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
+            [[menu itemAtIndex:0] setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
+            
+            [GrowlApplicationBridge notifyWithTitle:name
+                                        description:[dict objectForKey:@"Artist"]
+                                   notificationName:notificationName
+                                           iconData:[[dict objectForKey:@"Album Art"] TIFFRepresentation]
+                                           priority:0
+                                           isSticky:false
+                                       clickContext:dict
+                                         identifier:@"Coalesce Me ID"];
+            break;}
         
-        [GrowlApplicationBridge notifyWithTitle:name
-                                    description:[dict objectForKey:@"Artist"]
-                               notificationName:notificationName
-                                       iconData:nil
-                                       priority:0
-                                       isSticky:false
-                                   clickContext:dict
-                                     identifier:@"Coalesce Me ID"];
-        break;}
-    
-    case TrackPaused:
-        [[menu itemAtIndex:0] setTitle:[name stringByAppendingString:@" [paused]"]];
-        [GrowlApplicationBridge notifyWithTitle:@"Playback Paused"
-                                    description:[[dict objectForKey:@"Player Name"] stringByAppendingString:@" paused"]
-                               notificationName:@"Track Paused"
-                                       iconData:nil
-                                       priority:0
-                                       isSticky:true
-                                   clickContext:dict
-                                     identifier:@"Coalesce Me ID"];
-        break;
-        
-    case PlaybackStopped:
-        [[menu itemAtIndex:0] setTitle:@"Ready"];
-        [[menu itemAtIndex:1] setEnabled:false];
-        [[menu itemAtIndex:2] setEnabled:false];
-        [[menu itemAtIndex:3] setEnabled:false];
-        [[menu itemAtIndex:1] setTitle:@"Love"];
+        case TrackPaused:
+            [[menu itemAtIndex:0] setTitle:[name stringByAppendingString:@" [paused]"]];
+            [GrowlApplicationBridge notifyWithTitle:@"Playback Paused"
+                                        description:[[dict objectForKey:@"Player Name"] stringByAppendingString:@" became paused"]
+                                   notificationName:@"Track Paused"
+                                           iconData:nil
+                                           priority:0
+                                           isSticky:true
+                                       clickContext:dict
+                                         identifier:@"Coalesce Me ID"];
+            break;
+            
+        case PlaybackStopped:
+            [[menu itemAtIndex:0] setTitle:@"Ready"];
+            [[menu itemAtIndex:1] setEnabled:false];
+            [[menu itemAtIndex:2] setEnabled:false];
+            [[menu itemAtIndex:3] setEnabled:false];
+            [[menu itemAtIndex:1] setTitle:@"Love"];
+            
+            NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+            NSString* info = [NSString stringWithFormat:@"You played %s tracks.",
+                              [formatter stringFromNumber:[NSNumber numberWithUnsignedInt:count]]];
+            [formatter release];
+            count = 0;
 
-        [GrowlApplicationBridge notifyWithTitle:@"Playlist Ended"
-                                    description:@"The playlist came to its natural conclusion, I hope you enjoyed it :)"
-                               notificationName:@"Playlist Ended"
-                                       iconData:nil
-                                       priority:0
-                                       isSticky:false
-                                   clickContext:nil];
-        [metadataWindow close];
-        break;
+            [GrowlApplicationBridge notifyWithTitle:@"Playlist Ended"
+                                        description:info
+                                   notificationName:@"Playlist Ended"
+                                           iconData:nil
+                                           priority:0
+                                           isSticky:false
+                                       clickContext:nil];
+            [metadataWindow close];
+            break;
+                
+        case TrackMetadataChanged:
+            [GrowlApplicationBridge notifyWithTitle:@"Track Metadata Updated"
+                                        description:[lastfm titleForTrack:dict]
+                                   notificationName:@"Scrobble Submission Status"
+                                           iconData:nil
+                                           priority:-1
+                                           isSticky:false
+                                       clickContext:nil];
+            break;
     }
 }
 
@@ -218,10 +242,6 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
 
 -(IBAction)toggle:(id)sender
 {
-    if(sender!=autohide)return;
-
-    uint newstate = [autohide state] == NSOnState ? NSOffState : NSOnState;
-    [autohide setState:newstate];
 }
 
 -(void)menuWillOpen:(NSMenu*)target
@@ -234,7 +254,7 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
 
 -(void)closeMetadataWindow
 {
-    if([autohide state] == NSOnState)
+    if([self autohide])
         [metadataWindow close];
 }
 

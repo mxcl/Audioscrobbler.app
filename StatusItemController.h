@@ -27,7 +27,6 @@
 {
     NSStatusItem* status_item;
     IBOutlet NSMenu* menu;
-    IBOutlet NSMenuItem* autohide;
     NSWindowController* metadataWindow;
 }
 
