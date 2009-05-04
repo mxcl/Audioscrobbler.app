@@ -65,13 +65,18 @@ static Mediator* sharedMediator;
 
 -(void)scrobsub_start:(NSDictionary*)dict
 {
-    if(dict)
-        scrobsub_start([[dict objectForKey:@"Artist"] UTF8String],
-                       [[dict objectForKey:@"Name"] UTF8String],
-            [(NSNumber*)[dict objectForKey:@"Total Time"] unsignedIntValue],
-                       "",//[[dict objectForKey:@"Album"] UTF8String],
-            [(NSNumber*)[dict objectForKey:@"Track Number"] unsignedIntValue],
-                       "");//[[dict objectForKey:@"MusicBrainz ID"] UTF8String]);
+    if(!dict)return;
+    
+    #define nonullthx(x) NSString* x=[dict objectForKey:@#x]; if(!x)x=@"";
+    nonullthx(Artist);
+    nonullthx(Name);
+    
+    scrobsub_start([Artist UTF8String],
+                   [Name UTF8String],
+                   [(NSNumber*)[dict objectForKey:@"Total Time"] unsignedIntValue],
+                   "",//[[dict objectForKey:@"Album"] UTF8String],
+                   [(NSNumber*)[dict objectForKey:@"Track Number"] unsignedIntValue],
+                   "");//[[dict objectForKey:@"MusicBrainz ID"] UTF8String]);
 }
 
 -(void)jig
@@ -242,9 +247,10 @@ static Mediator* sharedMediator;
         //TODO if the user has a playlist that is just the track that should work too!
         int64_t const oldpid = pid;
         pid = [(NSNumber*)[[userData userInfo] objectForKey:@"PersistentID"] longLongValue];
-        if(oldpid == pid && waspaused)
-            [[Mediator sharedMediator] resume:@"osx"];
-        else{
+        if(oldpid == pid){
+            if(waspaused)
+                [[Mediator sharedMediator] resume:@"osx"];
+        }else{
             NSMutableDictionary* dict = [[userData userInfo] mutableCopy];
             uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
             [dict setObject:[NSNumber numberWithUnsignedInt:duration] forKey:@"Total Time"];
