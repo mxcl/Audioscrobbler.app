@@ -203,6 +203,14 @@ static Mediator* sharedMediator;
         NSLog(@"Invalid action: resuming an unknown player connection");
     else{
         NSMutableDictionary* dict = [tracks objectForKey:id];
+        
+        if([artist isEqualToString:[dict objectForKey:@"Artist"]]
+                    && [title isEqualToString:[dict objectForKey:@"Name"]]
+                    && [album isEqualToString:[dict objectForKey:@"Album"]]){
+            NSLog(@"Won't announce metadata changed as nothing actually changed");
+            return;
+        }
+
         [dict setObject:title forKey:@"Name"];
         [dict setObject:artist forKey:@"Artist"];
         [dict setObject:album forKey:@"Album"];

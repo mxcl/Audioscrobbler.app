@@ -36,7 +36,7 @@ static void install_plugin()
     if([fm fileExistsAtPath:dst])
     {
         NSString* dstv = [[NSBundle bundleWithPath:dst] objectForInfoDictionaryKey:@"CFBundleVersion"];
-        NSString* srcv = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"];
+        NSString* srcv = [[NSBundle bundleWithPath:src] objectForInfoDictionaryKey:@"CFBundleVersion"];
 
         if([dstv isEqualToString:srcv])
             return;
