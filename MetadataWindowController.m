@@ -55,7 +55,7 @@
         [self close];
     else{
         NSString* artist = [dict objectForKey:@"Artist"];
-        if([artist isEqualToString:current_artist])return;    
+        if([artist isEqualToString:current_artist])return;
         current_artist = artist;
         
         if([self window])
@@ -73,10 +73,14 @@
                                        @"http://ws.audioscrobbler.com/2.0/?method=artist.getInfo&artist=%@&api_key="SCROBSUB_API_KEY,
                                        artist]];
     
+    NSLog(@"%@", artist);
+    
     NSXMLDocument* xml = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:nil];
     NSError* err;
-    NSString* html = [[[[xml rootElement] nodesForXPath:@"/lfm/artist/bio/content" error:&err] lastObject] stringValue];
-    NSString* image_url = [[[[xml rootElement] nodesForXPath:@"/lfm/artist/image[@size='large']" error:&err] lastObject] stringValue];
+    #define xpath(path) [[[[xml rootElement] nodesForXPath:path error:&err] lastObject] stringValue]
+    NSString* html = xpath(@"/lfm/artist/bio/content");
+    NSString* image_url = xpath(@"/lfm/artist/image[@size='large']");
+    NSString* artist_url = xpath(@"/lfm/artist/url");
     
     image_url = [image_url stringByReplacingOccurrencesOfString:@"/126/" withString:@"/252/"];
     
@@ -105,10 +109,16 @@
     [whitespace addCharactersInString:@"\r\n"];
 
     html = [html stringByTrimmingCharactersInSet:whitespace];
-    html = [@"<p>" stringByAppendingString:html];
-    html = [html stringByReplacingOccurrencesOfString:@"\r \r" withString:@"<p>"]; // Last.fm sucks
-    html = [html stringByReplacingOccurrencesOfString:@"\r" withString:@"<p>"]; // Last.fm sucks more
-    html = [html stringByAppendingString:@"</p>"];
+    
+    if([html length] == 0){
+        NSString* url = [artist_url stringByAppendingString:@"/+wiki/edit"];
+        html = [NSString stringWithFormat:@"We don’t have a description for this artist yet, <A href='%s'>care to help?</a>", url];
+    }else{
+        html = [@"<p>" stringByAppendingString:html];
+        html = [html stringByReplacingOccurrencesOfString:@"\r \r" withString:@"<p>"]; // Last.fm sucks
+        html = [html stringByReplacingOccurrencesOfString:@"\r" withString:@"<p>"]; // Last.fm sucks more
+        html = [html stringByAppendingString:@"</p>"];
+    }
     
     NSAttributedString *attrs = [[NSAttributedString alloc] initWithHTML:[html dataUsingEncoding:NSUTF8StringEncoding] 
                                                                  options:[NSDictionary dictionaryWithObjectsAndKeys:

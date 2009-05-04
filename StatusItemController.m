@@ -140,8 +140,11 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     NSDictionary* dict = [userData userInfo];
     uint transition = [[dict objectForKey:@"Transition"] unsignedIntValue];
     NSString* name = [dict objectForKey:@"Name"];
-    
+    uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
     NSString* notificationName = @"Track Resumed";
+    
+#define UPDATE_TITLE_MENU \
+    [[menu itemAtIndex:0] setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
     
     switch(transition){
         case TrackStarted:
@@ -154,11 +157,12 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
             count++;
             // fall through
         case TrackResumed:{
-            uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
-            [[menu itemAtIndex:0] setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
-            
+            UPDATE_TITLE_MENU
+            NSMutableString* desc = [[dict objectForKey:@"Artist"] mutableCopy];
+            [desc appendString:@"\n"];
+            [desc appendString:[dict objectForKey:@"Album"]];
             [GrowlApplicationBridge notifyWithTitle:name
-                                        description:[dict objectForKey:@"Artist"]
+                                        description:desc
                                    notificationName:notificationName
                                            iconData:[[dict objectForKey:@"Album Art"] TIFFRepresentation]
                                            priority:0
@@ -201,8 +205,9 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
                                        clickContext:nil];
             [metadataWindow close];
             break;
-                
+
         case TrackMetadataChanged:
+            UPDATE_TITLE_MENU
             [GrowlApplicationBridge notifyWithTitle:@"Track Metadata Updated"
                                         description:[lastfm titleForTrack:dict]
                                    notificationName:@"Scrobble Submission Status"

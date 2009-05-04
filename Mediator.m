@@ -277,7 +277,9 @@ static Mediator* sharedMediator;
         bool const sametrack = oldpid == pid;
         if(sametrack && waspaused)
             [[Mediator sharedMediator] resume:@"osx"];
-        else if(sametrack && itunes.playerPosition > 0)
+        //TODO should check that the currentTrack of the iTunes object has a pid
+        // that matches our pid
+        else if(sametrack && itunes.playerPosition > 2){
             // iTunes sends this message if:
             //   1) track started
             //   2) track restarted
@@ -287,9 +289,13 @@ static Mediator* sharedMediator;
                                              forTrack:[dict objectForKey:@"Name"]
                                                artist:[dict objectForKey:@"Artist"]
                                                 album:[dict objectForKey:@"Album"]];
-        else{
-            NSImage* img = [(ITunesArtwork*)[itunes.currentTrack.artworks objectAtIndex:0] data];
-            [dict setObject:img forKey:@"Album Art"];
+        }else{
+            @try{
+                ITunesArtwork* art = (ITunesArtwork*)[itunes.currentTrack.artworks objectAtIndex:0];
+                [dict setObject:[art data] forKey:@"Album Art"];
+            }@catch(id e){
+                // for some reason [art exists] returns true, but it then throws :(
+            }
             uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
             [dict setObject:[NSNumber numberWithUnsignedInt:duration] forKey:@"Total Time"];
             [dict setObject:@"iTunes" forKey:@"Player Name"];
