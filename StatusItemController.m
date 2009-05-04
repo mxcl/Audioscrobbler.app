@@ -191,7 +191,7 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
             [[menu itemAtIndex:1] setTitle:@"Love"];
             
             NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
-            NSString* info = [NSString stringWithFormat:@"You played %s tracks.",
+            NSString* info = [NSString stringWithFormat:@"You played %@ tracks this session.",
                               [formatter stringFromNumber:[NSNumber numberWithUnsignedInt:count]]];
             [formatter release];
             count = 0;
