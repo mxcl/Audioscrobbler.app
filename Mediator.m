@@ -116,6 +116,9 @@ static Mediator* sharedMediator;
     if(!active)
         active = id;
     if([active isEqualToString:id]){
+        [self announce:track withTransition:TrackStarted];
+        previous_start = time;
+
         // we wait 4 seconds so that we don't spam Last.fm and so that stuff
         // like Growl doesn't fill the screen when you skip-skip-skip
         if(time-previous_start < 4){
@@ -124,10 +127,6 @@ static Mediator* sharedMediator;
         }
         else
             [self scrobsub_start:track];
-        
-        // we fixed growl filling the screen with a coalescing identifier
-        [self announce:track withTransition:TrackStarted];
-        previous_start = time;
     }
 }
 
