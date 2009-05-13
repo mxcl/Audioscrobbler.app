@@ -132,4 +132,10 @@ static NSData* signed_post_body(NSDictionary* vars)
     [lastfm post:dict to:@"track.share"];
 }
 
++(NSString*)durationString:(NSNumber*)n
+{
+    uint seconds = [n unsignedIntValue];
+    return [NSString stringWithFormat:@"%u:%02u",seconds/60, seconds%60];
+}
+
 @end

@@ -104,7 +104,7 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
                                                  name:@"playerInfo"
                                                object:nil];
     scrobsub_init(scrobsub_callback);
-    [[ITunesListener alloc] init];
+
     [menu setDelegate:self];
     [GrowlApplicationBridge setGrowlDelegate:self];
     install_plugin();

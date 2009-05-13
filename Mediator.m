@@ -42,6 +42,8 @@ static Mediator* sharedMediator;
     tracks=[[NSMutableDictionary alloc] initWithCapacity:1];
     sharedMediator = self;
     previous_start = 0;
+    
+    [[ITunesListener alloc] init];
 }
 
 +(id)sharedMediator
@@ -259,17 +261,6 @@ static Mediator* sharedMediator;
 
 @implementation ITunesListener
 
--(id)init
-{
-    waspaused = false;
-    [[NSDistributedNotificationCenter defaultCenter] addObserver:self
-                                                        selector:@selector(onPlayerInfo:)
-                                                            name:@"com.apple.iTunes.playerInfo"
-                                                          object:nil];
-    itunes = [SBApplication applicationWithBundleIdentifier:@"com.apple.iTunes"];
-    return self;
-}
-
 -(void)onPlayerInfo:(NSNotification*)userData
 {
     NSString* state = [[userData userInfo] objectForKey:@"Player State"];
@@ -318,6 +309,35 @@ static Mediator* sharedMediator;
         pid = 0;
         waspaused = false;
     }
+}
+
+-(id)init
+{
+    waspaused = false;
+    [[NSDistributedNotificationCenter defaultCenter] addObserver:self
+                                                        selector:@selector(onPlayerInfo:)
+                                                            name:@"com.apple.iTunes.playerInfo"
+                                                          object:nil];
+    itunes = [SBApplication applicationWithBundleIdentifier:@"com.apple.iTunes"];
+    
+#if __AS_DEBUGGING__
+    if ([itunes isRunning] && itunes.playerState == ITunesEPlSPlaying)
+    {
+        ITunesTrack* t = itunes.currentTrack;
+        NSMutableDictionary* dict = [[NSMutableDictionary alloc] init];
+        [dict setObject:t.name forKey:@"Name"];
+        [dict setObject:t.artist forKey:@"Artist"];
+        [dict setObject:t.album forKey:@"Album"];
+        [dict setObject:[NSNumber numberWithInteger:((int)(t.duration))*1000] forKey:@"Total Time"];
+        [dict setObject:@"Playing" forKey:@"Player State"];
+        [dict setObject:[NSNumber numberWithLongLong:1] forKey:@"PersistentID"];
+        [self onPlayerInfo:[NSNotification notificationWithName:@"com.apple.iTunes.playerInfo"
+                                                         object:nil
+                                                       userInfo:dict]];
+    }
+#endif
+    
+    return self;
 }
 
 @end

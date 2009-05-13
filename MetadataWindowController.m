@@ -20,7 +20,42 @@
 // Created by Max Howell <max@last.fm>
 
 #import "MetadataWindowController.h"
+#import "BGHUDScroller.h"
+#import "lastfm.h"
 #import "Mediator.h"
+
+@interface GradientOverlayImageView:NSImageView
+@end
+@implementation GradientOverlayImageView
+-(void)drawRect:(NSRect)rect
+{
+    [super drawRect:rect];
+    if ([self image] == nil) return;
+    
+    NSGradient* g = [[NSGradient alloc] 
+                     initWithStartingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.11] 
+                     endingColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.88]];
+    [g drawInRect:rect angle:-90];
+    [g release];
+}
+@end
+
+@interface ButtonBackground:NSView
+@end
+@implementation ButtonBackground:NSView
+-(void)drawRect:(NSRect)rect
+{
+    NSGradient* g = [[NSGradient alloc] initWithColorsAndLocations:
+                     [NSColor colorWithCalibratedWhite:0.839 alpha:0.6], 0.0,
+                     [NSColor colorWithCalibratedWhite:0.525 alpha:0.6], 0.01,
+                     [NSColor colorWithCalibratedWhite:0.306 alpha:0.6], 0.5,
+                     [NSColor colorWithCalibratedWhite:0.204 alpha:0.6], 0.51,
+                     [NSColor colorWithCalibratedWhite:0.004 alpha:0.6], 1.0,
+                     nil];
+    [g drawInRect:rect angle:-90];
+    [g release];
+}
+@end
 
 
 @implementation MetadataWindowController
@@ -38,13 +73,17 @@
 
 -(void)awakeFromNib
 {
-    [bio setLinkTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
-                                [NSColor colorWithCalibratedRed:0 green:0.682 blue:0.937 alpha:1.0], NSForegroundColorAttributeName,
-                                [NSNumber numberWithInt: NSSingleUnderlineStyle], NSUnderlineStyleAttributeName,
-                                [NSCursor pointingHandCursor], NSCursorAttributeName, nil]];    
+    [bio_view setVerticalScroller:[[[BGHUDScroller alloc] init] autorelease]];    
 
-    current_artist = [[[Mediator sharedMediator] currentTrack] objectForKey:@"Artist"];
-    [self update];
+    //FIXME the NSUnerlineStyleNone flag doesn't work
+    [bio setLinkTextAttributes:[NSDictionary dictionaryWithObjectsAndKeys:
+                                [NSColor colorWithCalibratedRed:0.0 green:0.678 blue:0.933 alpha:1.0], NSForegroundColorAttributeName,
+                                [NSNumber numberWithInt: NSUnderlineStyleNone], NSUnderlineStyleAttributeName,
+                                [NSCursor pointingHandCursor], NSCursorAttributeName, nil]];    
+    
+    NSDictionary* dict = [[Mediator sharedMediator] currentTrack];
+    current_artist = [dict objectForKey:@"Artist"];
+    [self update:dict];
 }
 
 -(void)onPlayerInfo:(NSNotification*)userData
@@ -59,11 +98,18 @@
         current_artist = artist;
         
         if([self window])
-            [self performSelectorOnMainThread:@selector(update) withObject:nil waitUntilDone:YES];
+            [self performSelectorOnMainThread:@selector(update:) withObject:dict waitUntilDone:YES];
     }
 }
 
--(void)update
+void setTitleFrameOrigin(NSTextField* title, NSPoint pt)
+{
+    pt.y += 8;
+    pt.x += 8;
+    [title setFrameOrigin:pt];
+}
+
+-(void)update:(NSDictionary*)track
 {
     if(!current_artist)return;
     
@@ -72,8 +118,6 @@
     NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:
                                        @"http://ws.audioscrobbler.com/2.0/?method=artist.getInfo&artist=%@&api_key="SCROBSUB_API_KEY,
                                        artist]];
-    
-    NSLog(@"%@", artist);
     
     NSXMLDocument* xml = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:nil];
     NSError* err;
@@ -92,12 +136,20 @@
     frame.size.height = [imgrep pixelsHigh];
     frame.origin.y += d;
     [image setFrame:frame];
+
+    setTitleFrameOrigin( title, frame.origin );
+
     int const y = [bio_view frame].origin.y;
-    frame.size.height = frame.origin.y - 8 - y;
+    int const h = frame.origin.y - y;
+    frame = [bio_view frame];
+    frame.size.height = h;
     frame.origin.y = y;
     [bio_view setFrame:frame];
-
-    [[self window] setTitle:current_artist];
+    
+    [title setStringValue:[NSString stringWithFormat:@"%@\n%@ (%@)", 
+                           current_artist, 
+                           [track objectForKey:@"Name"],
+                           [lastfm durationString:[track objectForKey:@"Total Time"]]]];
     
     NSImage* img = [[NSImage alloc] init];
     [img addRepresentation:imgrep];
@@ -114,17 +166,24 @@
         NSString* url = [artist_url stringByAppendingString:@"/+wiki/edit"];
         html = [NSString stringWithFormat:@"We don’t have a description for this artist yet, <A href='%s'>care to help?</a>", url];
     }else{
+        // this initial div adds close to the correct top margin
         html = [@"<p>" stringByAppendingString:html];
         html = [html stringByReplacingOccurrencesOfString:@"\r \r" withString:@"<p>"]; // Last.fm sucks
         html = [html stringByReplacingOccurrencesOfString:@"\r" withString:@"<p>"]; // Last.fm sucks more
         html = [html stringByAppendingString:@"</p>"];
     }
     
+    NSDictionary* docattrs;
     NSAttributedString *attrs = [[NSAttributedString alloc] initWithHTML:[html dataUsingEncoding:NSUTF8StringEncoding] 
                                                                  options:[NSDictionary dictionaryWithObjectsAndKeys:
                                                                           [NSNumber numberWithUnsignedInt:NSUTF8StringEncoding],
                                                                           @"CharacterEncoding", nil] 
-                                                      documentAttributes:nil];
+                                                      documentAttributes:&docattrs];
+
+    [docattrs objectForKey:NSParagraphStyleAttributeName];
+    
+    NSMutableParagraphStyle* para = [attrs para
+    
     [[bio textStorage] setAttributedString:attrs];
     
     // you have to set these everytime you change the text in a NSTextView
@@ -132,7 +191,6 @@
     [bio setFont:[NSFont systemFontOfSize:[NSFont systemFontSizeForControlSize:NSSmallControlSize]]];
     [bio setTextColor:[NSColor whiteColor]];
     [attrs release];
-    
 }
 
 @end

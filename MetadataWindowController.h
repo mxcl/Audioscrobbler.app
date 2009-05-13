@@ -26,10 +26,11 @@
     IBOutlet NSImageView* image;
     IBOutlet NSScrollView* bio_view;
     IBOutlet NSTextView* bio;
+    IBOutlet NSTextField* title;
     NSString* current_artist;
 }
 
 -(id)init;
--(void)update;
+-(void)update:(NSDictionary*)track;
 
 @end
