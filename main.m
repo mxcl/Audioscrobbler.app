@@ -18,8 +18,11 @@
  ***************************************************************************/
 
 #import <Cocoa/Cocoa.h>
+#import "scrobsub.h"
 
-int main(int argc, char *argv[])
+int main(int argc, const char **argv)
 {
-    return NSApplicationMain(argc, (const char**) argv);
+    int rv = NSApplicationMain(argc, argv);
+    scrobsub_stop();
+    return rv;
 }

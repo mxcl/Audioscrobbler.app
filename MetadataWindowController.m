@@ -82,7 +82,6 @@
                                 [NSCursor pointingHandCursor], NSCursorAttributeName, nil]];    
     
     NSDictionary* dict = [[Mediator sharedMediator] currentTrack];
-    current_artist = [dict objectForKey:@"Artist"];
     [self update:dict];
 }
 
@@ -92,14 +91,8 @@
     
     if([[dict objectForKey:@"Player State"] isEqualToString:@"Stopped"])
         [self close];
-    else{
-        NSString* artist = [dict objectForKey:@"Artist"];
-        if([artist isEqualToString:current_artist])return;
-        current_artist = artist;
-        
-        if([self window])
-            [self performSelectorOnMainThread:@selector(update:) withObject:dict waitUntilDone:YES];
-    }
+    else if([self window])
+        [self performSelectorOnMainThread:@selector(update:) withObject:dict waitUntilDone:YES];
 }
 
 void setTitleFrameOrigin(NSTextField* title, NSPoint pt)
@@ -109,19 +102,17 @@ void setTitleFrameOrigin(NSTextField* title, NSPoint pt)
     [title setFrameOrigin:pt];
 }
 
--(void)update:(NSDictionary*)track
-{
-    if(!current_artist)return;
-    
-    NSString* artist = (NSString*)CFURLCreateStringByAddingPercentEscapes(nil, (CFStringRef)current_artist, NULL, CFSTR("!*';:@&=+$,/?%#[]"), kCFStringEncodingUTF8);
+-(void)updateArtist:(NSString*)artist
+{    
+    NSString* encoded_artist = (NSString*)CFURLCreateStringByAddingPercentEscapes(nil, (CFStringRef)artist, NULL, CFSTR("!*';:@&=+$,/?%#[]"), kCFStringEncodingUTF8);
     
     NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:
                                        @"http://ws.audioscrobbler.com/2.0/?method=artist.getInfo&artist=%@&api_key="SCROBSUB_API_KEY,
-                                       artist]];
+                                       encoded_artist]];
     
     NSXMLDocument* xml = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:nil];
     NSError* err;
-    #define xpath(path) [[[[xml rootElement] nodesForXPath:path error:&err] lastObject] stringValue]
+#define xpath(path) [[[[xml rootElement] nodesForXPath:path error:&err] lastObject] stringValue]
     NSString* html = xpath(@"/lfm/artist/bio/content");
     NSString* image_url = xpath(@"/lfm/artist/image[@size='large']");
     NSString* artist_url = xpath(@"/lfm/artist/url");
@@ -130,15 +121,15 @@ void setTitleFrameOrigin(NSTextField* title, NSPoint pt)
     
     NSImageRep* imgrep = [NSImageRep imageRepWithContentsOfURL:[NSURL URLWithString:image_url]];
     
-/// layout
+    /// layout
     NSRect frame = [image frame];
     int const d = frame.size.height - [imgrep pixelsHigh];
     frame.size.height = [imgrep pixelsHigh];
     frame.origin.y += d;
     [image setFrame:frame];
-
+    
     setTitleFrameOrigin( title, frame.origin );
-
+    
     int const y = [bio_view frame].origin.y;
     int const h = frame.origin.y - y;
     frame = [bio_view frame];
@@ -146,20 +137,14 @@ void setTitleFrameOrigin(NSTextField* title, NSPoint pt)
     frame.origin.y = y;
     [bio_view setFrame:frame];
     
-    [title setStringValue:[NSString stringWithFormat:@"%@\n%@ (%@)", 
-                           current_artist, 
-                           [track objectForKey:@"Name"],
-                           [lastfm durationString:[track objectForKey:@"Total Time"]]]];
-    
     NSImage* img = [[NSImage alloc] init];
-    [img addRepresentation:imgrep];
-    [image setImage:img];
+    [img addRepresentation:imgrep];   
     
-/// bio
+    /// bio
     //TODO remove trailing margin caused by last p bottom margin, prolly some useful css to do this
     NSMutableCharacterSet* whitespace = [[NSCharacterSet whitespaceAndNewlineCharacterSet] mutableCopy];
     [whitespace addCharactersInString:@"\r\n"];
-
+    
     html = [html stringByTrimmingCharactersInSet:whitespace];
     
     if([html length] == 0){
@@ -174,16 +159,13 @@ void setTitleFrameOrigin(NSTextField* title, NSPoint pt)
     }
     
     NSDictionary* docattrs;
-    NSAttributedString *attrs = [[NSAttributedString alloc] initWithHTML:[html dataUsingEncoding:NSUTF8StringEncoding] 
-                                                                 options:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                                          [NSNumber numberWithUnsignedInt:NSUTF8StringEncoding],
-                                                                          @"CharacterEncoding", nil] 
-                                                      documentAttributes:&docattrs];
-
-    [docattrs objectForKey:NSParagraphStyleAttributeName];
-    
-    NSMutableParagraphStyle* para = [attrs para
-    
+    NSMutableAttributedString *attrs = [[NSMutableAttributedString alloc]
+                                        initWithHTML:[html dataUsingEncoding:NSUTF8StringEncoding] 
+                                        options:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                 [NSNumber numberWithUnsignedInt:NSUTF8StringEncoding],
+                                                 @"CharacterEncoding", nil] 
+                                        documentAttributes:&docattrs];    
+    [image setImage:img];
     [[bio textStorage] setAttributedString:attrs];
     
     // you have to set these everytime you change the text in a NSTextView
@@ -192,5 +174,22 @@ void setTitleFrameOrigin(NSTextField* title, NSPoint pt)
     [bio setTextColor:[NSColor whiteColor]];
     [attrs release];
 }
+
+-(void)update:(NSDictionary*)track
+{
+    NSString* artist = [track objectForKey:@"Artist"];
+
+    if(![artist isEqualToString:current_artist]){
+        [self updateArtist:artist];
+        current_artist = artist;
+    }
+
+    [title setStringValue:[NSString stringWithFormat:@"%@\n%@ (%@)",
+                           artist,
+                           [track objectForKey:@"Name"],
+                           [lastfm durationString:[track objectForKey:@"Total Time"]]]];
+}
+
+
 
 @end

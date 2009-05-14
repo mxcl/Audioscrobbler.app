@@ -105,7 +105,7 @@
 										<object class="NSTextView" id="371518471">
 											<reference key="NSNextResponder" ref="90067385"/>
 											<int key="NSvFlags">2322</int>
-											<string key="NSFrameSize">{246, 14}</string>
+											<string key="NSFrameSize">{247, 14}</string>
 											<reference key="NSSuperview" ref="90067385"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="890250299">
 												<object class="NSLayoutManager" key="NSLayoutManager">
@@ -123,11 +123,11 @@
 													<nil key="NSDelegate"/>
 												</object>
 												<reference key="NSTextView" ref="371518471"/>
-												<double key="NSWidth">2.460000e+02</double>
+												<double key="NSWidth">2.470000e+02</double>
 												<int key="NSTCFlags">1</int>
 											</object>
 											<object class="NSTextViewSharedData" key="NSSharedData">
-												<int key="NSFlags">10849</int>
+												<int key="NSFlags">2049</int>
 												<object class="NSColor" key="NSBackgroundColor">
 													<int key="NSColorSpace">1</int>
 													<bytes key="NSRGB">MCAwIDAAA</bytes>
@@ -186,11 +186,11 @@
 											</object>
 											<int key="NSTVFlags">6</int>
 											<string key="NSMaxSize">{586, 1e+07}</string>
-											<string key="NSMinize">{181, 0}</string>
+											<string key="NSMinize">{247, 0}</string>
 											<nil key="NSDelegate"/>
 										</object>
 									</object>
-									<string key="NSFrameSize">{246, 223}</string>
+									<string key="NSFrameSize">{247, 223}</string>
 									<reference key="NSSuperview" ref="88866761"/>
 									<reference key="NSNextKeyView" ref="371518471"/>
 									<reference key="NSDocView" ref="371518471"/>
@@ -225,7 +225,7 @@
 									<double key="NSPercent">9.456522e-01</double>
 								</object>
 							</object>
-							<string key="NSFrame">{{7, 59}, {246, 223}}</string>
+							<string key="NSFrame">{{6, 59}, {247, 223}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSNextKeyView" ref="90067385"/>
 							<int key="NSsFlags">528</int>
@@ -710,7 +710,7 @@
 							<bool key="EncodedWithXMLCoder">YES</bool>
 							<string>NSTextView</string>
 							<string>NSScrollView</string>
-							<string>NSImageView</string>
+							<string>GradientOverlayImageView</string>
 							<string>NSTextField</string>
 						</object>
 					</object>

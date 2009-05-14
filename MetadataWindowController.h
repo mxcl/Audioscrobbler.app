@@ -20,10 +20,10 @@
 // Created by Max Howell <max@last.fm>
 
 #import <Cocoa/Cocoa.h>
-
+@class GradientOverlayImageView;
 
 @interface MetadataWindowController:NSWindowController{
-    IBOutlet NSImageView* image;
+    IBOutlet GradientOverlayImageView* image;
     IBOutlet NSScrollView* bio_view;
     IBOutlet NSTextView* bio;
     IBOutlet NSTextField* title;
