@@ -9,12 +9,15 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* main.xib */; };
 		63024AEC0F9640A8001B8E9B /* Mediator.m in Sources */ = {isa = PBXBuildFile; fileRef = 63024AEB0F9640A8001B8E9B /* Mediator.m */; };
-		637F066B0FADD0F7006EE129 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 637F066A0FADD0F7006EE129 /* Preferences.xib */; };
-		637F066E0FADD118006EE129 /* PreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 637F066D0FADD118006EE129 /* PreferencesWindowController.m */; };
 		637F074E0FAF20AD006EE129 /* ScriptingBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 637F074D0FAF20AD006EE129 /* ScriptingBridge.framework */; };
 		63906F0C0F9DE71E00797A14 /* ShareWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63906F0B0F9DE71E00797A14 /* ShareWindow.xib */; };
+		6391B12F0FB9A1190018741E /* playlist.png in Resources */ = {isa = PBXBuildFile; fileRef = 6391B12B0FB9A1190018741E /* playlist.png */; };
+		6391B1300FB9A1190018741E /* love.png in Resources */ = {isa = PBXBuildFile; fileRef = 6391B12C0FB9A1190018741E /* love.png */; };
+		6391B1310FB9A1190018741E /* tag.png in Resources */ = {isa = PBXBuildFile; fileRef = 6391B12D0FB9A1190018741E /* tag.png */; };
+		6391B1320FB9A1190018741E /* share.png in Resources */ = {isa = PBXBuildFile; fileRef = 6391B12E0FB9A1190018741E /* share.png */; };
 		63B5AA390F93565500DC9D8C /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 63B5AA380F93565500DC9D8C /* md5.c */; };
 		63B5AA5E0F9356DD00DC9D8C /* Audioscrobbler.sdef in Resources */ = {isa = PBXBuildFile; fileRef = 63B5AA5D0F9356DD00DC9D8C /* Audioscrobbler.sdef */; };
+		63BAE54B0FB9D8F900B6ECE6 /* BGHUDScroller.m in Sources */ = {isa = PBXBuildFile; fileRef = 63BAE54A0FB9D8F900B6ECE6 /* BGHUDScroller.m */; };
 		63C9B94A0F8672940065ED7F /* Last.fm.icns in Resources */ = {isa = PBXBuildFile; fileRef = 63C9B9490F8672940065ED7F /* Last.fm.icns */; };
 		63C9B9630F867C460065ED7F /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C9B9620F867C460065ED7F /* Security.framework */; };
 		63CDD71A0F9533C800D69723 /* relay.c in Sources */ = {isa = PBXBuildFile; fileRef = 63CDD7190F9533C800D69723 /* relay.c */; };
@@ -71,15 +74,18 @@
 		32CA4F630368D1EE00C91783 /* pc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pc.h; sourceTree = "<group>"; };
 		63024AE90F964063001B8E9B /* Mediator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mediator.h; sourceTree = "<group>"; };
 		63024AEB0F9640A8001B8E9B /* Mediator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mediator.m; sourceTree = "<group>"; };
-		637F066A0FADD0F7006EE129 /* Preferences.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = "<group>"; };
-		637F066C0FADD118006EE129 /* PreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreferencesWindowController.h; sourceTree = "<group>"; };
-		637F066D0FADD118006EE129 /* PreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreferencesWindowController.m; sourceTree = "<group>"; };
 		637F07050FAF180F006EE129 /* iTunes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iTunes.h; sourceTree = "<group>"; };
 		637F074D0FAF20AD006EE129 /* ScriptingBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScriptingBridge.framework; path = /System/Library/Frameworks/ScriptingBridge.framework; sourceTree = "<absolute>"; };
 		63906F0B0F9DE71E00797A14 /* ShareWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShareWindow.xib; sourceTree = "<group>"; };
+		6391B12B0FB9A1190018741E /* playlist.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = playlist.png; sourceTree = "<group>"; };
+		6391B12C0FB9A1190018741E /* love.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = love.png; sourceTree = "<group>"; };
+		6391B12D0FB9A1190018741E /* tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tag.png; sourceTree = "<group>"; };
+		6391B12E0FB9A1190018741E /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
 		6393C3C70F93870400286602 /* iTunes Plug-in.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "iTunes Plug-in.xcodeproj"; path = "../iTunes/iTunes Plug-in.xcodeproj"; sourceTree = SOURCE_ROOT; };
 		63B5AA380F93565500DC9D8C /* md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = md5.c; path = ../portable/md5.c; sourceTree = SOURCE_ROOT; };
 		63B5AA5D0F9356DD00DC9D8C /* Audioscrobbler.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.sdef; path = Audioscrobbler.sdef; sourceTree = "<group>"; };
+		63BAE5490FB9D8F900B6ECE6 /* BGHUDScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BGHUDScroller.h; path = "../../bghudappkit-read-only/Framework/BGHUDScroller.h"; sourceTree = SOURCE_ROOT; };
+		63BAE54A0FB9D8F900B6ECE6 /* BGHUDScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BGHUDScroller.m; path = "../../bghudappkit-read-only/Framework/BGHUDScroller.m"; sourceTree = SOURCE_ROOT; };
 		63C9B9490F8672940065ED7F /* Last.fm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Last.fm.icns; sourceTree = "<group>"; };
 		63C9B9620F867C460065ED7F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		63CDD7190F9533C800D69723 /* relay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = relay.c; path = ../relay.c; sourceTree = SOURCE_ROOT; };
@@ -124,10 +130,10 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				63BAE5490FB9D8F900B6ECE6 /* BGHUDScroller.h */,
+				63BAE54A0FB9D8F900B6ECE6 /* BGHUDScroller.m */,
 				63D1D2520F99FC2F004FBC05 /* MetadataWindowController.h */,
 				63D1D2530F99FC2F004FBC05 /* MetadataWindowController.m */,
-				637F066C0FADD118006EE129 /* PreferencesWindowController.h */,
-				637F066D0FADD118006EE129 /* PreferencesWindowController.m */,
 				63024AEB0F9640A8001B8E9B /* Mediator.m */,
 				63024AE90F964063001B8E9B /* Mediator.h */,
 				63D6DAEF0F8396E000F4DCAA /* StatusItemController.h */,
@@ -202,6 +208,10 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6391B12B0FB9A1190018741E /* playlist.png */,
+				6391B12C0FB9A1190018741E /* love.png */,
+				6391B12D0FB9A1190018741E /* tag.png */,
+				6391B12E0FB9A1190018741E /* share.png */,
 				63C9B9490F8672940065ED7F /* Last.fm.icns */,
 				63D6DB360F8399E000F4DCAA /* icon.png */,
 				63D6DB370F8399E000F4DCAA /* inverted_icon.png */,
@@ -210,7 +220,6 @@
 				63D1D2350F99E3B8004FBC05 /* MetadataWindow.xib */,
 				63D1D39E0F9A3EB1004FBC05 /* TagWindow.xib */,
 				63906F0B0F9DE71E00797A14 /* ShareWindow.xib */,
-				637F066A0FADD0F7006EE129 /* Preferences.xib */,
 				63D1D0DA0F980171004FBC05 /* Growl Registration Ticket.growlRegDict */,
 			);
 			name = Resources;
@@ -304,7 +313,10 @@
 				63D1D2360F99E3B8004FBC05 /* MetadataWindow.xib in Resources */,
 				63D1D39F0F9A3EB1004FBC05 /* TagWindow.xib in Resources */,
 				63906F0C0F9DE71E00797A14 /* ShareWindow.xib in Resources */,
-				637F066B0FADD0F7006EE129 /* Preferences.xib in Resources */,
+				6391B12F0FB9A1190018741E /* playlist.png in Resources */,
+				6391B1300FB9A1190018741E /* love.png in Resources */,
+				6391B1310FB9A1190018741E /* tag.png in Resources */,
+				6391B1320FB9A1190018741E /* share.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,7 +355,7 @@
 				63D1D1040F980532004FBC05 /* lastfm.m in Sources */,
 				63D1D1A20F989847004FBC05 /* HistoryMenuController.m in Sources */,
 				63D1D2540F99FC2F004FBC05 /* MetadataWindowController.m in Sources */,
-				637F066E0FADD118006EE129 /* PreferencesWindowController.m in Sources */,
+				63BAE54B0FB9D8F900B6ECE6 /* BGHUDScroller.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
