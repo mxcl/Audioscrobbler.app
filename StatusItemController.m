@@ -197,7 +197,10 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
 
 -(void)tag:(id)sender
 {
-    [[[NSWindowController alloc] initWithWindowNibName:@"TagWindow"] showWindow:self];
+    NSDictionary* t = [[Mediator sharedMediator] currentTrack];
+    NSURL* url = [lastfm urlForTrack:[t objectForKey:@"Name"] by:[t objectForKey:@"Artist"]];
+    NSString* path = [[url path] stringByAppendingPathComponent:@"+tags"];
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:path relativeToURL:url]];
 }
 
 -(void)share:(id)sender
