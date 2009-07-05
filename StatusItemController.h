@@ -27,7 +27,6 @@
 {
     NSStatusItem* status_item;
     IBOutlet NSMenu* menu;
-    NSWindowController* metadataWindow;
 }
 
 -(IBAction)love:(id)sender;

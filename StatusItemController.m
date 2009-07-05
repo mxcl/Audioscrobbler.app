@@ -23,39 +23,8 @@
 #import "Mediator.h"
 #import "scrobsub.h"
 #import "StatusItemController.h"
-#import "MetadataWindowController.h"
 #import <Carbon/Carbon.h>
 
-
-static void install_plugin()
-{
-    NSString* dst = [NSHomeDirectory() stringByAppendingPathComponent:@"/Library/iTunes/iTunes Plug-ins/Audioscrobbler.bundle"];
-    NSString* src = [[NSBundle mainBundle] pathForResource:@"iTunes Plug-in" ofType:@"bundle"];
-    NSFileManager* fm = [NSFileManager defaultManager];
-
-    if([fm fileExistsAtPath:dst])
-    {
-        NSString* dstv = [[NSBundle bundleWithPath:dst] objectForInfoDictionaryKey:@"CFBundleVersion"];
-        NSString* srcv = [[NSBundle bundleWithPath:src] objectForInfoDictionaryKey:@"CFBundleVersion"];
-
-        if([dstv isEqualToString:srcv])
-            return;
-        
-    	NSInteger tag = 0;
-        bool result = [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation
-                                                                   source:[dst stringByDeletingLastPathComponent]
-                                                              destination:@""
-                                                                    files:[NSArray arrayWithObject:[dst lastPathComponent]]
-                                                                      tag:&tag];
-        if(!result){
-            NSLog(@"Couldn't trash %@", dst);
-            return;
-        }
-    }
-    
-    //install
-	[fm copyPath:src toPath:dst handler:nil];
-}
 
 static void scrobsub_callback(int event, const char* message)
 {
@@ -105,13 +74,8 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
                                                object:nil];
     scrobsub_init(scrobsub_callback);
 
-    [menu setDelegate:self];
     [GrowlApplicationBridge setGrowlDelegate:self];
-    install_plugin();
 
-    metadataWindow = [[MetadataWindowController alloc] init];
-    [(NSPanel*)[metadataWindow window] setBecomesKeyOnlyIfNeeded:false];
-    
 /// global shortcut
     EventTypeSpec type;
     type.eventClass = kEventClassKeyboard;
@@ -153,7 +117,6 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
             [[menu itemAtIndex:3] setEnabled:true];
             [[menu itemAtIndex:1] setTitle:@"Love"];
             notificationName = @"Track Started";
-            if(![self autohide]) [metadataWindow showWindow:self];
             count++;
             // fall through
         case TrackResumed:{
@@ -203,7 +166,6 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
                                            priority:0
                                            isSticky:false
                                        clickContext:nil];
-            [metadataWindow close];
             break;
 
         case TrackMetadataChanged:
@@ -243,29 +205,6 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     NSWindowController* share = [[ShareWindowController alloc] initWithWindowNibName:@"ShareWindow"];
     [share showWindow:self];
     [[share window] makeKeyWindow];
-}
-
--(IBAction)toggle:(id)sender
-{
-}
-
--(void)menuWillOpen:(NSMenu*)target
-{
-    if([[Mediator sharedMediator] currentTrack]){
-        [[metadataWindow window] orderFront:self];
-        [[metadataWindow window] makeKeyWindow];
-    }
-}
-
--(void)closeMetadataWindow
-{
-    if([self autohide])
-        [metadataWindow close];
-}
-
--(void)menuDidClose:(NSMenu*)target
-{
-    [self performSelector:@selector(closeMetadataWindow) withObject:nil afterDelay:0];
 }
 
 @end
