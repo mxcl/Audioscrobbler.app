@@ -32,7 +32,6 @@
 -(IBAction)love:(id)sender;
 -(IBAction)tag:(id)sender;
 -(IBAction)share:(id)sender;
--(IBAction)toggle:(id)sender;
 
 @end
 
