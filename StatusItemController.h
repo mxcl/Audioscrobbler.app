@@ -27,11 +27,14 @@
 {
     NSStatusItem* status_item;
     IBOutlet NSMenu* menu;
+    IBOutlet NSMenuItem* start_at_login;
 }
 
 -(IBAction)love:(id)sender;
 -(IBAction)tag:(id)sender;
 -(IBAction)share:(id)sender;
+-(IBAction)startAtLogin:(id)sender;
+-(IBAction)installDashboardWidget:(id)sender;
 
 @end
 

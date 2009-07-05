@@ -24,6 +24,7 @@
 #import "scrobsub.h"
 #import "StatusItemController.h"
 #import <Carbon/Carbon.h>
+extern bool scrobsub_fsref(FSRef*);
 
 
 static void scrobsub_callback(int event, const char* message)
@@ -55,6 +56,23 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     return noErr;
 }
 
+static LSSharedFileListItemRef audioscrobbler_session_login_item(LSSharedFileListRef login_items_ref)
+{
+    FSRef as_fsref;
+    if (!scrobsub_fsref(&as_fsref))
+        return NULL;
+    UInt32 seed;
+    NSArray *items = [(NSArray*)LSSharedFileListCopySnapshot(login_items_ref, &seed) autorelease];
+    for (id id in items){
+        FSRef fsref;
+        LSSharedFileListItemRef item = (LSSharedFileListItemRef)id;
+        if (LSSharedFileListItemResolve(item, 0, NULL, &fsref) == noErr)
+            if (FSCompareFSRefs(&as_fsref, &fsref) == noErr)
+                return item;
+    }
+    return NULL;        
+}
+
 
 @implementation StatusItemController
 
@@ -76,6 +94,14 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
 
     [GrowlApplicationBridge setGrowlDelegate:self];
 
+/// Start at Login item
+    LSSharedFileListRef login_items_ref = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
+    if(login_items_ref){
+        LSSharedFileListItemRef login_item = audioscrobbler_session_login_item(login_items_ref);
+        [start_at_login setState:login_item?NSOnState:NSOffState];
+        CFRelease(login_items_ref);
+    }
+    
 /// global shortcut
     EventTypeSpec type;
     type.eventClass = kEventClassKeyboard;
@@ -186,7 +212,7 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     [[NSWorkspace sharedWorkspace] openURL:[lastfm urlForTrack:[dict objectForKey:@"Name"] by:[dict objectForKey:@"Artist"]]];
 }
 
--(void)love:(id)sender
+-(IBAction)love:(id)sender
 {
     [lastfm love:[[Mediator sharedMediator] currentTrack]];
     scrobsub_love();
@@ -195,7 +221,7 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     [[menu itemAtIndex:1] setTitle:@"Loved"];
 }
 
--(void)tag:(id)sender
+-(IBAction)tag:(id)sender
 {
     NSDictionary* t = [[Mediator sharedMediator] currentTrack];
     NSURL* url = [lastfm urlForTrack:[t objectForKey:@"Name"] by:[t objectForKey:@"Artist"]];
@@ -203,11 +229,39 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:path relativeToURL:url]];
 }
 
--(void)share:(id)sender
+-(IBAction)share:(id)sender
 {
     NSWindowController* share = [[ShareWindowController alloc] initWithWindowNibName:@"ShareWindow"];
     [share showWindow:self];
     [[share window] makeKeyWindow];
+}
+
+-(IBAction)startAtLogin:(id)sender
+{
+    FSRef fsref;
+    if (!scrobsub_fsref(&fsref)) return;
+    LSSharedFileListRef login_items_ref = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
+    if (login_items_ref == NULL) return;
+    
+    LSSharedFileListItemRef item;
+    if (NSOffState == [sender state]){
+        item = LSSharedFileListInsertItemFSRef(login_items_ref,
+                                               kLSSharedFileListItemLast,
+                                               NULL, // name
+                                               NULL, // icon
+                                               &fsref,
+                                               NULL, NULL);
+        if (item){
+            [sender setState:NSOnState];
+            CFRelease(item);
+        }
+    }
+    else if (item = audioscrobbler_session_login_item(login_items_ref)){
+        LSSharedFileListItemRemove(login_items_ref, item);
+        [sender setState:NSOffState];
+    }
+    
+    CFRelease(login_items_ref);
 }
 
 @end
