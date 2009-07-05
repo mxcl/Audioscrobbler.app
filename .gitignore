@@ -1,0 +1,5 @@
+/Audioscrobbler.xcodeproj/*.mode1v3
+/Audioscrobbler.xcodeproj/*.pbxuser
+/build/
+.DS_Store
+

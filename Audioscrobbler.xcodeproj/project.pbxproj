@@ -81,14 +81,14 @@
 		6391B12C0FB9A1190018741E /* love.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = love.png; sourceTree = "<group>"; };
 		6391B12D0FB9A1190018741E /* tag.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = tag.png; sourceTree = "<group>"; };
 		6391B12E0FB9A1190018741E /* share.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = share.png; sourceTree = "<group>"; };
-		6393C3C70F93870400286602 /* iTunes Plug-in.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "iTunes Plug-in.xcodeproj"; path = "../iTunes/iTunes Plug-in.xcodeproj"; sourceTree = SOURCE_ROOT; };
-		63B5AA380F93565500DC9D8C /* md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = md5.c; path = ../portable/md5.c; sourceTree = SOURCE_ROOT; };
+		6393C3C70F93870400286602 /* iTunes Plug-in.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = "iTunes Plug-in.xcodeproj"; path = "scrobsub/iTunes/iTunes Plug-in.xcodeproj"; sourceTree = SOURCE_ROOT; };
+		63B5AA380F93565500DC9D8C /* md5.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = md5.c; path = scrobsub/md5.c; sourceTree = "<group>"; };
 		63B5AA5D0F9356DD00DC9D8C /* Audioscrobbler.sdef */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.sdef; path = Audioscrobbler.sdef; sourceTree = "<group>"; };
-		63BAE5490FB9D8F900B6ECE6 /* BGHUDScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BGHUDScroller.h; path = "../../bghudappkit-read-only/Framework/BGHUDScroller.h"; sourceTree = SOURCE_ROOT; };
-		63BAE54A0FB9D8F900B6ECE6 /* BGHUDScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BGHUDScroller.m; path = "../../bghudappkit-read-only/Framework/BGHUDScroller.m"; sourceTree = SOURCE_ROOT; };
+		63BAE5490FB9D8F900B6ECE6 /* BGHUDScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BGHUDScroller.h; path = "scrobsub/scrobsub/bghudappkit-read-only/Framework/BGHUDScroller.h"; sourceTree = SOURCE_ROOT; };
+		63BAE54A0FB9D8F900B6ECE6 /* BGHUDScroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BGHUDScroller.m; path = "scrobsub/scrobsub/bghudappkit-read-only/Framework/BGHUDScroller.m"; sourceTree = SOURCE_ROOT; };
 		63C9B9490F8672940065ED7F /* Last.fm.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Last.fm.icns; sourceTree = "<group>"; };
 		63C9B9620F867C460065ED7F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
-		63CDD7190F9533C800D69723 /* relay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = relay.c; path = ../relay.c; sourceTree = SOURCE_ROOT; };
+		63CDD7190F9533C800D69723 /* relay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = relay.c; path = scrobsub/relay.c; sourceTree = "<group>"; };
 		63D1D09E0F97FDB3004FBC05 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Growl.framework; sourceTree = "<group>"; };
 		63D1D0DA0F980171004FBC05 /* Growl Registration Ticket.growlRegDict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Growl Registration Ticket.growlRegDict"; sourceTree = "<group>"; };
 		63D1D1020F980532004FBC05 /* lastfm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lastfm.h; sourceTree = "<group>"; };
@@ -104,9 +104,9 @@
 		63D6DAF00F8396E000F4DCAA /* StatusItemController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StatusItemController.m; sourceTree = "<group>"; };
 		63D6DB360F8399E000F4DCAA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		63D6DB370F8399E000F4DCAA /* inverted_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = inverted_icon.png; sourceTree = "<group>"; };
-		63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = scrobsub.c; path = ../scrobsub.c; sourceTree = SOURCE_ROOT; };
-		63D6DB8F0F83B6FE00F4DCAA /* scrobsub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scrobsub.h; path = ../scrobsub.h; sourceTree = SOURCE_ROOT; };
-		63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = scrobsub.m; sourceTree = "<group>"; };
+		63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.c; fileEncoding = 4; name = scrobsub.c; path = scrobsub/scrobsub.c; sourceTree = "<group>"; };
+		63D6DB8F0F83B6FE00F4DCAA /* scrobsub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = scrobsub.h; path = scrobsub/scrobsub.h; sourceTree = "<group>"; };
+		63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = scrobsub.m; path = scrobsub/scrobsub.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Audioscrobbler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Audioscrobbler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -192,12 +192,8 @@
 		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
 			isa = PBXGroup;
 			children = (
+				6304E7CC1000E88F005772D4 /* scrobsub */,
 				637F07050FAF180F006EE129 /* iTunes.h */,
-				63D6DB8F0F83B6FE00F4DCAA /* scrobsub.h */,
-				63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */,
-				63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */,
-				63CDD7190F9533C800D69723 /* relay.c */,
-				63B5AA380F93565500DC9D8C /* md5.c */,
 				32CA4F630368D1EE00C91783 /* pc.h */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
 				63B5AA5D0F9356DD00DC9D8C /* Audioscrobbler.sdef */,
@@ -232,6 +228,18 @@
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6304E7CC1000E88F005772D4 /* scrobsub */ = {
+			isa = PBXGroup;
+			children = (
+				63D6DB8F0F83B6FE00F4DCAA /* scrobsub.h */,
+				63D6DB8D0F83B6F800F4DCAA /* scrobsub.c */,
+				63D6DBDE0F83CE6700F4DCAA /* scrobsub.m */,
+				63CDD7190F9533C800D69723 /* relay.c */,
+				63B5AA380F93565500DC9D8C /* md5.c */,
+			);
+			name = scrobsub;
 			sourceTree = "<group>";
 		};
 		6393C3C80F93870400286602 /* Products */ = {
@@ -335,7 +343,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sdp -f st -o $BUILT_PRODUCTS_DIR/$EXECUTABLE_FOLDER_PATH/../Resources $SOURCE_ROOT/Audioscrobbler.sdef";
+			shellScript = "sdp -f st -o $BUILT_PRODUCTS_DIR/$EXECUTABLE_FOLDER_PATH/scrobsub/Resources $SOURCE_ROOT/Audioscrobbler.sdef";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */

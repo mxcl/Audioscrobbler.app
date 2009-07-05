@@ -1,0 +1,3 @@
+[submodule "scrobsub"]
+	path = scrobsub
+	url = git://github.com/mxcl/scrobsub.git
