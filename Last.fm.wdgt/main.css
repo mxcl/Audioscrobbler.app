@@ -1,12 +1,34 @@
-body {
-    background-color: #fff;
-    font-family: "Lucida Grande", sans-serif;
-    overflow-y: scroll;
+#image {
+  font-family: "Lucida Grande", sans-serif;
+  -webkit-border-radius: 10px;
+  -webkit-box-shadow: 0px 4px 7px rgba(0,0,0,0.68);
+  -webkit-mask-image: none;
+  -webkit-background-clip: padding;
+  -webkit-background-origin: padding;
+  height: 252px;
+  width: 252px;
+  margin: 13px; /*TODO be a little more clipped*/
+  background-color: rgba(0,0,0,0.4);
+  background-repeat: no-repeat;
+  color: white;
+  position: relative;
+  border: 4px solid black;
+}
+
+#text{
+  position: absolute;
+  bottom:0;
+  left:0;
+  padding: 10px;
+  font-size: 10pt;
+  width:232px;
+  background:-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.33)), to(rgba(0,0,0,0.50))); ;
+  text-shadow: 0px 2px 7px #000;
 }
 
 #bio {
     font-size: 10pt;
-    -apple-dashboard-region: dashboard-region(control rectangle 5px 5px 5px 5px);
+    display:none;
 }
 
 #listeners {
@@ -16,24 +38,4 @@ body {
 
 #artist {
     font-weight: bold;
-}
-
-#image {
-    border: 1px solid #cccccc;
-    padding: 1px;
-    margin: 0 0.5em 0 0;
-}
-
-table {
-    margin: 0 0 0.7em 0;
-}
-
-#subs-status-text {
-    font-size: 8pt;
-    color: #fff;
-}
-
-p {
-    margin: 0;
-    margin-bottom: 0.7em;
 }
