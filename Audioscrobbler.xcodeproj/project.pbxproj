@@ -213,7 +213,7 @@
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				63B5AA670F93577400DC9D8C /* Compile Audioscrobbler.sdef */,
 				63D1D0C50F97FFB9004FBC05 /* Copy Frameworks */,
-				6301B3AB1001078B00839558 /* Copy Last.fm.wdgt */,
+				6301B3AB1001078B00839558 /* Compress Last.fm.wdgt */,
 			);
 			buildRules = (
 			);
@@ -260,19 +260,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6301B3AB1001078B00839558 /* Copy Last.fm.wdgt */ = {
+		6301B3AB1001078B00839558 /* Compress Last.fm.wdgt */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Last.fm.wdgt";
+			name = "Compress Last.fm.wdgt";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $SOURCE_ROOT\ntar cjf \"$BUILT_PRODUCTS_DIR/$EXECUTABLE_FOLDER_PATH/../Resources/Last.fm.wdgt.tar.bz2\" Last.fm.wdgt";
+			shellScript = "cd $SOURCE_ROOT\ndst=\"$BUILT_PRODUCTS_DIR/$EXECUTABLE_FOLDER_PATH/../Resources/Last.fm.wdgt.tar.bz2\"\ntar cjf $dst Last.fm.wdgt";
 		};
 		63B5AA670F93577400DC9D8C /* Compile Audioscrobbler.sdef */ = {
 			isa = PBXShellScriptBuildPhase;

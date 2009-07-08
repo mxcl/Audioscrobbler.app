@@ -73,6 +73,17 @@ static LSSharedFileListItemRef audioscrobbler_session_login_item(LSSharedFileLis
     return NULL;        
 }
 
+static NSString* downloads()
+{
+    NSString* path = [NSHomeDirectory() stringByAppendingPathComponent:@"Downloads"];
+    BOOL isdir = false;
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isdir] && isdir)
+        return path;
+    
+    return NSTemporaryDirectory();
+}
+
 
 @implementation StatusItemController
 
@@ -262,6 +273,20 @@ static LSSharedFileListItemRef audioscrobbler_session_login_item(LSSharedFileLis
     }
     
     CFRelease(login_items_ref);
+}
+
+-(IBAction)installDashboardWidget:(id)sender
+{
+    NSString* bz2 = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"Last.fm.wdgt.tar.bz2"];
+    
+    NSTask* task = [[NSTask alloc] init];
+    [task setLaunchPath:@"/usr/bin/tar"];
+    [task setCurrentDirectoryPath:downloads()];
+    [task setArguments:[NSArray arrayWithObjects:@"xf", bz2, nil]];
+    [task launch];
+    [task waitUntilExit];
+    
+    [[NSWorkspace sharedWorkspace] openFile:[[task currentDirectoryPath] stringByAppendingPathComponent:@"Last.fm.wdgt"]];
 }
 
 @end
