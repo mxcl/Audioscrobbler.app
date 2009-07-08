@@ -19,6 +19,7 @@
 
 // Created by Max Howell <max@last.fm>
 
+#import "AutoDash.h"
 #import "lastfm.h"
 #import "Mediator.h"
 #import "scrobsub.h"
@@ -87,6 +88,13 @@ static NSString* downloads()
 
 @implementation StatusItemController
 
++(void)initialize
+{
+    [[NSUserDefaults standardUserDefaults] registerDefaults:[NSDictionary
+                                                             dictionaryWithObject:[NSNumber numberWithBool:false]
+                                                             forKey:@"AutoDash"]];
+}
+
 -(void)awakeFromNib
 {   
     NSBundle* bundle = [NSBundle mainBundle];
@@ -105,6 +113,9 @@ static NSString* downloads()
 
     [GrowlApplicationBridge setGrowlDelegate:self];
 
+    if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"AutoDash"] boolValue] == true)
+        autodash = [[AutoDash alloc] init];
+    
 /// Start at Login item
     LSSharedFileListRef login_items_ref = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
     if(login_items_ref){
@@ -287,6 +298,14 @@ static NSString* downloads()
     [task waitUntilExit];
     
     [[NSWorkspace sharedWorkspace] openFile:[[task currentDirectoryPath] stringByAppendingPathComponent:@"Last.fm.wdgt"]];
+}
+
+-(IBAction)activateAutoDash:(id)sender
+{
+    if ([sender state] == NSOnState)
+        autodash = [[AutoDash alloc] init];
+    else
+        [autodash release];
 }
 
 @end

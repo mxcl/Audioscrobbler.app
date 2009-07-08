@@ -19,32 +19,15 @@
 
 // Created by Max Howell <max@last.fm>
 
-#import <Growl/GrowlApplicationBridge.h>
 #import <Cocoa/Cocoa.h>
-@class AutoDash;
 
 
-@interface StatusItemController : NSObject <GrowlApplicationBridgeDelegate>
-{
-    NSStatusItem* status_item;
-    IBOutlet NSMenu* menu;
-    IBOutlet NSMenuItem* start_at_login;
-    AutoDash* autodash;
+@interface AutoDash:NSObject{
+    NSTimer* timer;
+@private
+	io_registry_entry_t io_obj;
 }
 
--(IBAction)love:(id)sender;
--(IBAction)tag:(id)sender;
--(IBAction)share:(id)sender;
--(IBAction)startAtLogin:(id)sender;
--(IBAction)installDashboardWidget:(id)sender;
--(IBAction)activateAutoDash:(id)sender;
+-(id)init;
 
-@end
-
-
-@interface ShareWindowController:NSWindowController
-{
-    IBOutlet NSTextField* username;
-}
--(IBAction)submit:(id)sender;
 @end

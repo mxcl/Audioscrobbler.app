@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* main.xib */; };
 		63024AEC0F9640A8001B8E9B /* Mediator.m in Sources */ = {isa = PBXBuildFile; fileRef = 63024AEB0F9640A8001B8E9B /* Mediator.m */; };
+		630EF82F1004ACC200EB28C2 /* AutoDash.m in Sources */ = {isa = PBXBuildFile; fileRef = 630EF82E1004ACC200EB28C2 /* AutoDash.m */; };
+		630EF8391004B61300EB28C2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 630EF8381004B61300EB28C2 /* IOKit.framework */; };
 		637F074E0FAF20AD006EE129 /* ScriptingBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 637F074D0FAF20AD006EE129 /* ScriptingBridge.framework */; };
 		63906F0C0F9DE71E00797A14 /* ShareWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63906F0B0F9DE71E00797A14 /* ShareWindow.xib */; };
 		63B5AA390F93565500DC9D8C /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 63B5AA380F93565500DC9D8C /* md5.c */; };
@@ -55,6 +57,9 @@
 		32CA4F630368D1EE00C91783 /* pc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pc.h; sourceTree = "<group>"; };
 		63024AE90F964063001B8E9B /* Mediator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mediator.h; sourceTree = "<group>"; };
 		63024AEB0F9640A8001B8E9B /* Mediator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mediator.m; sourceTree = "<group>"; };
+		630EF82D1004ACC200EB28C2 /* AutoDash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoDash.h; sourceTree = "<group>"; };
+		630EF82E1004ACC200EB28C2 /* AutoDash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoDash.m; sourceTree = "<group>"; };
+		630EF8381004B61300EB28C2 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		637F07050FAF180F006EE129 /* iTunes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iTunes.h; sourceTree = "<group>"; };
 		637F074D0FAF20AD006EE129 /* ScriptingBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScriptingBridge.framework; path = /System/Library/Frameworks/ScriptingBridge.framework; sourceTree = "<absolute>"; };
 		63906F0B0F9DE71E00797A14 /* ShareWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShareWindow.xib; sourceTree = "<group>"; };
@@ -91,6 +96,7 @@
 				63D1D09F0F97FDB3004FBC05 /* Growl.framework in Frameworks */,
 				63D1D2990F9A0CB1004FBC05 /* Carbon.framework in Frameworks */,
 				637F074E0FAF20AD006EE129 /* ScriptingBridge.framework in Frameworks */,
+				630EF8391004B61300EB28C2 /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,6 +114,8 @@
 				63D1D1030F980532004FBC05 /* lastfm.m */,
 				63D1D1A00F989847004FBC05 /* HistoryMenuController.h */,
 				63D1D1A10F989847004FBC05 /* HistoryMenuController.m */,
+				630EF82D1004ACC200EB28C2 /* AutoDash.h */,
+				630EF82E1004ACC200EB28C2 /* AutoDash.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -115,6 +123,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				630EF8381004B61300EB28C2 /* IOKit.framework */,
 				637F074D0FAF20AD006EE129 /* ScriptingBridge.framework */,
 				63D1D2980F9A0CB1004FBC05 /* Carbon.framework */,
 				63D1D09E0F97FDB3004FBC05 /* Growl.framework */,
@@ -305,6 +314,7 @@
 				63024AEC0F9640A8001B8E9B /* Mediator.m in Sources */,
 				63D1D1040F980532004FBC05 /* lastfm.m in Sources */,
 				63D1D1A20F989847004FBC05 /* HistoryMenuController.m in Sources */,
+				630EF82F1004ACC200EB28C2 /* AutoDash.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
