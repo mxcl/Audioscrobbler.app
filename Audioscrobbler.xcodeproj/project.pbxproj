@@ -272,7 +272,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $SOURCE_ROOT\ndst=\"$BUILT_PRODUCTS_DIR/$EXECUTABLE_FOLDER_PATH/../Resources/Last.fm.wdgt.tar.bz2\"\ntar cjf $dst Last.fm.wdgt";
+			shellScript = "cd $SOURCE_ROOT\ndst=\"$BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Last.fm.wdgt.tar.bz2\"\ntar cjf $dst Last.fm.wdgt";
 		};
 		63B5AA670F93577400DC9D8C /* Compile Audioscrobbler.sdef */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -286,7 +286,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sdp -f st -o $BUILT_PRODUCTS_DIR/$EXECUTABLE_FOLDER_PATH/../Resources $SOURCE_ROOT/Audioscrobbler.sdef";
+			shellScript = "sdp -f st -o $BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH $SOURCE_ROOT/Audioscrobbler.sdef";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
