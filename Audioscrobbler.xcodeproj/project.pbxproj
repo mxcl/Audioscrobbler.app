@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* main.xib */; };
+		6301E62410061AB900E87198 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6301E62310061AB900E87198 /* Sparkle.framework */; };
+		6301E62A10061ABE00E87198 /* Sparkle.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 6301E62310061AB900E87198 /* Sparkle.framework */; };
 		63024AEC0F9640A8001B8E9B /* Mediator.m in Sources */ = {isa = PBXBuildFile; fileRef = 63024AEB0F9640A8001B8E9B /* Mediator.m */; };
 		630EF82F1004ACC200EB28C2 /* AutoDash.m in Sources */ = {isa = PBXBuildFile; fileRef = 630EF82E1004ACC200EB28C2 /* AutoDash.m */; };
 		630EF8391004B61300EB28C2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 630EF8381004B61300EB28C2 /* IOKit.framework */; };
@@ -40,6 +42,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				6301E62A10061ABE00E87198 /* Sparkle.framework in Copy Frameworks */,
 				63D1D0C40F97FF9B004FBC05 /* Growl.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
@@ -55,6 +58,7 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* pc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pc.h; sourceTree = "<group>"; };
+		6301E62310061AB900E87198 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		63024AE90F964063001B8E9B /* Mediator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mediator.h; sourceTree = "<group>"; };
 		63024AEB0F9640A8001B8E9B /* Mediator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Mediator.m; sourceTree = "<group>"; };
 		630EF82D1004ACC200EB28C2 /* AutoDash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoDash.h; sourceTree = "<group>"; };
@@ -97,6 +101,7 @@
 				63D1D2990F9A0CB1004FBC05 /* Carbon.framework in Frameworks */,
 				637F074E0FAF20AD006EE129 /* ScriptingBridge.framework in Frameworks */,
 				630EF8391004B61300EB28C2 /* IOKit.framework in Frameworks */,
+				6301E62410061AB900E87198 /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +128,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6301E62310061AB900E87198 /* Sparkle.framework */,
 				630EF8381004B61300EB28C2 /* IOKit.framework */,
 				637F074D0FAF20AD006EE129 /* ScriptingBridge.framework */,
 				63D1D2980F9A0CB1004FBC05 /* Carbon.framework */,
