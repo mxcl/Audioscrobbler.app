@@ -28,6 +28,7 @@
 {
     NSStatusItem* status_item;
     IBOutlet NSMenu* menu;
+    IBOutlet NSMenu* app_menu;
     IBOutlet NSMenuItem* start_at_login;
     AutoDash* autodash;
 }

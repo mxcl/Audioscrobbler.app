@@ -115,6 +115,8 @@ static NSString* downloads()
 
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"AutoDash"] boolValue] == true)
         autodash = [[AutoDash alloc] init];
+
+    [NSApp setMainMenu:app_menu]; // so the close shortcut will work
     
 /// Start at Login item
     LSSharedFileListRef login_items_ref = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
