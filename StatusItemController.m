@@ -123,11 +123,14 @@ static NSString* downloads()
         [start_at_login setState:login_item?NSOnState:NSOffState];
         CFRelease(login_items_ref);
     }
-    
+
+#if __AS_DEBUGGING__
+    [[menu itemAtIndex:9] setTitle:@"Quit Debugscrobbler"];
+#else
 /// global shortcut
     EventTypeSpec type;
     type.eventClass = kEventClassKeyboard;
-    type.eventKind = kEventHotKeyPressed;    
+    type.eventKind = kEventHotKeyPressed;
     InstallApplicationEventHandler(&MyHotKeyHandler, 1, &type, self, NULL);
 
     EventHotKeyID kid;
@@ -138,6 +141,7 @@ static NSString* downloads()
     kid.signature='htk2';
     kid.id=2;
     RegisterEventHotKey(kVK_ANSI_S, cmdKey+optionKey+controlKey, kid, GetApplicationEventTarget(), 0, &kref);
+#endif
 }
 
 -(bool)autohide
