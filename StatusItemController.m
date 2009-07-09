@@ -312,6 +312,14 @@ static NSString* downloads()
         [autodash release];
 }
 
+-(IBAction)about:(id)sender
+{
+    // http://www.cocoadev.com/index.pl?NSStatusItem
+    // LSUIElement screws up Window ordering
+    [NSApp activateIgnoringOtherApps:YES];
+    [NSApp orderFrontStandardAboutPanel:sender];
+}
+
 @end
 
 

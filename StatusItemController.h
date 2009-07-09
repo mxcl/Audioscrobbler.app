@@ -38,6 +38,7 @@
 -(IBAction)startAtLogin:(id)sender;
 -(IBAction)installDashboardWidget:(id)sender;
 -(IBAction)activateAutoDash:(id)sender;
+-(IBAction)about:(id)sender;
 
 @end
 
