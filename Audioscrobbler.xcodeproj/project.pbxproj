@@ -6,6 +6,20 @@
 	objectVersion = 45;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		63ACA12D10079C54000A4069 /* Distribution */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 63ACA13010079C7D000A4069 /* Build configuration list for PBXAggregateTarget "Distribution" */;
+			buildPhases = (
+				63ACA12C10079C54000A4069 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Distribution;
+			productName = Distribution;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* main.xib */; };
 		6301E62410061AB900E87198 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6301E62310061AB900E87198 /* Sparkle.framework */; };
@@ -14,6 +28,7 @@
 		630EF82F1004ACC200EB28C2 /* AutoDash.m in Sources */ = {isa = PBXBuildFile; fileRef = 630EF82E1004ACC200EB28C2 /* AutoDash.m */; };
 		630EF8391004B61300EB28C2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 630EF8381004B61300EB28C2 /* IOKit.framework */; };
 		632B2001100624150009A0B7 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 632B2000100624150009A0B7 /* Credits.rtf */; };
+		6372C84F1007A01B00EC25F4 /* methylblue.pem in Resources */ = {isa = PBXBuildFile; fileRef = 6372C84E1007A01B00EC25F4 /* methylblue.pem */; };
 		637F074E0FAF20AD006EE129 /* ScriptingBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 637F074D0FAF20AD006EE129 /* ScriptingBridge.framework */; };
 		63906F0C0F9DE71E00797A14 /* ShareWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63906F0B0F9DE71E00797A14 /* ShareWindow.xib */; };
 		63B5AA390F93565500DC9D8C /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 63B5AA380F93565500DC9D8C /* md5.c */; };
@@ -66,6 +81,7 @@
 		630EF82E1004ACC200EB28C2 /* AutoDash.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoDash.m; sourceTree = "<group>"; };
 		630EF8381004B61300EB28C2 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		632B2000100624150009A0B7 /* Credits.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Credits.rtf; sourceTree = "<group>"; };
+		6372C84E1007A01B00EC25F4 /* methylblue.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = methylblue.pem; sourceTree = "<group>"; };
 		637F07050FAF180F006EE129 /* iTunes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iTunes.h; sourceTree = "<group>"; };
 		637F074D0FAF20AD006EE129 /* ScriptingBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScriptingBridge.framework; path = /System/Library/Frameworks/ScriptingBridge.framework; sourceTree = "<absolute>"; };
 		63906F0B0F9DE71E00797A14 /* ShareWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShareWindow.xib; sourceTree = "<group>"; };
@@ -193,6 +209,7 @@
 				8D1107310486CEB800E47090 /* Info.plist */,
 				1DDD58140DA1D0A300B32029 /* main.xib */,
 				63906F0B0F9DE71E00797A14 /* ShareWindow.xib */,
+				6372C84E1007A01B00EC25F4 /* methylblue.pem */,
 				63D1D0DA0F980171004FBC05 /* Growl Registration Ticket.growlRegDict */,
 			);
 			name = Resources;
@@ -256,6 +273,7 @@
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* Audioscrobbler */,
+				63ACA12D10079C54000A4069 /* Distribution */,
 			);
 		};
 /* End PBXProject section */
@@ -273,6 +291,7 @@
 				63D1D0DB0F980171004FBC05 /* Growl Registration Ticket.growlRegDict in Resources */,
 				63906F0C0F9DE71E00797A14 /* ShareWindow.xib in Resources */,
 				632B2001100624150009A0B7 /* Credits.rtf in Resources */,
+				6372C84F1007A01B00EC25F4 /* methylblue.pem in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,6 +311,20 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cd $SOURCE_ROOT\ndst=\"$BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Last.fm.wdgt.tar.bz2\"\ntar cjf $dst Last.fm.wdgt";
+		};
+		63ACA12C10079C54000A4069 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "set -o errexit\n\n# OSX copies special file attributes to ._files when you tar!\nexport COPY_EXTENDED_ATTRIBUTES_DISABLE=true\nexport COPYFILE_DISABLE=true\n\n[ $BUILD_STYLE = Release ] || { echo Distribution target requires \"'Release'\" build style; false; }\n\nVERSION=$(defaults read \"$BUILT_PRODUCTS_DIR/$PROJECT_NAME.app/Contents/Info\" CFBundleVersion)\nDOWNLOAD_BASE_URL=\"http://www.methylblue.com/audioscrobbler\"\n\nARCHIVE_FILENAME=\"$PROJECT_NAME-$VERSION-mxcl.dmg\"\nDOWNLOAD_URL=\"$DOWNLOAD_BASE_URL/$ARCHIVE_FILENAME\"\nKEYCHAIN_PRIVKEY_NAME=\"Sparkle Private Key\"\n\nWD=$PWD\ncd \"$BUILT_PRODUCTS_DIR\"\nrm -f \"$PROJECT_NAME\"*.dmg\nhdiutil create -srcfolder \"$PROJECT_NAME.app\" -format UDZO -imagekey zlib-level=9 -scrub \"$ARCHIVE_FILENAME\"\n\nSIZE=$(stat -f %z \"$ARCHIVE_FILENAME\")\nPUBDATE=$(date +\"%a, %d %b %G %T %z\")\nSIGNATURE=$(\n\topenssl dgst -sha1 -binary < \"$ARCHIVE_FILENAME\" \\\n\t| openssl dgst -dss1 -sign <(security find-generic-password -g -s \"$KEYCHAIN_PRIVKEY_NAME\" 2>&1 1>/dev/null | perl -pe '($_) = /\"(.+)\"/; s/\\\\012/\\n/g') \\\n\t| openssl enc -base64\n)\n\n[ $SIGNATURE ] || { echo Unable to load signing private key with name \"'$KEYCHAIN_PRIVKEY_NAME'\" from keychain; false; }\n\ncat <<EOF> appcast.xml\n<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rss version=\"2.0\" xmlns:sparkle=\"http://www.andymatuschak.org/xml-namespaces/sparkle\"\txmlns:dc=\"http://purl.org/dc/elements/1.1/\">\n\t<channel>\n\t\t<title>Audioscrobbler (Minimalist branch) Changelog</title>\n\t\t<link>http://www.methylblue.com/audioscrobbler/appcast.xml</link>\n\t\t<description>Most recent changes with links to updates.</description>\n\t\t<language>en</language>\n\t\t<item>\n\t\t\t<title>Version $VERSION</title>\n\t\t\t<pubDate>$PUBDATE</pubDate>\n\t\t\t<description>\n\t\t\t\t<![CDATA[<a style='float:left;margin-right:1em' href='http://www.flickr.com/photos/30941515@N07/3352597643/'><img src='http://farm2.static.flickr.com/1401/3352597643_a0f283a90b_m.jpg'></a><h2></h2><p></p>]]>\n\t\t\t</description>\n\t\t\t<enclosure\n\t\t\t\turl=\"$DOWNLOAD_URL\"\n\t\t\t\tsparkle:version=\"$VERSION\"\n\t\t\t\ttype=\"application/octet-stream\"\n\t\t\t\tlength=\"$SIZE\"\n\t\t\t\tsparkle:dsaSignature=\"$SIGNATURE\"\n\t\t\t/>\n\t\t</item>\n\t</channel>\n</rss>\nEOF\n\necho scp \"'$PWD/appcast.xml'\" \"'$PWD/$ARCHIVE_FILENAME'\" methylblue.com:public_html/audioscrobbler";
+			showEnvVarsInLog = 0;
 		};
 		63B5AA670F93577400DC9D8C /* Compile Audioscrobbler.sdef */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -342,6 +375,27 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		63ACA12E10079C54000A4069 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = Distribution;
+			};
+			name = Debug;
+		};
+		63ACA12F10079C54000A4069 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = Distribution;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -415,6 +469,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		63ACA13010079C7D000A4069 /* Build configuration list for PBXAggregateTarget "Distribution" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				63ACA12E10079C54000A4069 /* Debug */,
+				63ACA12F10079C54000A4069 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "Audioscrobbler" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
