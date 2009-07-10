@@ -2,7 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>CFBundleDevelopmentRegion</key>
+	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
@@ -19,20 +19,20 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.9.1</string>
+	<string>0.9.2</string>
 	<key>CFBundleGetInfoString</key>
 	<string>Audioscrobbler (minimalist branch)</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© Last.fm, Max Howell, 2009</string>
 	<key>NSAppleScriptEnabled</key>
-    <true/>
-    <key>NSMainNibFile</key>
+	<true/>
+	<key>NSMainNibFile</key>
 	<string>main</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>LSUIElement</key>
 	<true/>
-   	<key>LSMinimumSystemVersion</key>
+	<key>LSMinimumSystemVersion</key>
 	<string>10.5.0</string>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
@@ -45,6 +45,6 @@
 	<key>SUScheduledCheckInterval</key>
 	<string>259200</string>
 	<key>SUPublicDSAKeyFile</key>
-	<string>methylblue.pem</string>	
+	<string>methylblue.pem</string>
 </dict>
 </plist>
