@@ -203,6 +203,10 @@ static Mediator* sharedMediator;
                artist:(NSString*)artist
                 album:(NSString*)album
 {
+    if(!title)title=@"";
+    if(!artist)artist=@"";
+    if(!album)album=@"";    
+    
     if(![stack containsObject:id])
         NSLog(@"Invalid action: resuming an unknown player connection");
     else{
@@ -211,7 +215,7 @@ static Mediator* sharedMediator;
         if([artist isEqualToString:[dict objectForKey:@"Artist"]]
                     && [title isEqualToString:[dict objectForKey:@"Name"]]
                     && [album isEqualToString:[dict objectForKey:@"Album"]]){
-            NSLog(@"Won't announce metadata changed as nothing actually changed");
+            NSLog(@"Won't announce metadata changed as nothing important actually changed");
             return;
         }
 
@@ -219,12 +223,12 @@ static Mediator* sharedMediator;
         [dict setObject:artist forKey:@"Artist"];
         [dict setObject:album forKey:@"Album"];
         if([active isEqualToString:id]){
+            [self announce:dict withTransition:TrackMetadataChanged];
+            
             nonullthx(Artist);
             nonullthx(Album);
             nonullthx(Name);
             scrobsub_change_metadata(Artist, Name, Album);
-            
-            [self announce:dict withTransition:TrackMetadataChanged];
         }
     }
 }
@@ -267,7 +271,7 @@ static Mediator* sharedMediator;
 {
     NSString* state = [[userData userInfo] objectForKey:@"Player State"];
 
-    if([state isEqualToString:@"Playing"]){
+    if([state isEqualToString:@"Playing"]){        
         // pid may be the same as iTunes send this if the metadata is changed by
         // the user for instance
         //TODO if user restarts the track near the end we should count it is as scrobbled and start again
