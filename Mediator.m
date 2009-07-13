@@ -60,7 +60,7 @@ static Mediator* sharedMediator;
                                                               object:self
                                                             userInfo:dict];
     [[NSNotificationQueue defaultQueue]enqueueNotification:notification
-                                              postingStyle:NSPostNow
+                                              postingStyle:NSPostASAP // post later as this gives control back to applescripts quicker
                                               coalesceMask:NSNotificationCoalescingOnName
                                                   forModes:nil];
 }
@@ -114,6 +114,9 @@ static Mediator* sharedMediator;
     [track setObject:@"Playing" forKey:@"Player State"];
     [track setObject:id forKey:@"Client ID"];
     [track setObject:[NSNumber numberWithUnsignedInt:time] forKey:@"Start Time"];
+    
+    if(![track objectForKey:@"Album"])
+        [track setObject:@"" forKey:@"Album"]; //prevent crashes
     
     if(!active)
         active = id;
@@ -239,7 +242,7 @@ static Mediator* sharedMediator;
 {
     switch([[self commandDescription] appleEventCode]){
         case(FourCharCode)'strt':
-            [[Mediator sharedMediator] start:[self directParameter] withTrack:[[self evaluatedArguments] mutableCopy]];
+            [[Mediator sharedMediator] start:[self directParameter] withTrack:[[[self evaluatedArguments] mutableCopy] autorelease]];
             break;
         case(FourCharCode)'paus':
             [[Mediator sharedMediator] pause:[self directParameter]];
