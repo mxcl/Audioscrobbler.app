@@ -304,13 +304,16 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/Last.fm.wdgt",
 			);
 			name = "Compress Last.fm.wdgt";
 			outputPaths = (
+				$BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Last.fm.wdgt.tar.bz2,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cd $SOURCE_ROOT\ndst=\"$BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Last.fm.wdgt.tar.bz2\"\ntar cjf $dst Last.fm.wdgt";
+			showEnvVarsInLog = 0;
 		};
 		63ACA12C10079C54000A4069 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
