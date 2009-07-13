@@ -64,8 +64,6 @@ void CoreDockSendNotification(NSString *notificationName); // not public, but pr
     uint32_t const idletime = [self systemIdleTime];
     uint32_t next_time;
     
-    NSLog(@"Idletime is %d", idletime);
-    
     if (idletime >= INTERVAL){
         CoreDockSendNotification(@"com.apple.dashboard.awake");
         // until we can know when the dashboard is deactivated, we have to keep
