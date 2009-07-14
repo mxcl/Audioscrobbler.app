@@ -330,7 +330,10 @@ static NSString* downloads()
 
 -(void)submit:(id)sender
 {
+    [spinner startAnimation:self];
     [lastfm share:[[Mediator sharedMediator] currentTrack] with:[username stringValue]];
+    [self close];
+    [spinner stopAnimation:self];
 }
 
 -(void)showWindow:(id)sender

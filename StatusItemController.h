@@ -46,6 +46,7 @@
 
 @interface ShareWindowController:NSWindowController
 {
+    IBOutlet NSProgressIndicator* spinner; 
     IBOutlet NSTextField* username;
 }
 -(IBAction)submit:(id)sender;
