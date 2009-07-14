@@ -9,19 +9,18 @@ function localize(s)
 
 var img;
 
-function artist_got_info(xml)
+function artist_got_info(json)
 {
+    result = json.artist;
+    document.getElementById('artist').innerHTML = result.name
+    document.getElementById('artist').href = "javascript:window.widget.openURL('"+result.url+"');return false;";
+    document.getElementById('listeners').innerText = localize(result.stats.listeners) + ' listeners';
+
     // Last.fm returns HTML, but no paragraph formatting :P
-    bio = $('content', xml).text().replace(/(\n|\r)+/g, "<p>");
+    bio = result.bio.content.replace(/(\n|\r)+/g, "<p>");
     // Don't open the URL inside the widget!
     bio = bio.replace(/(href=\")+(https?\:\/\/[^\s<>\"$]+)/ig, 'href="javascript:window.widget.openURL(\'$2\');return false;');
     document.getElementById('bio').innerHTML = bio;
-    
-    document.getElementById('listeners').innerText = localize($('listeners', xml).text()) + ' listeners';
-    // this verbose syntax prevents jQuery selecting all the images of the 
-    // similar artists as well :(
-    var url = $("lfm", xml).children("artist").children("image[size='large']").text();
-    url = url.replace('126', '252');
 
     img = new Image();
     img.onload = function() {
@@ -31,26 +30,19 @@ function artist_got_info(xml)
         back.style.backgroundImage='url('+this.src+')';
         window.resizeTo(286, h+34);
     }
-    img.src = url;
+    img.src = result.image[3]['#text'];
 }
 
 function set_artist(scpt)
 {
-    artist = $.trim( scpt.outputString );
-    artiste = document.getElementById('artist');
-    if (artiste.innerText == artist) return;
-
-    artiste.innerText = artist;
-    document.getElementById('listeners').innerText = "";
-    document.getElementById('image').style.backgroundImage='url()';
-
-    artist = encodeURIComponent(artist);
-
-    $.ajax( { url      : 'http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&artist='+artist+'&api_key=b25b959554ed76058ac220b7b2e0a026',
-              method   : 'get',
-              dataType : 'xml',
-              success  : artist_got_info
-            } );
+    artist = $.trim(scpt.outputString);
+    if (document.getElementById('artist').innerText != artist)
+        $.getJSON("http://ws.audioscrobbler.com/2.0/?callback=?",
+                  { method: "artist.getinfo", 
+                    api_key: "b25b959554ed76058ac220b7b2e0a026", 
+                    artist: artist,
+                    format: "json", 
+                  }, artist_got_info);
 }
 
 function show()
