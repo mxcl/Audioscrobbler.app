@@ -7,20 +7,22 @@ function localize(s)
     return s;
 }
 
-var img;
+var artist;
+var artist_url;
+var listeners;
+var bio;
 
 function artist_got_info(json)
 {
-    result = json.artist;
-    document.getElementById('artist').innerHTML = result.name
-    document.getElementById('artist').href = "javascript:window.widget.openURL('"+result.url+"');return false;";
-    document.getElementById('listeners').innerText = localize(result.stats.listeners) + ' listeners';
-
+    artist = json.artist.name;
+    artist_url = json.artist.url;
+    listeners = json.artist.stats.listeners;
+    bio = json.artist.bio.content;
+    
     // Last.fm returns HTML, but no paragraph formatting :P
-    bio = result.bio.content.replace(/(\n|\r)+/g, "<p>");
+    bio = bio.replace(/(\n|\r)+/g, "<p>");
     // Don't open the URL inside the widget!
     bio = bio.replace(/(href=\")+(https?\:\/\/[^\s<>\"$]+)/ig, 'href="javascript:window.widget.openURL(\'$2\');return false;');
-    document.getElementById('bio').innerHTML = bio;
 
     img = new Image();
     img.onload = function() {
@@ -28,9 +30,15 @@ function artist_got_info(json)
         var back = document.getElementById('image');
         back.style.height = parseInt(h)+"px";
         back.style.backgroundImage='url('+this.src+')';
+
+        document.getElementById('artist').href = "javascript:window.widget.openURL('"+artist_url+"');return false;";
+        document.getElementById('artist').innerHTML = artist;
+        document.getElementById('listeners').innerText = localize(listeners)+' listeners';
+        document.getElementById('bio').innerHTML = bio;
+            
         window.resizeTo(286, h+34);
     }
-    img.src = result.image[3]['#text'];
+    img.src = json.artist.image[3]['#text'];
 }
 
 function set_artist(scpt)
