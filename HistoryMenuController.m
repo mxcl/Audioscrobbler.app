@@ -48,6 +48,10 @@
     [item setTarget:self];
     [item setRepresentedObject:url];
     [menu insertItem:item atIndex:0];
+    
+    // 18 items is about an hour
+    if([menu numberOfItems] > 18)
+       [menu removeItemAtIndex:15];
 }
 
 -(void)onPlayerInfo:(NSNotification*)not
