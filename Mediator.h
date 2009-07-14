@@ -22,12 +22,16 @@
 //TODO DistributedNotificationCenter
 
 #import <Cocoa/Cocoa.h>
+@class ITunesListener;
+@class ITunesApplication;
 
 @interface Mediator:NSObject{
     NSMutableArray* stack;
     NSMutableDictionary* tracks;
     NSString* active;
     time_t previous_start;
+    
+    ITunesListener* itunes;
 }
 +(id)sharedMediator;
 
@@ -46,9 +50,6 @@
 -(NSDictionary*)currentTrack;
 
 @end
-
-
-@class ITunesApplication;
 
 @interface ITunesListener:NSObject{
     int64_t pid;

@@ -42,8 +42,7 @@ static Mediator* sharedMediator;
     tracks=[[NSMutableDictionary alloc] initWithCapacity:1];
     sharedMediator = self;
     previous_start = 0;
-    
-    [[ITunesListener alloc] init];
+    itunes=[[ITunesListener alloc] init];
 }
 
 +(id)sharedMediator
@@ -324,7 +323,7 @@ static Mediator* sharedMediator;
                                                         selector:@selector(onPlayerInfo:)
                                                             name:@"com.apple.iTunes.playerInfo"
                                                           object:nil];
-    itunes = [SBApplication applicationWithBundleIdentifier:@"com.apple.iTunes"];
+    itunes = [[SBApplication applicationWithBundleIdentifier:@"com.apple.iTunes"] retain];
     
 #if __AS_DEBUGGING__
     if ([itunes isRunning] && itunes.playerState == ITunesEPlSPlaying)
