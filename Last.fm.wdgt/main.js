@@ -31,21 +31,26 @@ function artist_got_info(json)
 
     img = new Image();
     img.onload = function() {
-        $('image').style.height = parseInt(this.height)+"px";
+        $('image').style.height = parseInt(this.height, 10)+"px";
         $('image').style.backgroundImage='url('+this.src+')';
         $('artist').href = "javascript:window.widget.openURL('"+artist_url+"');return false;";
         $('artist').innerHTML = artist;
         $('listeners').innerText = localize(listeners)+' listeners';
         $('bio').innerHTML = bio;
         window.resizeTo(286, this.height+34);
-    }
+    };
     img.src = json.artist.image[3]['#text'];
 }
 
 function set_artist(scpt)
 {
     artist = scpt.outputString.replace(/^\s+$/g, "");
-    if ($('artist').innerText != artist) {
+    if (artist == '') {
+        $('image').style.backgroundImage='';
+        $('artist').innerText='';
+        $('listeners').innerText='';
+    }
+    else if ($('artist').innerText != artist) {
         var url = "http://ws.audioscrobbler.com/2.0/?callback=artist_got_info&method=artist.getinfo&api_key=b25b959554ed76058ac220b7b2e0a026&artist="+artist+"&format=json";
         var script = document.createElement("script");
         script.setAttribute("src", url);
