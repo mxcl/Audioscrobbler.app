@@ -333,4 +333,10 @@ static NSString* downloads()
     [lastfm share:[[Mediator sharedMediator] currentTrack] with:[username stringValue]];
 }
 
+-(void)showWindow:(id)sender
+{
+    [NSApp activateIgnoringOtherApps:YES]; //see above about:
+    [super showWindow:sender];
+}
+
 @end
