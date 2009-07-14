@@ -64,7 +64,9 @@
         case PlaybackStopped:
             if(currentTrack)
                 [self insert:currentTrack];
+            [currentTrack release];
             currentTrack = track;
+            [currentTrack retain];
     }
 }
 

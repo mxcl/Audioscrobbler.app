@@ -175,7 +175,7 @@ static NSString* downloads()
             // fall through
         case TrackResumed:{
             UPDATE_TITLE_MENU
-            NSMutableString* desc = [[dict objectForKey:@"Artist"] mutableCopy];
+            NSMutableString* desc = [[[dict objectForKey:@"Artist"] mutableCopy] autorelease];
             [desc appendString:@"\n"];
             [desc appendString:[dict objectForKey:@"Album"]];
             [GrowlApplicationBridge notifyWithTitle:name

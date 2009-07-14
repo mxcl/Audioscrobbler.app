@@ -52,14 +52,14 @@ static Mediator* sharedMediator;
 
 -(void)announce:(NSDictionary*)track withTransition:(uint)transition
 {
-    NSMutableDictionary* dict = [track mutableCopy];
+    NSMutableDictionary* dict = [[track mutableCopy] autorelease];
     [dict setObject:[NSNumber numberWithUnsignedInt:transition] forKey:@"Transition"];
     
     NSNotification*notification=[NSNotification notificationWithName:@"playerInfo"
                                                               object:self
                                                             userInfo:dict];
     [[NSNotificationQueue defaultQueue]enqueueNotification:notification
-                                              postingStyle:NSPostASAP // post later as this gives control back to applescripts quicker
+                                              postingStyle:NSPostNow
                                               coalesceMask:NSNotificationCoalescingOnName
                                                   forModes:nil];
 }

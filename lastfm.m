@@ -48,7 +48,7 @@ static NSString* encode(NSString* s)
 +(NSURL*)urlForTrack:(NSString*)track by:(NSString*)artist
 {
     //TODO localise URL, maybe auth ws gives that? otherwise OS level locale
-    NSMutableString* path = [@"http://www.last.fm/music/" mutableCopy];
+    NSMutableString* path = [[@"http://www.last.fm/music/" mutableCopy] autorelease];
     [path appendString:encode(artist)];
     [path appendString:@"/_/"];
     [path appendString:encode(track)];
@@ -60,7 +60,7 @@ static NSString* encode(NSString* s)
     NSMutableString* s = [[track objectForKey:@"Artist"] mutableCopy];
     [s appendString:@" – "]; // this string is UTF8, neat eh?
     [s appendString:[track objectForKey:@"Name"]];
-    return s;
+    return [s autorelease];
 }
 
 +(NSURL*)urlForUser:(NSString*)username
