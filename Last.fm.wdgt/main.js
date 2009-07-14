@@ -7,6 +7,11 @@ function localize(s)
     return s;
 }
 
+function $(name)
+{
+    return document.getElementById(name);
+}
+
 var artist;
 var artist_url;
 var listeners;
@@ -18,7 +23,7 @@ function artist_got_info(json)
     artist_url = json.artist.url;
     listeners = json.artist.stats.listeners;
     bio = json.artist.bio.content;
-    
+
     // Last.fm returns HTML, but no paragraph formatting :P
     bio = bio.replace(/(\n|\r)+/g, "<p>");
     // Don't open the URL inside the widget!
@@ -26,31 +31,27 @@ function artist_got_info(json)
 
     img = new Image();
     img.onload = function() {
-        var h = this.height;
-        var back = document.getElementById('image');
-        back.style.height = parseInt(h)+"px";
-        back.style.backgroundImage='url('+this.src+')';
-
-        document.getElementById('artist').href = "javascript:window.widget.openURL('"+artist_url+"');return false;";
-        document.getElementById('artist').innerHTML = artist;
-        document.getElementById('listeners').innerText = localize(listeners)+' listeners';
-        document.getElementById('bio').innerHTML = bio;
-            
-        window.resizeTo(286, h+34);
+        $('image').style.height = parseInt(this.height)+"px";
+        $('image').style.backgroundImage='url('+this.src+')';
+        $('artist').href = "javascript:window.widget.openURL('"+artist_url+"');return false;";
+        $('artist').innerHTML = artist;
+        $('listeners').innerText = localize(listeners)+' listeners';
+        $('bio').innerHTML = bio;
+        window.resizeTo(286, this.height+34);
     }
     img.src = json.artist.image[3]['#text'];
 }
 
 function set_artist(scpt)
 {
-    artist = $.trim(scpt.outputString);
-    if (document.getElementById('artist').innerText != artist)
-        $.getJSON("http://ws.audioscrobbler.com/2.0/?callback=?",
-                  { method: "artist.getinfo", 
-                    api_key: "b25b959554ed76058ac220b7b2e0a026", 
-                    artist: artist,
-                    format: "json", 
-                  }, artist_got_info);
+    artist = scpt.outputString.replace(/^\s+$/g, "");
+    if ($('artist').innerText != artist) {
+        var url = "http://ws.audioscrobbler.com/2.0/?callback=artist_got_info&method=artist.getinfo&api_key=b25b959554ed76058ac220b7b2e0a026&artist="+artist+"&format=json";
+        var script = document.createElement("script");
+        script.setAttribute("src", url);
+        script.setAttribute("type", "text/javascript");
+        document.body.appendChild(script);
+    }
 }
 
 function show()
