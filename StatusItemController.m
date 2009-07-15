@@ -181,7 +181,7 @@ static NSString* downloads()
             [GrowlApplicationBridge notifyWithTitle:name
                                         description:desc
                                    notificationName:notificationName
-                                           iconData:[[dict objectForKey:@"Album Art"] TIFFRepresentation]
+                                           iconData:[dict objectForKey:@"Album Art"]
                                            priority:0
                                            isSticky:false
                                        clickContext:dict

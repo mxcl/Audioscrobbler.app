@@ -276,7 +276,7 @@ static Mediator* sharedMediator;
         //TODO if user restarts the track near the end we should count it is as scrobbled and start again
         //TODO if the user has a playlist that is just the track that should work too!
         int64_t const oldpid = pid;
-        NSMutableDictionary* dict = [[userData userInfo] mutableCopy];
+        NSMutableDictionary* dict = [[[userData userInfo] mutableCopy] autorelease];
         pid = [[dict objectForKey:@"PersistentID"] longLongValue];
         bool const sametrack = oldpid == pid;
         if(sametrack && waspaused)
@@ -295,8 +295,18 @@ static Mediator* sharedMediator;
                                                 album:[dict objectForKey:@"Album"]];
         }else{
             @try{
-                ITunesArtwork* art = (ITunesArtwork*)[itunes.currentTrack.artworks objectAtIndex:0];
-                [dict setObject:[art data] forKey:@"Album Art"];
+                // the following check saves quite some resources, the fetch
+                // of album art is expensive, and seemingly the resident size of
+                // our executable increases by 2MB everytime we fetch. 
+                NSDictionary* oldtrack = [[Mediator sharedMediator] currentTrack];
+                if([[oldtrack objectForKey:@"Album"] isEqualToString:[dict objectForKey:@"Album"]])
+                    [dict setObject:[oldtrack objectForKey:@"Album Art"] forKey:@"Album Art"];
+                else{                    
+                    ITunesArtwork* art = (ITunesArtwork*)[itunes.currentTrack.artworks objectAtIndex:0];
+                    // NSImage is more useful, but Growl needs a TIFF and this way we
+                    // save on allocations, thus keeping our memory footprint down
+                    [dict setObject:[[art data] TIFFRepresentation] forKey:@"Album Art"];
+                }
             }@catch(id e){
                 // for some reason [art exists] returns true, but it then throws :(
             }
