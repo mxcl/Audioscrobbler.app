@@ -44,7 +44,7 @@ function artist_got_info(json)
 
 function set_artist(scpt)
 {
-    artist = scpt.outputString.replace(/^\s+$/g, "");
+    artist = scpt.outputString.replace(/\s+$/g, "");
     if (artist == '') {
         $('image').style.backgroundImage='';
         $('artist').innerText='';
