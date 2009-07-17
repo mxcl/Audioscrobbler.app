@@ -96,6 +96,11 @@ static Mediator* sharedMediator;
     }
 }
 
+-(IBAction)forceRejig:(id)sender
+{
+    [self jig];
+}
+
 -(void)scrobsub_start_active
 {
     [self scrobsub_start:[tracks objectForKey:active]];

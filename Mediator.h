@@ -46,6 +46,7 @@
                album:(NSString*)album;
 
 -(IBAction)onScrobblingEnabledChanged:(id)sender;
+-(IBAction)forceRejig:(id)sender;
 
 -(NSDictionary*)currentTrack;
 
