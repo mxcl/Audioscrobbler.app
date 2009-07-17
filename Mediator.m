@@ -295,7 +295,7 @@ static Mediator* sharedMediator;
         pid = [[dict objectForKey:@"PersistentID"] longLongValue];
         bool const sametrack = oldpid == pid;
         if(sametrack && waspaused)
-            [[Mediator sharedMediator] resume:@"osx"];
+            [[Mediator sharedMediator] resume:@"iTunes"];
         //TODO should check that the currentTrack of the iTunes object has a pid
         // that matches our pid
         else if(sametrack && itunes.playerPosition > 2){
@@ -304,7 +304,7 @@ static Mediator* sharedMediator;
             //   2) track restarted
             //   3) track metadata altered
             // so this branch is a guess for (3)
-            [[Mediator sharedMediator] changeMetadata:@"osx" 
+            [[Mediator sharedMediator] changeMetadata:@"iTunes" 
                                              forTrack:[dict objectForKey:@"Name"]
                                                artist:[dict objectForKey:@"Artist"]
                                                 album:[dict objectForKey:@"Album"]];
@@ -328,14 +328,14 @@ static Mediator* sharedMediator;
             uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
             [dict setObject:[NSNumber numberWithUnsignedInt:duration] forKey:@"Total Time"];
             [dict setObject:@"iTunes" forKey:@"Player Name"];
-            [[Mediator sharedMediator] start:@"osx" withTrack:dict];
+            [[Mediator sharedMediator] start:@"iTunes" withTrack:dict];
         }
         waspaused = false;
     }else if([state isEqualToString:@"Paused"]){
-        [[Mediator sharedMediator] pause:@"osx"];
+        [[Mediator sharedMediator] pause:@"iTunes"];
         waspaused = true;
     }else if([state isEqualToString:@"Stopped"]){
-        [[Mediator sharedMediator] stop:@"osx"];
+        [[Mediator sharedMediator] stop:@"iTunes"];
         pid = 0;
         waspaused = false;
     }
