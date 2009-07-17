@@ -84,10 +84,8 @@ static Mediator* sharedMediator;
 -(void)jig
 {
     // a player just stopped or paused, find the next active connection
-    
-    NSEnumerator* i = [stack objectEnumerator];
-    NSString* o;
-    while(o = [i nextObject]){
+
+    for(NSString* o in stack){
         NSDictionary* track = [tracks objectForKey:o];
         if([[track objectForKey:@"Player State"] isEqualToString:@"Playing"]){
             active = o;           
@@ -144,20 +142,23 @@ static Mediator* sharedMediator;
         }
         else
             [self scrobsub_start:track];
-    }
+    }else
+        [self alreadyScrobblingGrowl:[tracks objectForKey:id]];
 }
 
 -(void)pause:(NSString*)id
 {
     if(![stack containsObject:id])
         NSLog(@"Invalid action: pausing an unknown player connection");
-    else{
+    else {
         [[tracks objectForKey:id] setObject:@"Paused" forKey:@"Player State"];
-        NSString* old_id = id;
-        [self jig];
-        if(old_id == active){
-            scrobsub_pause();
-            [self announce:[tracks objectForKey:active] withTransition:TrackPaused];
+        if ([active isEqualToString:id]) {
+            // jig the player stack, if we're still active then announce the pause
+            [self jig];
+            if([active isEqualToString:id]){
+                scrobsub_pause();
+                [self announce:[tracks objectForKey:active] withTransition:TrackPaused];
+            }
         }
     }
 }
