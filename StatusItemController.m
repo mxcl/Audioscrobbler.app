@@ -150,7 +150,7 @@ static NSString* downloads()
     }
 
 #if __AS_DEBUGGING__
-    [[menu itemAtIndex:9] setTitle:@"Quit Debugscrobbler"];
+    [[menu itemAtIndex:[menu numberOfItems]-1] setTitle:@"Quit Debugscrobbler"];
 #else
 /// global shortcut
     EventTypeSpec type;
@@ -182,18 +182,18 @@ static NSString* downloads()
     uint transition = [[dict objectForKey:@"Transition"] unsignedIntValue];
     NSString* name = [dict objectForKey:@"Name"];
     uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
-    NSString* notificationName = @"Track Resumed";
+    NSString* notificationName = ASGrowlTrackResumed;
     
 #define UPDATE_TITLE_MENU \
-    [[menu itemAtIndex:0] setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
+    [status setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
     
     switch(transition){
         case TrackStarted:
-            [[menu itemAtIndex:1] setEnabled:true];
-            [[menu itemAtIndex:2] setEnabled:true];
-            [[menu itemAtIndex:3] setEnabled:true];
-            [[menu itemAtIndex:1] setTitle:@"Love"];
-            notificationName = @"Track Started";
+            [love setEnabled:true];
+            [love setTitle:@"Love"];
+            [share setEnabled:true];
+            [tag setEnabled:true];
+            notificationName = ASGrowlTrackStarted;
             count++;
             // fall through
         case TrackResumed:{
@@ -208,27 +208,27 @@ static NSString* downloads()
                                            priority:0
                                            isSticky:false
                                        clickContext:dict
-                                         identifier:@"Coalesce Me ID"];
+                                         identifier:ASGrowlTrackStarted];
             break;}
         
         case TrackPaused:
-            [[menu itemAtIndex:0] setTitle:[name stringByAppendingString:@" [paused]"]];
+            [status setTitle:[name stringByAppendingString:@" [paused]"]];
             [GrowlApplicationBridge notifyWithTitle:@"Playback Paused"
                                         description:[[dict objectForKey:@"Player Name"] stringByAppendingString:@" became paused"]
-                                   notificationName:@"Track Paused"
+                                   notificationName:ASGrowlTrackPaused
                                            iconData:nil
                                            priority:0
                                            isSticky:true
                                        clickContext:dict
-                                         identifier:@"Coalesce Me ID"];
+                                         identifier:ASGrowlTrackStarted];
             break;
             
         case PlaybackStopped:
-            [[menu itemAtIndex:0] setTitle:@"Ready"];
-            [[menu itemAtIndex:1] setEnabled:false];
-            [[menu itemAtIndex:2] setEnabled:false];
-            [[menu itemAtIndex:3] setEnabled:false];
-            [[menu itemAtIndex:1] setTitle:@"Love"];
+            [status setTitle:@"Ready"];
+            [love setEnabled:false];
+            [tag setEnabled:false];
+            [share setEnabled:false];
+            [love setTitle:@"Love"];
             
             NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
             NSString* info = [NSString stringWithFormat:@"You played %@ tracks this session.",
@@ -238,7 +238,7 @@ static NSString* downloads()
 
             [GrowlApplicationBridge notifyWithTitle:@"Playlist Ended"
                                         description:info
-                                   notificationName:@"Playlist Ended"
+                                   notificationName:ASGrowlPlaylistEnded
                                            iconData:nil
                                            priority:0
                                            isSticky:false
@@ -249,7 +249,7 @@ static NSString* downloads()
             UPDATE_TITLE_MENU
             [GrowlApplicationBridge notifyWithTitle:@"Track Metadata Updated"
                                         description:[lastfm titleForTrack:dict]
-                                   notificationName:@"Scrobble Submission Status"
+                                   notificationName:ASGrowlSubmissionStatus
                                            iconData:nil
                                            priority:-1
                                            isSticky:false
@@ -268,8 +268,8 @@ static NSString* downloads()
     [lastfm love:[[Mediator sharedMediator] currentTrack]];
     scrobsub_love();
     
-    [[menu itemAtIndex:1] setEnabled:false];
-    [[menu itemAtIndex:1] setTitle:@"Loved"];
+    [love setEnabled:false];
+    [love setTitle:@"Loved"];
 }
 
 -(IBAction)tag:(id)sender

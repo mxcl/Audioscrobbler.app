@@ -30,6 +30,12 @@
     IBOutlet NSMenu* menu;
     IBOutlet NSMenu* app_menu;
     IBOutlet NSMenuItem* start_at_login;
+    
+    IBOutlet NSMenuItem* status;
+    IBOutlet NSMenuItem* love;
+    IBOutlet NSMenuItem* share;
+    IBOutlet NSMenuItem* tag;
+    
     AutoDash* autodash;
 }
 

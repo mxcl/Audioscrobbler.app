@@ -110,7 +110,7 @@ static Mediator* sharedMediator;
                                    priority:1
                                    isSticky:false
                                clickContext:nil
-                                 identifier:nil];
+                                 identifier:ASGrowlScrobbleMediationStatus];
 }
 
 -(void)start:(NSString*)id withTrack:(NSMutableDictionary*)track
