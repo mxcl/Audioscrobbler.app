@@ -38,7 +38,6 @@
 		63CDD71A0F9533C800D69723 /* relay.c in Sources */ = {isa = PBXBuildFile; fileRef = 63CDD7190F9533C800D69723 /* relay.c */; };
 		63D1D09F0F97FDB3004FBC05 /* Growl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63D1D09E0F97FDB3004FBC05 /* Growl.framework */; };
 		63D1D0C40F97FF9B004FBC05 /* Growl.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 63D1D09E0F97FDB3004FBC05 /* Growl.framework */; };
-		63D1D0DB0F980171004FBC05 /* Growl Registration Ticket.growlRegDict in Resources */ = {isa = PBXBuildFile; fileRef = 63D1D0DA0F980171004FBC05 /* Growl Registration Ticket.growlRegDict */; };
 		63D1D1040F980532004FBC05 /* lastfm.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D1D1030F980532004FBC05 /* lastfm.m */; };
 		63D1D1A20F989847004FBC05 /* HistoryMenuController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D1D1A10F989847004FBC05 /* HistoryMenuController.m */; };
 		63D1D2990F9A0CB1004FBC05 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63D1D2980F9A0CB1004FBC05 /* Carbon.framework */; };
@@ -91,7 +90,6 @@
 		63C9B9620F867C460065ED7F /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		63CDD7190F9533C800D69723 /* relay.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = relay.c; path = scrobsub/relay.c; sourceTree = "<group>"; };
 		63D1D09E0F97FDB3004FBC05 /* Growl.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Growl.framework; sourceTree = "<group>"; };
-		63D1D0DA0F980171004FBC05 /* Growl Registration Ticket.growlRegDict */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Growl Registration Ticket.growlRegDict"; sourceTree = "<group>"; };
 		63D1D1020F980532004FBC05 /* lastfm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lastfm.h; sourceTree = "<group>"; };
 		63D1D1030F980532004FBC05 /* lastfm.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = lastfm.m; sourceTree = "<group>"; };
 		63D1D1A00F989847004FBC05 /* HistoryMenuController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HistoryMenuController.h; sourceTree = "<group>"; };
@@ -210,7 +208,6 @@
 				1DDD58140DA1D0A300B32029 /* main.xib */,
 				63906F0B0F9DE71E00797A14 /* ShareWindow.xib */,
 				6372C84E1007A01B00EC25F4 /* methylblue.pem */,
-				63D1D0DA0F980171004FBC05 /* Growl Registration Ticket.growlRegDict */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -288,7 +285,6 @@
 				63D6DB390F8399E000F4DCAA /* inverted_icon.png in Resources */,
 				63C9B94A0F8672940065ED7F /* Audioscrobbler.icns in Resources */,
 				63B5AA5E0F9356DD00DC9D8C /* Audioscrobbler.sdef in Resources */,
-				63D1D0DB0F980171004FBC05 /* Growl Registration Ticket.growlRegDict in Resources */,
 				63906F0C0F9DE71E00797A14 /* ShareWindow.xib in Resources */,
 				632B2001100624150009A0B7 /* Credits.html in Resources */,
 				6372C84F1007A01B00EC25F4 /* methylblue.pem in Resources */,

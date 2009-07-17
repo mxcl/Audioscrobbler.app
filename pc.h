@@ -23,3 +23,12 @@ enum ASTransition{
 
     TrackMetadataChanged
 };
+
+
+#define ASGrowlTrackStarted @"Track Started"
+#define ASGrowlTrackPaused @"Track Paused"
+#define ASGrowlTrackResumed @"Track Resumed"
+#define ASGrowlPlaylistEnded @"Playlist Ended"
+#define ASGrowlSubmissionStatus @"Scrobble Submission Status"
+#define ASGrowlIPodScrobblingStatus @"iPod Scrobbling Status"
+#define ASGrowlScrobbleMediationStatus @"Scrobble Mediation Status"

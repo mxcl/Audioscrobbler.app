@@ -95,6 +95,29 @@ static NSString* downloads()
                                                              forKey:@"AutoDash"]];
 }
 
+-(NSDictionary*)registrationDictionaryForGrowl
+{
+    NSArray* all = [NSArray arrayWithObjects:
+                    ASGrowlTrackStarted,
+                    ASGrowlTrackPaused,
+                    ASGrowlTrackResumed,
+                    ASGrowlPlaylistEnded,
+                    ASGrowlSubmissionStatus,
+                    ASGrowlIPodScrobblingStatus,
+                    ASGrowlScrobbleMediationStatus,
+                    nil];
+    NSArray* defaults = [NSArray arrayWithObjects:
+                         ASGrowlTrackStarted,
+                         ASGrowlTrackResumed,
+                         ASGrowlPlaylistEnded,
+                         ASGrowlScrobbleMediationStatus,
+                         nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:
+            all, GROWL_NOTIFICATIONS_ALL, 
+            defaults, GROWL_NOTIFICATIONS_DEFAULT, 
+            nil];
+}
+
 -(void)awakeFromNib
 {   
     NSBundle* bundle = [NSBundle mainBundle];

@@ -21,6 +21,7 @@
 
 #import "Mediator.h"
 #import "scrobsub.h"
+#import <Growl/GrowlApplicationBridge.h>
 #import <time.h>
 
 static time_t now()
@@ -102,6 +103,18 @@ static Mediator* sharedMediator;
     [self scrobsub_start:[tracks objectForKey:active]];
 }
 
+-(void)alreadyScrobblingGrowl:(NSDictionary*)track
+{
+    [GrowlApplicationBridge notifyWithTitle:@"Cannot Scrobble Multiple Tracks"
+                                description:[NSString stringWithFormat:@"Pause %@ in order to scrobble “%@”.", active, [track objectForKey:@"Name"]]
+                           notificationName:ASGrowlScrobbleMediationStatus
+                                   iconData:nil
+                                   priority:1
+                                   isSticky:false
+                               clickContext:nil
+                                 identifier:nil];
+}
+
 -(void)start:(NSString*)id withTrack:(NSMutableDictionary*)track
 {
     if(![stack containsObject:id])
@@ -160,11 +173,13 @@ static Mediator* sharedMediator;
             [self announce:track withTransition:TrackResumed];
             scrobsub_resume();
         }
-        if(!active){
+        else if(!active){
             active = id;
             [self announce:track withTransition:TrackStarted];
             [self scrobsub_start:track];
         }
+        else
+            [self alreadyScrobblingGrowl:[tracks objectForKey:id]];
     }
 }
 
