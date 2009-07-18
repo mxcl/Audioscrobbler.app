@@ -1,7 +1,8 @@
 set -o errexit
-rm -r build
+test -d build && rm -r build
 xcodebuild -configuration Release -project Audioscrobbler.xcodeproj
-test -d /Applications/Audioscrobbler.app && rm -rf /Applications/Audioscrobbler.app
-killall Audioscrobbler || true
-mv build/Release/Audioscrobbler.app /Applications
+osascript -e 'if application "Audioscrobbler" is running then tell application "Audioscrobbler" to quit'
+open build/Release
+echo "Replace the old Audioscrobbler.app with this one"
+read -p "$*"
 open /Applications/Audioscrobbler.app
