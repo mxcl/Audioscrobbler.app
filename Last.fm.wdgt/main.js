@@ -59,6 +59,7 @@ function set_artist(scpt)
         document.body.appendChild(script);
         $('artist').innerHTML = "Loading "+artist+"…";
         $('listeners').innerHTML = "&nbsp;";
+        $('text').style.display = 'block';
     }
 }
 
