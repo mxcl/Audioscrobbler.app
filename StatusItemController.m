@@ -282,9 +282,9 @@ static NSString* downloads()
 
 -(IBAction)share:(id)sender
 {
-    NSWindowController* share = [[ShareWindowController alloc] initWithWindowNibName:@"ShareWindow"];
-    [share showWindow:self];
-    [[share window] makeKeyWindow];
+    NSWindowController* w = [[ShareWindowController alloc] initWithWindowNibName:@"ShareWindow"];
+    [w showWindow:self];
+    [w.window makeKeyWindow];
 }
 
 -(IBAction)startAtLogin:(id)sender

@@ -196,6 +196,7 @@ static Mediator* sharedMediator;
     else{
         NSMutableDictionary* track = [tracks objectForKey:id];
         [track setObject:@"Stopped" forKey:@"Player State"];
+        [track removeObject:@"Album Art"]; // save some mems
         if([id isEqualToString:active]){
             [self jig];
             if([id isEqualToString:active]){
