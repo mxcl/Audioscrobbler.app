@@ -1,3 +1,8 @@
+body {
+    font-family: "Lucida Grande", sans-serif;
+    font-size: 10pt;
+}
+
 a {
     color: #fff;
     text-decoration: none;
@@ -8,7 +13,6 @@ a:hover {
 }
 
 #image {
-  font-family: "Lucida Grande", sans-serif;
   -webkit-border-radius: 10px;
   -webkit-box-shadow: 0px 4px 7px rgba(0,0,0,0.68);
   -webkit-mask-image: none;
@@ -26,18 +30,17 @@ a:hover {
 
 #text{
   position: absolute;
-  bottom:0;
-  left:0;
+  bottom: 0;
+  left: 0;
   padding: 10px;
-  font-size: 10pt;
-  width:232px;
+  width: 232px;
   background:-webkit-gradient(linear, left top, left bottom, from(rgba(0,0,0,0.33)), to(rgba(0,0,0,0.50))); ;
   text-shadow: 0px 2px 7px #000;
 }
 
 #bio {
     font-size: 10pt;
-    display:none;
+    display: none;
 }
 
 #listeners {

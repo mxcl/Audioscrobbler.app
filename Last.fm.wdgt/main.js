@@ -47,8 +47,9 @@ function set_artist(scpt)
     artist = scpt.outputString.replace(/\s+$/g, "");
     if (artist == '') {
         $('image').style.backgroundImage='';
-        $('artist').innerText='';
-        $('listeners').innerText='';
+        $('artist').innerText = '';
+        $('listeners').innerText = '';
+        $('text').style.display = 'none';
     }
     else if ($('artist').innerText != artist) {
         var url = "http://ws.audioscrobbler.com/2.0/?callback=artist_got_info&method=artist.getinfo&api_key=b25b959554ed76058ac220b7b2e0a026&artist="+artist+"&format=json";
@@ -56,6 +57,8 @@ function set_artist(scpt)
         script.setAttribute("src", url);
         script.setAttribute("type", "text/javascript");
         document.body.appendChild(script);
+        $('artist').innerHTML = "Loading "+artist+"…";
+        $('listeners').innerHTML = "&nbsp;";
     }
 }
 
