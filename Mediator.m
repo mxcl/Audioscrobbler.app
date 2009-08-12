@@ -66,10 +66,16 @@ static Mediator* sharedMediator;
     NSNotification*notification=[NSNotification notificationWithName:@"playerInfo"
                                                               object:self
                                                             userInfo:dict];
-    [[NSNotificationQueue defaultQueue]enqueueNotification:notification
-                                              postingStyle:NSPostNow
-                                              coalesceMask:NSNotificationCoalescingOnName
-                                                  forModes:nil];
+//    @try {
+        [[NSNotificationQueue defaultQueue]enqueueNotification:notification
+                                                  postingStyle:NSPostNow
+                                                  coalesceMask:NSNotificationCoalescingOnName
+                                                      forModes:nil];
+//    }
+//    @catch(NSException*e)
+    {
+        // don't allow exceptions to stop scrobub_start
+    }
 }
 
 -(void)scrobsub_start:(NSDictionary*)dict
@@ -125,6 +131,23 @@ static Mediator* sharedMediator;
                                  identifier:ASGrowlScrobbleMediationStatus];
 }
 
+static void correct_empty(NSMutableDictionary* d, NSString* key)
+{
+    NSString* o = (NSString*)[d objectForKey:key];
+    if(!o || [o length] == 0)
+        [d setObject:@"[unknown]" forKey:key];
+}
+
+static void correct_metadata(NSMutableDictionary* d)
+{
+    if(![d objectForKey:@"Album"])
+        [d setObject:@"" forKey:@"Album"]; //prevent crashes
+    
+    //TODO fingerprint and offer to correct
+    correct_empty(d, @"Artist");
+    correct_empty(d, @"Name");
+}
+
 -(void)start:(NSString*)id withTrack:(NSMutableDictionary*)track
 {
     if(![stack containsObject:id])
@@ -136,9 +159,8 @@ static Mediator* sharedMediator;
     [track setObject:@"Playing" forKey:@"Player State"];
     [track setObject:id forKey:@"Client ID"];
     [track setObject:[NSNumber numberWithUnsignedInt:time] forKey:@"Start Time"];
-    
-    if(![track objectForKey:@"Album"])
-        [track setObject:@"" forKey:@"Album"]; //prevent crashes
+
+    correct_metadata(track);
     
     if(!active)
         active = id;
@@ -232,8 +254,8 @@ static Mediator* sharedMediator;
                 album:(NSString*)album
 {
     if(!title)title=@"";
-    if(!artist)artist=@"";
-    if(!album)album=@"";    
+    if(!artist)artist=@"[unknown]";
+    if(!album)album=@"[unknown]";    
     
     if(![stack containsObject:id])
         NSLog(@"Invalid action: resuming an unknown player connection");
