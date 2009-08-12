@@ -43,7 +43,14 @@ static Mediator* sharedMediator;
     tracks=[[NSMutableDictionary alloc] initWithCapacity:1];
     sharedMediator = self;
     previous_start = 0;
-    itunes=[[ITunesListener alloc] init];
+
+    itunes=[ITunesListener alloc];
+#if __AS_DEBUGGING__
+    // ensure that all observers have registered before doing this
+    [itunes performSelector:@selector(init) withObject:nil afterDelay:0];
+#else
+    [itunes init];
+#endif
 }
 
 +(id)sharedMediator
