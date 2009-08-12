@@ -50,11 +50,14 @@
 
 -(NSDictionary*)currentTrack;
 
+-(bool)isEqualToCurrenTrack:(NSDictionary*)track;
+
 @end
 
 @interface ITunesListener:NSObject{
     int64_t pid;
     bool waspaused;
+    bool norating;
     ITunesApplication* itunes;
 }
 -(id)init;

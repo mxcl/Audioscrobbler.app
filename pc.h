@@ -32,3 +32,4 @@ enum ASTransition{
 #define ASGrowlSubmissionStatus @"Scrobble Submission Status"
 #define ASGrowlIPodScrobblingStatus @"iPod Scrobbling Status"
 #define ASGrowlScrobbleMediationStatus @"Scrobble Mediation Status"
+#define ASGrowlLoveTrackQuery @"Love Track Query"

@@ -105,12 +105,14 @@ static NSString* downloads()
                     ASGrowlSubmissionStatus,
                     ASGrowlIPodScrobblingStatus,
                     ASGrowlScrobbleMediationStatus,
+                    ASGrowlLoveTrackQuery,
                     nil];
     NSArray* defaults = [NSArray arrayWithObjects:
                          ASGrowlTrackStarted,
                          ASGrowlTrackResumed,
                          ASGrowlPlaylistEnded,
                          ASGrowlScrobbleMediationStatus,
+                         ASGrowlLoveTrackQuery,
                          nil];
     return [NSDictionary dictionaryWithObjectsAndKeys:
             all, GROWL_NOTIFICATIONS_ALL, 
@@ -260,7 +262,19 @@ static NSString* downloads()
 
 -(void)growlNotificationWasClicked:(id)dict
 {
-    [[NSWorkspace sharedWorkspace] openURL:[lastfm urlForTrack:[dict objectForKey:@"Name"] by:[dict objectForKey:@"Artist"]]];
+    NSString* nn = [dict objectForKey:@"Notification Name"];
+
+    if([nn isEqualToString:ASGrowlLoveTrackQuery])
+    {
+        if ([[Mediator sharedMediator] isEqualToCurrenTrack:dict])
+            [self love:self];
+        else
+            [lastfm love:dict];
+        // need some kind of feedback
+    }
+    else
+        [[NSWorkspace sharedWorkspace] openURL:[lastfm urlForTrack:[dict objectForKey:@"Name"]
+                                                                by:[dict objectForKey:@"Artist"]]];
 }
 
 -(IBAction)love:(id)sender

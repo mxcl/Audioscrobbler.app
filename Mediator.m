@@ -261,6 +261,24 @@ static Mediator* sharedMediator;
     }
 }
 
+-(bool)isEqualToCurrenTrack:(NSDictionary*)t
+{
+    NSDictionary* tt = [self currentTrack];
+    NSNumber* pid = [t objectForKey:@"PersistentID"];
+    if (pid && [pid isEqualToNumber:[tt objectForKey:@"PersistentID"]])
+        return true;
+
+    // no unique id so we have to fallback on this unsatisfactory method
+    id a1 = [t objectForKey:@"Artist"];
+    id a2 = [tt objectForKey:@"Artist"];
+    id t1 = [t objectForKey:@"Artist"];
+    id t2 = [tt objectForKey:@"Artist"];
+    if ([a1 isEqualToString:a2] && [t1 isEqualToString:t2])
+        return true;
+
+    return false;
+}
+
 @end
 
 
@@ -308,20 +326,34 @@ static Mediator* sharedMediator;
         NSMutableDictionary* dict = [[[userData userInfo] mutableCopy] autorelease];
         pid = [[dict objectForKey:@"PersistentID"] longLongValue];
         bool const sametrack = oldpid == pid;
-        if(sametrack && waspaused)
-            [[Mediator sharedMediator] resume:@"iTunes"];
-        //TODO should check that the currentTrack of the iTunes object has a pid
-        // that matches our pid
-        else if(sametrack && itunes.playerPosition > 2){
-            // iTunes sends this message if:
-            //   1) track started
-            //   2) track restarted
-            //   3) track metadata altered
-            // so this branch is a guess for (3)
-            [[Mediator sharedMediator] changeMetadata:@"iTunes" 
-                                             forTrack:[dict objectForKey:@"Name"]
-                                               artist:[dict objectForKey:@"Artist"]
-                                                album:[dict objectForKey:@"Album"]];
+        
+        if(sametrack){
+            if(waspaused)
+                [[Mediator sharedMediator] resume:@"iTunes"];
+            else{
+                // iTunes sends the "Playing" message if:
+                //   1) a new track started
+                //   2) the track was restarted
+                //   3) the track metadata was altered
+                // so this branch is a guess for (3)
+                [[Mediator sharedMediator] changeMetadata:@"iTunes" 
+                                                 forTrack:[dict objectForKey:@"Name"]
+                                                   artist:[dict objectForKey:@"Artist"]
+                                                    album:[dict objectForKey:@"Album"]];
+
+                if([[dict objectForKey:@"Rating"] intValue] >= 80 && norating == true)
+                {
+                    NSMutableDictionary* md = [[dict mutableCopy] autorelease];
+                    [md setObject:ASGrowlLoveTrackQuery forKey:@"Notification Name"];
+                    [GrowlApplicationBridge notifyWithTitle:@"A+++++ Would Play Again!"
+                                                description:@"Click this notification to love this track at Last.fm"
+                                           notificationName:ASGrowlLoveTrackQuery
+                                                   iconData:nil
+                                                   priority:0
+                                                   isSticky:false
+                                               clickContext:md];
+                }
+            }
         }else{
             @try{
                 // the following check saves quite some resources, the fetch
@@ -339,6 +371,10 @@ static Mediator* sharedMediator;
             }@catch(id e){
                 // for some reason [art exists] returns true, but it then throws :(
             }
+            // computer ratings mean no rating is set, but they only occur if at
+            // least one track on that album has a rating, otherwise Rating is 0
+            norating = [[dict objectForKey:@"Rating"] intValue] == 0 || [[dict objectForKey:@"Rating Computed"] boolValue];
+            
             uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
             [dict setObject:[NSNumber numberWithUnsignedInt:duration] forKey:@"Total Time"];
             [dict setObject:@"iTunes" forKey:@"Player Name"];
