@@ -37,6 +37,8 @@
     IBOutlet NSMenuItem* tag;
     
     AutoDash* autodash;
+    
+    NSWindowController* sharewincon;
 }
 
 -(IBAction)love:(id)sender;

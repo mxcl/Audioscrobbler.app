@@ -48,6 +48,7 @@
     [item setTarget:self];
     [item setRepresentedObject:url];
     [menu insertItem:item atIndex:0];
+    [item release];
     
     // 18 items is about an hour
     if([menu numberOfItems] > 18)

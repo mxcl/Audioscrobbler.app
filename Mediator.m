@@ -426,7 +426,7 @@ static void correct_metadata(NSMutableDictionary* d)
     if ([itunes isRunning] && itunes.playerState == ITunesEPlSPlaying)
     {
         ITunesTrack* t = itunes.currentTrack;
-        NSMutableDictionary* dict = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary* dict = [NSMutableDictionary dictionary];
         [dict setObject:t.name forKey:@"Name"];
         [dict setObject:t.artist forKey:@"Artist"];
         [dict setObject:t.album forKey:@"Album"];

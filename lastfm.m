@@ -26,7 +26,7 @@
 static NSString* encode(NSString* s)
 {
     // removed () from included chars as they are legal unencoded and Last.fm seems to be OK with it
-    #define escape(s, excluding) (NSString*) CFURLCreateStringByAddingPercentEscapes(nil, (CFStringRef)s, excluding, CFSTR("!*';:@&=+$,/?%#[]"), kCFStringEncodingUTF8);
+    #define escape(s, excluding) [(NSString*)CFURLCreateStringByAddingPercentEscapes(nil, (CFStringRef)s, excluding, CFSTR("!*';:@&=+$,/?%#[]"), kCFStringEncodingUTF8) autorelease];
 
     bool double_escape = [s rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"&/;+#%"]].location != NSNotFound;
     

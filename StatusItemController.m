@@ -296,9 +296,10 @@ static NSString* downloads()
 
 -(IBAction)share:(id)sender
 {
-    NSWindowController* w = [[ShareWindowController alloc] initWithWindowNibName:@"ShareWindow"];
-    [w showWindow:self];
-    [w.window makeKeyWindow];
+    if(!sharewincon)
+        sharewincon = [[ShareWindowController alloc] initWithWindowNibName:@"ShareWindow"];
+    [sharewincon showWindow:self];
+    [sharewincon.window makeKeyWindow];
 }
 
 -(IBAction)startAtLogin:(id)sender
@@ -341,6 +342,7 @@ static NSString* downloads()
     [task waitUntilExit];
     
     [[NSWorkspace sharedWorkspace] openFile:[[task currentDirectoryPath] stringByAppendingPathComponent:@"Last.fm.wdgt"]];
+    [task release];
 }
 
 -(IBAction)activateAutoDash:(id)sender
