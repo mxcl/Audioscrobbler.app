@@ -122,11 +122,10 @@ static NSString* downloads()
 
 -(void)awakeFromNib
 {   
-    NSBundle* bundle = [NSBundle mainBundle];
     status_item = [[[NSStatusBar systemStatusBar] statusItemWithLength:27] retain];
     [status_item setHighlightMode:YES];
-    [status_item setImage:[[NSImage alloc] initWithContentsOfFile: [bundle pathForResource:@"icon" ofType:@"png"]]];
-    [status_item setAlternateImage:[[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"inverted_icon" ofType:@"png"]]];
+    [status_item setImage:[NSImage imageNamed:@"icon.png"]];
+    [status_item setAlternateImage:[NSImage imageNamed:@"inverted_icon.png"]];
     [status_item setEnabled:YES];
     [status_item setMenu:menu];
 
