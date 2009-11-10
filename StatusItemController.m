@@ -34,7 +34,7 @@ static void scrobsub_callback(int event, const char* message)
         case SCROBSUB_AUTH_REQUIRED:{
             char url[110];
             scrobsub_auth(url);
-            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[NSString stringWithCString:url]]];
+            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[NSString stringWithCString:url encoding:NSUTF8StringEncoding]]];
             break;}
         case SCROBSUB_ERROR_RESPONSE:
             NSLog(@"%s", message);
