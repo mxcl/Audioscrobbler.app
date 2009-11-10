@@ -82,11 +82,12 @@ void CoreDockSendNotification(NSString *notificationName); // not public, but pr
 	if (IORegistryEntryCreateCFProperties(io_obj, &properties, kCFAllocatorDefault, 0) != KERN_SUCCESS || properties == NULL) 
         return 0;
 
+    uint64_t t = 0;
+
 	CFTypeRef o = CFDictionaryGetValue(properties, CFSTR("HIDIdleTime"));
     if (o == NULL)
         goto exit;
 	
-	uint64_t t = 0;
 	CFTypeID type = CFGetTypeID(o);		
 	if (type == CFDataGetTypeID())
 		CFDataGetBytes((CFDataRef)o, CFRangeMake(0, sizeof(t)), (UInt8*) &t);
