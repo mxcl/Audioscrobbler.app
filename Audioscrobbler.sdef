@@ -2,9 +2,6 @@
 <!DOCTYPE dictionary SYSTEM "file://localhost/System/Library/DTDs/sdef.dtd">
 <dictionary title="">
 	<suite name="Scrobbling Suite" code="AsSS">
-		<class name="application" code="capp" inherits="NSCoreSuite.NSApplication">
-			<cocoa class="NSApplication"/>
-		</class>
 		<command name="start" code="AsSSstrt">
 			<cocoa class="ASScriptCommand"/>
 			<direct-parameter description="The client identifier, eg. Songbird" type="text"/>
