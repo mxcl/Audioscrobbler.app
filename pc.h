@@ -8,14 +8,17 @@
 
 
 // don't use these, make your own!
-#define SCROBSUB_CLIENT_VERSION "2.0.0"
-#define SCROBSUB_API_KEY "c8c7b163b11f92ef2d33ba6cd3c2c3c3"
-#define SCROBSUB_SHARED_SECRET "73582dfc9e556d307aead069af110ab8"
-#define SCROBSUB_CLIENT_ID "osx"
-#define SCROBSUB_NO_RELAY 1
+#define LASTFM_API_KEY "c8c7b163b11f92ef2d33ba6cd3c2c3c3"
+#define LASTFM_SHARED_SECRET "73582dfc9e556d307aead069af110ab8"
 
 
-enum ASTransition{
+#define STATE_PLAYING 0
+#define STATE_PAUSED 1
+#define STATE_STOPPED 2
+#define STATE_ERROR 3
+
+
+enum ASTransition {
     TrackStarted,
     TrackPaused,
     TrackResumed,
@@ -30,6 +33,7 @@ enum ASTransition{
 #define ASGrowlTrackResumed @"Track Resumed"
 #define ASGrowlPlaylistEnded @"Playlist Ended"
 #define ASGrowlSubmissionStatus @"Scrobble Submission Status"
-#define ASGrowlIPodScrobblingStatus @"iPod Scrobbling Status"
-#define ASGrowlScrobbleMediationStatus @"Scrobble Mediation Status"
 #define ASGrowlLoveTrackQuery @"Love Track Query"
+#define ASGrowlAuthenticationRequired @"Authentication Required"
+#define ASGrowlErrorCommunication @"Error Communication"
+#define ASGrowlCorrectionSuggestion @"Correction Suggestion"

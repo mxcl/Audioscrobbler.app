@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright 2005-2009 Last.fm Ltd.                                      *
+ *   Copyright 2010 Max Howell <max@methylblue.com                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,28 +18,27 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-// Created by Max Howell <max@last.fm>
-
 #import <Growl/GrowlApplicationBridge.h>
 #import <Cocoa/Cocoa.h>
+#import "lastfm.h"
 @class AutoDash;
+@class ShareWindowController;
 
 
-@interface StatusItemController : NSObject <GrowlApplicationBridgeDelegate>
+@interface StatusItemController : NSObject <GrowlApplicationBridgeDelegate, LastfmDelegate>
 {
     NSStatusItem* status_item;
     IBOutlet NSMenu* menu;
     IBOutlet NSMenu* app_menu;
     IBOutlet NSMenuItem* start_at_login;
-    
     IBOutlet NSMenuItem* status;
     IBOutlet NSMenuItem* love;
     IBOutlet NSMenuItem* share;
     IBOutlet NSMenuItem* tag;
-    
     AutoDash* autodash;
-    
-    NSWindowController* sharewincon;
+    ITunesListener* listener;
+    Lastfm* lastfm;
+    ShareWindowController* sharewc;
 }
 
 -(IBAction)love:(id)sender;
@@ -48,6 +48,7 @@
 -(IBAction)installDashboardWidget:(id)sender;
 -(IBAction)activateAutoDash:(id)sender;
 -(IBAction)about:(id)sender;
+-(IBAction)moreRecentHistory:(id)sender;
 
 @end
 
@@ -56,6 +57,13 @@
 {
     IBOutlet NSProgressIndicator* spinner; 
     IBOutlet NSTextField* username;
+    NSDictionary* track;
+    Lastfm* lastfm;
 }
+
+@property(nonatomic, retain) NSDictionary* track;
+@property(nonatomic, retain) Lastfm* lastfm;
+
 -(IBAction)submit:(id)sender;
+
 @end

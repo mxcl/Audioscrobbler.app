@@ -19,9 +19,9 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.9.9</string>
+	<string>0.9.10</string>
 	<key>CFBundleGetInfoString</key>
-	<string>Audioscrobbler (Minimalist branch)</string>
+	<string>Audioscrobbler</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>© Last.fm, Max Howell, 2009</string>
 	<key>NSAppleScriptEnabled</key>
@@ -44,7 +44,7 @@
 		<string>10.6.0</string>
 		<key>x86_64</key>
 		<string>10.6.0</string>
-	</dict>	
+	</dict>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
 	<key>SUAllowsAutomaticUpdates</key>

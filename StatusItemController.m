@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright 2005-2009 Last.fm Ltd.                                      *
+ *   Copyright 2010 Max Howell <max@methylblue.com>                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,30 +18,21 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-// Created by Max Howell <max@last.fm>
-
 #import "AutoDash.h"
 #import "lastfm.h"
-#import "Mediator.h"
-#import "scrobsub.h"
+#import "NSDictionary+Track.h"
+#import "ITunesListener.h"
 #import "StatusItemController.h"
 #import <Carbon/Carbon.h>
-extern bool scrobsub_fsref(FSRef*);
+#import <WebKit/WebKit.h>
 
 
-static void scrobsub_callback(int event, const char* message)
+static bool scrobsub_fsref(FSRef* fsref)
 {
-    switch(event){
-        case SCROBSUB_AUTH_REQUIRED:{
-            char url[110];
-            scrobsub_auth(url);
-            [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[NSString stringWithCString:url encoding:NSUTF8StringEncoding]]];
-            break;}
-        case SCROBSUB_ERROR_RESPONSE:
-            NSLog(@"%s", message);
-            break;
-    }
+    OSStatus err = LSFindApplicationForInfo(kLSUnknownCreator, CFSTR("fm.last.Audioscrobbler"), NULL, fsref, NULL);
+    return err != kLSApplicationNotFoundErr;
 }
+
 
 static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userdata)
 {
@@ -102,17 +94,19 @@ static NSString* downloads()
                     ASGrowlTrackPaused,
                     ASGrowlTrackResumed,
                     ASGrowlPlaylistEnded,
-                    ASGrowlSubmissionStatus,
-                    ASGrowlIPodScrobblingStatus,
-                    ASGrowlScrobbleMediationStatus,
                     ASGrowlLoveTrackQuery,
+                    ASGrowlAuthenticationRequired,
+                    ASGrowlErrorCommunication,
+                    ASGrowlCorrectionSuggestion,
                     nil];
     NSArray* defaults = [NSArray arrayWithObjects:
                          ASGrowlTrackStarted,
                          ASGrowlTrackResumed,
                          ASGrowlPlaylistEnded,
-                         ASGrowlScrobbleMediationStatus,
                          ASGrowlLoveTrackQuery,
+                         ASGrowlAuthenticationRequired,
+                         ASGrowlErrorCommunication,
+                         ASGrowlCorrectionSuggestion,
                          nil];
     return [NSDictionary dictionaryWithObjectsAndKeys:
             all, GROWL_NOTIFICATIONS_ALL, 
@@ -121,7 +115,7 @@ static NSString* downloads()
 }
 
 -(void)awakeFromNib
-{   
+{
     status_item = [[[NSStatusBar systemStatusBar] statusItemWithLength:27] retain];
     [status_item setHighlightMode:YES];
     [status_item setImage:[NSImage imageNamed:@"icon.png"]];
@@ -133,7 +127,6 @@ static NSString* downloads()
                                              selector:@selector(onPlayerInfo:)
                                                  name:@"playerInfo"
                                                object:nil];
-    scrobsub_init(scrobsub_callback);
 
     [GrowlApplicationBridge setGrowlDelegate:self];
 
@@ -168,6 +161,19 @@ static NSString* downloads()
     kid.id=2;
     RegisterEventHotKey(kVK_ANSI_S, cmdKey+optionKey+controlKey, kid, GetApplicationEventTarget(), 0, &kref);
 #endif
+
+    lastfm = [[Lastfm alloc] initWithDelegate:self];
+    listener = [[ITunesListener alloc] initWithLastfm:lastfm];
+}
+
+-(void)dealloc
+{
+    [sharewc release];
+    [listener release];
+    [lastfm release];
+    [autodash release];
+    [status_item release];
+    [super dealloc];
 }
 
 -(bool)autohide
@@ -182,7 +188,7 @@ static NSString* downloads()
     NSDictionary* dict = [userData userInfo];
     uint transition = [[dict objectForKey:@"Transition"] unsignedIntValue];
     NSString* name = [dict objectForKey:@"Name"];
-    uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue];
+    uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
     NSString* notificationName = ASGrowlTrackResumed;
     
 #define UPDATE_TITLE_MENU \
@@ -249,7 +255,7 @@ static NSString* downloads()
         case TrackMetadataChanged:
             UPDATE_TITLE_MENU
             [GrowlApplicationBridge notifyWithTitle:@"Track Metadata Updated"
-                                        description:[lastfm titleForTrack:dict]
+                                        description:dict.prettyTitle
                                    notificationName:ASGrowlSubmissionStatus
                                            iconData:nil
                                            priority:-1
@@ -259,46 +265,87 @@ static NSString* downloads()
     }
 }
 
+-(void)lastfm:(Lastfm*)lastfm requiresAuth:(NSURL*)url
+{
+    if (![GrowlApplicationBridge isGrowlInstalled] || ![GrowlApplicationBridge isGrowlRunning]) {
+        [[NSWorkspace sharedWorkspace] openURL:url];
+        return;
+    }
+
+    [GrowlApplicationBridge notifyWithTitle:@"Authentication Required"
+                                description:@"Before you can scrobble, Last.fm want you to approve this app at their website. Click here to open your browser at the authorisation page."
+                           notificationName:ASGrowlAuthenticationRequired
+                                   iconData:nil
+                                   priority:1
+                                   isSticky:true
+                               clickContext:[url absoluteString] // for some fucked up reason, this had to be a string
+                                 identifier:ASGrowlAuthenticationRequired];
+}
+
+-(void)lastfm:(Lastfm*)lastfm error:(NSString*)message
+{
+    [GrowlApplicationBridge notifyWithTitle:@"Error Occurred :("
+                                description:message
+                           notificationName:ASGrowlErrorCommunication
+                                   iconData:nil
+                                   priority:2
+                                   isSticky:false
+                               clickContext:nil];
+}
+
+-(void)lastfm:(Lastfm*)lastfm metadata:(NSDictionary*)metadata betterdata:(NSDictionary*)betterdata
+{
+    [GrowlApplicationBridge notifyWithTitle:@"Suggested Metadata Correction"
+                                description:betterdata.prettyTitle
+                           notificationName:ASGrowlCorrectionSuggestion
+                                   iconData:nil
+                                   priority:-1
+                                   isSticky:false
+                               clickContext:nil];
+}
+
 -(void)growlNotificationWasClicked:(id)dict
 {
-    NSString* nn = [dict objectForKey:@"Notification Name"];
-
-    if([nn isEqualToString:ASGrowlLoveTrackQuery])
+    if ([dict isKindOfClass:[NSString class]])
     {
-        if ([[Mediator sharedMediator] isEqualToCurrenTrack:dict])
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:dict]];
+    }
+    else if([[dict objectForKey:@"Notification Name"] isEqualToString:ASGrowlLoveTrackQuery])
+    {
+        if (listener.track.pid == [dict pid])
             [self love:self];
         else
             [lastfm love:dict];
         // need some kind of feedback
     }
     else
-        [[NSWorkspace sharedWorkspace] openURL:[lastfm urlForTrack:[dict objectForKey:@"Name"]
+        [[NSWorkspace sharedWorkspace] openURL:[Lastfm urlForTrack:[dict objectForKey:@"Name"]
                                                                 by:[dict objectForKey:@"Artist"]]];
 }
 
 -(IBAction)love:(id)sender
 {
-    [lastfm love:[[Mediator sharedMediator] currentTrack]];
-    scrobsub_love();
-    
+    [lastfm love:listener.track];
     [love setEnabled:false];
     [love setTitle:@"Loved"];
 }
 
 -(IBAction)tag:(id)sender
 {
-    NSDictionary* t = [[Mediator sharedMediator] currentTrack];
-    NSURL* url = [lastfm urlForTrack:[t objectForKey:@"Name"] by:[t objectForKey:@"Artist"]];
+    NSDictionary* t = listener.track;
+    NSURL* url = [Lastfm urlForTrack:t.title by:t.artist];
     NSString* path = [[url path] stringByAppendingPathComponent:@"+tags"];
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:path relativeToURL:url]];
 }
 
 -(IBAction)share:(id)sender
 {
-    if(!sharewincon)
-        sharewincon = [[ShareWindowController alloc] initWithWindowNibName:@"ShareWindow"];
-    [sharewincon showWindow:self];
-    [sharewincon.window makeKeyWindow];
+    if(!sharewc)
+        sharewc = [[ShareWindowController alloc] initWithWindowNibName:@"ShareWindow"];
+    [sharewc showWindow:self];
+    [sharewc setTrack:listener.track];
+    [sharewc setLastfm:lastfm];
+    [sharewc.window makeKeyWindow];
 }
 
 -(IBAction)startAtLogin:(id)sender
@@ -360,16 +407,24 @@ static NSString* downloads()
     [NSApp orderFrontStandardAboutPanel:sender];
 }
 
+-(IBAction)moreRecentHistory:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:[Lastfm urlForUser:[lastfm username]]];
+}
+
 @end
 
 
 
 @implementation ShareWindowController
 
+@synthesize track;
+@synthesize lastfm;
+
 -(void)submit:(id)sender
 {
     [spinner startAnimation:self];
-    [lastfm share:[[Mediator sharedMediator] currentTrack] with:[username stringValue]];
+    [lastfm share:track with:[username stringValue]];
     [self close];
     [spinner stopAnimation:self];
 }

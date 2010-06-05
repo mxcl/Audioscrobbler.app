@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright 2005-2009 Last.fm Ltd.                                      *
+ *   Copyright 2010 Max Howell <max@methylblue.com>                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,48 +18,21 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-// Created by Max Howell <max@last.fm>
-
-//TODO DistributedNotificationCenter
-
 #import <Cocoa/Cocoa.h>
-@class ITunesListener;
 @class ITunesApplication;
+@class Lastfm;
 
-@interface Mediator:NSObject{
-    NSMutableArray* stack;
-    NSMutableDictionary* tracks;
-    NSString* active;
-    time_t previous_start;
-    
-    ITunesListener* itunes;
-}
-+(id)sharedMediator;
-
--(void)start:(NSString*)clientId withTrack:(NSMutableDictionary*)track;
--(void)pause:(NSString*)clientId;
--(void)resume:(NSString*)clientId;
--(void)stop:(NSString*)clientId;
-
--(void)changeMetadata:(NSString*)clientId
-            forTrack:(NSString*)track
-              artist:(NSString*)artist
-               album:(NSString*)album;
-
--(IBAction)onScrobblingEnabledChanged:(id)sender;
--(IBAction)forceRejig:(id)sender;
-
--(NSDictionary*)currentTrack;
-
--(bool)isEqualToCurrenTrack:(NSDictionary*)track;
-
-@end
-
-@interface ITunesListener:NSObject{
-    int64_t pid;
-    bool waspaused;
-    bool norating;
+@interface ITunesListener : NSObject {
+    NSMutableDictionary* track;
+    time_t start_time;
+    time_t pause_time;
+    char state;
     ITunesApplication* itunes;
+    Lastfm* lastfm;
 }
--(id)init;
+
+-(id)initWithLastfm:(Lastfm*)lastfm;
+-(NSDictionary*)track;
+-(void)onPlayerInfo:(NSNotification*)userData;
+
 @end

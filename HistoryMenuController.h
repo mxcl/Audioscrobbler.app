@@ -1,5 +1,6 @@
 /***************************************************************************
  *   Copyright 2005-2009 Last.fm Ltd.                                      *
+ *   Copyright 2010 Max Howell <max@methylblue.com                         *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,8 +18,6 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
-// Created by Max Howell <max@last.fm>
-
 #import <Cocoa/Cocoa.h>
 
 
@@ -27,7 +26,5 @@
     NSMutableArray* tracks;
     NSDictionary* currentTrack;
 }
-
--(IBAction)moreRecentHistory:(id)sender;
 
 @end
