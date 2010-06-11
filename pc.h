@@ -7,11 +7,6 @@
 #endif
 
 
-// don't use these, make your own!
-#define LASTFM_API_KEY "c8c7b163b11f92ef2d33ba6cd3c2c3c3"
-#define LASTFM_SHARED_SECRET "73582dfc9e556d307aead069af110ab8"
-
-
 #define STATE_PLAYING 0
 #define STATE_PAUSED 1
 #define STATE_STOPPED 2
