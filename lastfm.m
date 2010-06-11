@@ -131,19 +131,19 @@ static NSData* signed_post_body(NSDictionary* vars)
     [vars setObject:@LASTFM_API_KEY forKey:@"api_key"];
     [vars setObject:sk forKey:@"sk"];
     [vars setObject:method forKey:@"method"];
-    
+
     NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://post.audioscrobbler.com/2.0/"]
                                                            cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                        timeoutInterval:10];
 
     NSData* body = signed_post_body(vars);
-    
+
     [request setHTTPMethod:@"POST"];
     [request setHTTPBody:body];
     [request setValue:@"fm.last.Audioscrobbler" forHTTPHeaderField:@"User-Agent"];
     [request setValue:[[NSNumber numberWithInteger:[body length]] stringValue] forHTTPHeaderField:@"Content-Length"];
-    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-    
+    [request setValue:@"application/x-www-form-urlencoded; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
+
     NSURLResponse* headers;
     return [NSURLConnection sendSynchronousRequest:request returningResponse:&headers error:nil];
 }
