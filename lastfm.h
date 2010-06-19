@@ -27,6 +27,7 @@
 -(void)lastfm:(Lastfm*)lastfm requiresAuth:(NSURL*)url; // the user needs to visit this URL to auth
 -(void)lastfm:(Lastfm*)lastfm metadata:(NSDictionary*)metadata betterdata:(NSDictionary*)betterdata;
 -(void)lastfm:(Lastfm*)lastfm errorCode:(int)code errorMessage:(NSString*)message;
+-(void)lastfm:(Lastfm*)lastfm scrobbled:(NSDictionary*)track failureMessage:(NSString*)message;
 @end
 
 

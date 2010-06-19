@@ -24,6 +24,7 @@
 
 #define KEYCHAIN_NAME "fm.last.Audioscrobbler"
 
+enum HTTPMethod { GET, POST };
 
 static NSString* md5(NSString* s)
 {
@@ -51,25 +52,43 @@ static NSString* md5(NSString* s)
 @interface LastfmError : NSObject {
     int code;
     NSString* message;
+    NSString* method;
 }
 @property(assign) int code;
 @property(assign) NSString* message;
-+(LastfmError*)badResponse;
+@property(assign) NSString* method;
++(LastfmError*)badResponse:(NSString*)method;
 @end
 
 @implementation LastfmError
-@synthesize code, message;
-+(LastfmError*)badResponse {
+@synthesize code, method, message;
++(id)badResponse:(NSString*)method {
     LastfmError* e = [[[LastfmError alloc] init] autorelease];
     e.code = 11;
     e.message = @"Last.fm is not responding, please try again later";
+    e.method = method;
     return e;
 }
-+(LastfmError*)unexpectedError:(NSString*)msg {
++(id)unexpectedError:(NSString*)msg {
     LastfmError* e = [[[LastfmError alloc] init] autorelease];
-    e.code = 100;
+    e.code = -1;
     e.message = msg;
     return e;
+}
++(id)authenticationRequired:(NSString*)method {
+    LastfmError* e = [[[LastfmError alloc] init] autorelease];
+    e.code = 9;
+    e.message = @"Authentication required";
+    e.method = method;
+    return e;
+}
+-(NSString*)prettyMessage {
+    return method
+        ? [message stringByAppendingFormat:@" for method: %@", method]
+        : message;
+}
+-(void)setMessage:(NSString*)s {
+    message = s;
 }
 @end
 
@@ -108,6 +127,28 @@ static NSString* md5(NSString* s)
 
 #pragma mark HTTP
 
+-(NSXMLDocument*)get:(NSMutableDictionary*)params to:(NSString*)method
+{
+    NSMutableString* url = [NSMutableString stringWithCapacity:256];
+    [url appendString:@"http://ws.audioscrobbler.com/2.0/?"];
+    for (id key in params) {
+        [url appendString:key];
+        [url appendString:@"="];
+        [url appendString:[[params objectForKey:key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        [url appendString:@"&"];
+    }
+    [url appendString:@"api_key=" LASTFM_API_KEY "&"];
+    [url appendString:@"method="];
+    [url appendString:method];
+    
+    NSMutableURLRequest* rq = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
+                                                      cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                  timeoutInterval:10];
+    [rq setHTTPMethod:@"GET"];
+    
+    return [self readResponse:rq];
+}
+
 static NSString* signature(NSMutableDictionary* params)
 {
     NSArray* keys = [[params allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
@@ -118,34 +159,6 @@ static NSString* signature(NSMutableDictionary* params)
     }
     [s appendString:@LASTFM_SHARED_SECRET];
     return md5(s);
-}
-
--(NSXMLDocument*)get:(NSMutableDictionary*)params to:(NSString*)method
-{
-    @try {        
-        NSMutableString* url = [NSMutableString stringWithCapacity:256];
-        [url appendString:@"http://ws.audioscrobbler.com/2.0/?"];
-        for (id key in params) {
-            [url appendString:key];
-            [url appendString:@"="];
-            [url appendString:[[params objectForKey:key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-            [url appendString:@"&"];
-        }
-        [url appendString:@"api_key=" LASTFM_API_KEY "&"];
-        [url appendString:@"method="];
-        [url appendString:method];
-        
-        NSMutableURLRequest* rq = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
-                                                          cachePolicy:NSURLRequestReloadIgnoringCacheData
-                                                      timeoutInterval:10];
-        [rq setHTTPMethod:@"GET"];
-        
-        return [self readResponse:rq];
-    }
-    @catch (LastfmError* e) {        
-        [delegate lastfm:self errorCode:e.code errorMessage:e.message];
-    }
-    return nil;
 }
 
 static NSData* signed_post_body(NSMutableDictionary* params)
@@ -164,50 +177,76 @@ static NSData* signed_post_body(NSMutableDictionary* params)
 
 -(NSXMLDocument*)post:(NSMutableDictionary*)params to:(NSString*)method
 {
-    @try {
-        if (!sk && !token) goto auth;
-        if (!sk && token) [self getSession];
+    if (!sk && !token) { @throw [LastfmError authenticationRequired:method]; }
+    if (!sk && token) [self getSession];
+    
+    [params setObject:sk forKey:@"sk"];
+    [params setObject:@LASTFM_API_KEY forKey:@"api_key"];
+    [params setObject:method forKey:@"method"];
+    NSData* body = signed_post_body(params);
+    
+    NSMutableURLRequest* rq = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://post.audioscrobbler.com/2.0/"]
+                                                      cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                  timeoutInterval:10];
+    [rq setHTTPMethod:@"POST"];
+    [rq setHTTPBody:body];
+    [rq setValue:[[NSNumber numberWithInteger:[body length]] stringValue] forHTTPHeaderField:@"Content-Length"];
+    [rq setValue:@"application/x-www-form-urlencoded; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
+    return [self readResponse:rq];    
+}
 
-        [params setObject:sk forKey:@"sk"];
-        [params setObject:@LASTFM_API_KEY forKey:@"api_key"];
-        [params setObject:method forKey:@"method"];
-        NSData* body = signed_post_body(params);
-        
-        NSMutableURLRequest* rq = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://post.audioscrobbler.com/2.0/"]
-                                                          cachePolicy:NSURLRequestReloadIgnoringCacheData
-                                                      timeoutInterval:10];
-        [rq setHTTPMethod:@"POST"];
-        [rq setHTTPBody:body];
-        [rq setValue:[[NSNumber numberWithInteger:[body length]] stringValue] forHTTPHeaderField:@"Content-Length"];
-        [rq setValue:@"application/x-www-form-urlencoded; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
-        return [self readResponse:rq];        
-    }
-    @catch (LastfmError* e) {
-        switch (e.code) {
+-(void)handleError:(LastfmError*)e
+{
+    switch (e.code) {
         case 15:             // This token has expired
             [token release];
             token = nil;
         case 9:              // Invalid session key - Please re-authenticate
             [sk release];
             sk = nil;
-        case 14:             // This token has not been authorized
-            goto auth;
+        case 14:
+            @try {           // This token has not been authorized
+                if (!token) token = [[self getToken] retain];
+                NSString* url = [NSString stringWithFormat:@"http://www.last.fm/api/auth/?api_key=" LASTFM_API_KEY "&token=%@", token];
+                [delegate lastfm:self requiresAuth:[NSURL URLWithString:url]];
+                break;
+            }
+            @catch (LastfmError* ee) {
+                e = ee; // fall through to default case
+            }
         default:
-            [delegate lastfm:self errorCode:e.code errorMessage:e.message];
-            return nil;
+            [delegate lastfm:self errorCode:e.code errorMessage:e.prettyMessage];
+            break;
+    }
+}
+
+-(NSXMLDocument*)request:(enum HTTPMethod)http_method params:(NSMutableDictionary*)params to:(NSString*)lastfm_method
+{
+    @try {
+        switch (http_method) {
+        case GET:
+            return [self get:params to:lastfm_method];
+        case POST:
+            return [self post:params to:lastfm_method];
         }
     }
-    
-auth:
-    @try {
-        if (!token) token = [[self getToken] retain];
-        NSString* url = [NSString stringWithFormat:@"http://www.last.fm/api/auth/?api_key=" LASTFM_API_KEY "&token=%@", token];
-        [delegate lastfm:self requiresAuth:[NSURL URLWithString:url]];
-    }
     @catch (LastfmError* e) {
-        [delegate lastfm:self errorCode:e.code errorMessage:e.message];
+        [self handleError:e];
     }
     return nil;
+}
+
+static NSString* extract_method(NSURLRequest* rq) 
+{
+    NSString* query = [rq.HTTPMethod isEqualToString:@"GET"]
+            ? [rq.URL query]
+            : [[[NSString alloc] initWithData:[rq HTTPBody] encoding:NSUTF8StringEncoding] autorelease];
+    
+    for (NSString* part in [query componentsSeparatedByString:@"&"])
+        if ([[part substringToIndex:7] isEqualToString:@"method="])
+            return [part substringFromIndex:7];
+
+    return @"method.unknown";
 }
 
 -(NSXMLDocument*)readResponse:(NSMutableURLRequest*)rq
@@ -219,19 +258,22 @@ auth:
     NSData* data = [NSURLConnection sendSynchronousRequest:rq returningResponse:&headers error:&error];
     
     if (error)
-        @throw [LastfmError badResponse];
+        @throw [LastfmError badResponse:extract_method(rq)];
     
     NSXMLDocument* xml = [[[NSXMLDocument alloc] initWithData:data options:NSXMLNodeOptionsNone error:nil] autorelease];
-    bool ok = [[[[xml rootElement] attributeForName:@"status"] stringValue] isEqualToString:@"ok"];
+    bool ok = [[xml.rootElement attributeForName:@"status"].stringValue isEqualToString:@"ok"];
 
     if (!ok) {
-        NSXMLElement* ee = [[[xml rootElement] elementsForName:@"error"] lastObject];
-        
-        if (!ee) @throw [LastfmError badResponse];
+        NSXMLElement* ee = [xml.rootElement elementsForName:@"error"].lastObject;
+        if (!ee)
+            @throw [LastfmError badResponse:extract_method(rq)];
 
+        const int code = [ee attributeForName:@"code"].stringValue.intValue;
+        
         LastfmError* e = [[[LastfmError alloc] init] autorelease];
-        e.code = [[[ee attributeForName:@"code"] stringValue] intValue];
+        e.code = code;
         e.message = [ee stringValue];
+        e.method = extract_method(rq);
         @throw e;
     }
 
@@ -243,22 +285,20 @@ auth:
 -(NSString*)getToken
 {
     NSXMLDocument* xml = [self get:[NSMutableDictionary dictionary] to:@"auth.gettoken"];
-    return [[[xml.rootElement elementsForName:@"token"] lastObject] stringValue];
+    return [[xml.rootElement elementsForName:@"token"].lastObject stringValue];
 }
 
-static void inline save(NSString* username, NSString* sk) {
+static void inline save(NSString* username, NSString* sk)
+{
     const char* cstr = [username UTF8String];
-    OSStatus err = SecKeychainAddGenericPassword(NULL, //default keychain
-                                                 sizeof(KEYCHAIN_NAME),
-                                                 KEYCHAIN_NAME,
-                                                 strlen(cstr),
-                                                 cstr,
-                                                 32,
-                                                 [sk UTF8String],
-                                                 NULL);
-    if (err != noErr)
-        @throw [LastfmError unexpectedError:[NSString stringWithFormat:@"%s", GetMacOSStatusCommentString(err)]];
-    
+    SecKeychainAddGenericPassword(NULL, //default keychain
+                                  sizeof(KEYCHAIN_NAME),
+                                  KEYCHAIN_NAME,
+                                  strlen(cstr),
+                                  cstr,
+                                  32,
+                                  [sk UTF8String],
+                                  NULL);
     NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:username forKey:@"Username"];
     [defaults synchronize];
@@ -273,16 +313,16 @@ static void inline save(NSString* username, NSString* sk) {
     #undef DICT
 
     NSXMLDocument* xml = [self get:params to:@"auth.getsession"];
-    
+
     [token release]; // consumed
     token = nil;
 
-    NSXMLElement* session = [[[xml rootElement] elementsForName:@"session"] lastObject];
-    sk = [[[[session elementsForName:@"key"] lastObject] stringValue] retain];
-    username = [[[[session elementsForName:@"name"] lastObject] stringValue] retain];
+    NSXMLElement* session = [xml.rootElement elementsForName:@"session"].lastObject;
+    sk = [[[session elementsForName:@"key"].lastObject stringValue] retain];
+    username = [[[session elementsForName:@"name"].lastObject stringValue] retain];
 
     if (!username || !sk)
-        @throw [LastfmError badResponse];
+        @throw [LastfmError badResponse:@"auth.getsession"];
 
     save(username, sk);
 }
@@ -317,7 +357,7 @@ static void correct_empty(NSMutableDictionary* d, NSString* key)
     NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:5];
     PACK(dict, track);
     
-    [self post:dict to:@"track.love"];
+    [self request:POST params:dict to:@"track.love"];
 }
 
 -(void)share:(NSDictionary*)track with:(NSString*)user
@@ -328,20 +368,24 @@ static void correct_empty(NSMutableDictionary* d, NSString* key)
     PACK(dict, track);
     [dict setObject:user forKey:@"recipient"];
     
-    [self post:dict to:@"track.share"];
+    [self request:POST params:dict to:@"track.share"];
 }
 
 -(void)scrobble:(NSDictionary*)track startTime:(time_t)start_time
 {
-    if (!track) return;
-    
-    NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:7];
-    PACK_MOAR(dict, track);
-    [dict setObject:[[NSNumber numberWithUnsignedInt:start_time] stringValue] forKey:@"timestamp"];
-    
-    //TODO rest of optional parameters including albumArtist
-    
-    [self post:dict to:@"track.scrobble"];
+    if (!track)
+        return;
+    @try {
+        NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:7];
+        PACK_MOAR(dict, track);
+        [dict setObject:[[NSNumber numberWithUnsignedInt:start_time] stringValue] forKey:@"timestamp"];
+        [self post:dict to:@"track.scrobble"];
+        [delegate lastfm:self scrobbled:track failureMessage:nil];
+    }
+    @catch (LastfmError* e) {
+        [delegate lastfm:self scrobbled:track failureMessage:e.message];
+        [self handleError:e];
+    }
 }
 
 -(void)updateNowPlaying:(NSDictionary*)track
@@ -351,7 +395,7 @@ static void correct_empty(NSMutableDictionary* d, NSString* key)
     NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:6];
     PACK_MOAR(dict, track);
 
-    NSXMLDocument* xml = [self post:dict to:@"user.updateNowPlaying"];
+    NSXMLDocument* xml = [self request:POST params:dict to:@"user.updateNowPlaying"];
 
     #define NODE(x) [[[[xml rootElement] elementsForName:x] lastObject] stringValue]
     NSString* Artist = NODE(@"artist");
@@ -372,6 +416,7 @@ static void correct_empty(NSMutableDictionary* d, NSString* key)
 
 -(id)initWithDelegate:(id)d
 {
+    token = nil;
     delegate = d;
 
 #ifdef __AS_DEBUGGING__
@@ -381,9 +426,7 @@ static void correct_empty(NSMutableDictionary* d, NSString* key)
 #endif
 
     username = [[NSUserDefaults standardUserDefaults] stringForKey:@"Username"];
-    if (!username)
-        return self;
-    if (username.length == 0) {
+    if (!username || username.length == 0) {
         username = nil;
         return self;
     }
@@ -400,7 +443,6 @@ static void correct_empty(NSMutableDictionary* d, NSString* key)
                                                   &n,
                                                   &key,
                                                   NULL);
-
     if (err == noErr) {
         sk = [[NSString alloc] initWithBytes:key length:32 encoding:NSUTF8StringEncoding];
         SecKeychainItemFreeContent(NULL, key);

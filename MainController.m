@@ -19,10 +19,11 @@
  ***************************************************************************/
 
 #import "AutoDash.h"
-#import "lastfm.h"
-#import "NSDictionary+Track.h"
 #import "ITunesListener.h"
-#import "StatusItemController.h"
+#import "lastfm.h"
+#import "MainController.h"
+#import "NSDictionary+Track.h"
+#import "ShareWindowController.h"
 #import <Carbon/Carbon.h>
 #import <WebKit/WebKit.h>
 
@@ -40,10 +41,10 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
     GetEventParameter(e, kEventParamDirectObject, typeEventHotKeyID, NULL, sizeof(hkid), NULL, &hkid);
     switch(hkid.id){
         case 1:
-            [(StatusItemController*)userdata tag:userdata];
+            [(MainController*)userdata tag:userdata];
             break;
         case 2:
-            [(StatusItemController*)userdata share:userdata];
+            [(MainController*)userdata share:userdata];
             break;
     }
     return noErr;
@@ -78,7 +79,7 @@ static NSString* downloads()
 }
 
 
-@implementation StatusItemController
+@implementation MainController
 
 +(void)initialize
 {
@@ -305,6 +306,33 @@ static NSString* downloads()
                                clickContext:nil];
 }
 
+-(void)lastfm:(Lastfm*)lastfm scrobbled:(NSDictionary*)track failureMessage:(NSString*)message
+{
+    NSMenuItem* item = [history_menu itemAtIndex:0];
+    if(false == [item isEnabled])
+        [history_menu removeItem:item];
+    
+    NSString* title = track.prettyTitle;
+    if (message)
+        title = [title stringByAppendingFormat:@" (Failed: %@)", message];
+    else
+        title = [title stringByAppendingFormat:@" (OK)"];
+    
+    item = [[NSMenuItem alloc] initWithTitle:title action:@selector(historyItemClicked:) keyEquivalent:@""];
+    [item setTarget:self];
+    [item setRepresentedObject:track.url];
+    [history_menu insertItem:item atIndex:0];
+    [item release];
+    
+    // 18 items is about an hour
+    if([history_menu numberOfItems] > 18)
+        [history_menu removeItemAtIndex:15];
+}
+
+-(void)historyItemClicked:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:[sender representedObject]];
+}
 
 -(void)growlNotificationWasClicked:(id)dict
 {
@@ -410,29 +438,6 @@ static NSString* downloads()
 -(IBAction)moreRecentHistory:(id)sender
 {
     [[NSWorkspace sharedWorkspace] openURL:[Lastfm urlForUser:[lastfm username]]];
-}
-
-@end
-
-
-
-@implementation ShareWindowController
-
-@synthesize track;
-@synthesize lastfm;
-
--(void)submit:(id)sender
-{
-    [spinner startAnimation:self];
-    [lastfm share:track with:[username stringValue]];
-    [self close];
-    [spinner stopAnimation:self];
-}
-
--(void)showWindow:(id)sender
-{
-    [NSApp activateIgnoringOtherApps:YES]; //see above about:
-    [super showWindow:sender];
 }
 
 @end

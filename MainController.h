@@ -18,13 +18,37 @@
  *   51 Franklin Steet, Fifth Floor, Boston, MA  02110-1301, USA.          *
  ***************************************************************************/
 
+#import <Growl/GrowlApplicationBridge.h>
 #import <Cocoa/Cocoa.h>
+#import "lastfm.h"
+@class AutoDash;
+@class ShareWindowController;
 
 
-@interface HistoryMenuController:NSObject{
+@interface MainController : NSObject <GrowlApplicationBridgeDelegate, LastfmDelegate>
+{
+    NSStatusItem* status_item;
     IBOutlet NSMenu* menu;
-    NSMutableArray* tracks;
-    NSDictionary* currentTrack;
+    IBOutlet NSMenu* app_menu;
+    IBOutlet NSMenu* history_menu;
+    IBOutlet NSMenuItem* start_at_login;
+    IBOutlet NSMenuItem* status;
+    IBOutlet NSMenuItem* love;
+    IBOutlet NSMenuItem* share;
+    IBOutlet NSMenuItem* tag;
+    AutoDash* autodash;
+    ITunesListener* listener;
+    Lastfm* lastfm;
+    ShareWindowController* sharewc;
 }
+
+-(IBAction)love:(id)sender;
+-(IBAction)tag:(id)sender;
+-(IBAction)share:(id)sender;
+-(IBAction)startAtLogin:(id)sender;
+-(IBAction)installDashboardWidget:(id)sender;
+-(IBAction)activateAutoDash:(id)sender;
+-(IBAction)about:(id)sender;
+-(IBAction)moreRecentHistory:(id)sender;
 
 @end
