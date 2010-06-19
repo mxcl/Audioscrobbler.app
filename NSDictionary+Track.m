@@ -1,5 +1,7 @@
 // Created by Max Howell on 05/06/2010.
 #import "NSDictionary+Track.h"
+#import "lastfm.h"
+
 
 @implementation NSDictionary (mxcl)
 
@@ -8,7 +10,7 @@
 -(NSString*)album { return [self objectForKey:@"Album"]; }
 -(int64_t)pid { return [[self objectForKey:@"PersistentID"] longLongValue]; }
 -(int)rating { return [[self objectForKey:@"Rating"] intValue]; }
-
+-(uint)duration { return [[self objectForKey:@"Total Time"] longLongValue] / 1000; }
 -(int)playerState
 {
     NSString* s = [self objectForKey:@"Player State"];
@@ -34,6 +36,16 @@
     return [s autorelease];
 }
 
+-(NSURL*)url
+{
+    //TODO localise URL, maybe auth ws gives that? otherwise OS level locale
+    NSMutableString* path = [[@"http://www.last.fm/music/" mutableCopy] autorelease];
+    [path appendString:[Lastfm urlEncode:self.artist]];
+    [path appendString:@"/_/"];
+    [path appendString:[Lastfm urlEncode:self.title]];
+    return [NSURL URLWithString:path];
+}
+
 @end
 
 
@@ -46,13 +58,15 @@
 -(bool)isEqualToTrack:(NSDictionary*)track
 {
     id o = [self objectForKey:@"Album Art"];
+    bool b = false;
     @try {
         [self removeObjectForKey:@"Album Art"];
-        return [self isEqualToDictionary:track];
+        b = [self isEqualToDictionary:track];
     }
     @finally {
         if (o) [self setObject:o forKey:@"Album Art"];
     }
+    return b;
 }
 
 @end

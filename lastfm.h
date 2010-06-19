@@ -25,8 +25,8 @@
 @protocol LastfmDelegate <NSObject>
 @optional
 -(void)lastfm:(Lastfm*)lastfm requiresAuth:(NSURL*)url; // the user needs to visit this URL to auth
--(void)lastfm:(Lastfm*)lastfm error:(NSString*)message;
 -(void)lastfm:(Lastfm*)lastfm metadata:(NSDictionary*)metadata betterdata:(NSDictionary*)betterdata;
+-(void)lastfm:(Lastfm*)lastfm errorCode:(int)code errorMessage:(NSString*)message;
 @end
 
 
@@ -39,19 +39,14 @@
 
 @property(readonly) NSString* username;
 
-// generates lastfm URLs
-+(NSURL*)urlForTrack:(NSString*)track by:(NSString*)artist;
-+(NSURL*)urlForUser:(NSString*)username;
++(NSString*)urlEncode:(NSString*)url_component; // Last.fm has special URL encoding rules
++(NSURL*)urlForUser:(NSString*)username; // the user's profile page
 
-// pretty string functions
-+(NSString*)durationString:(NSTimeInterval)durationInSeconds;
+-(id)initWithDelegate:(id)delegate;
 
-// lastfm API
 -(void)love:(NSDictionary*)track;
 -(void)share:(NSDictionary*)track with:(NSString*)username;
 -(void)updateNowPlaying:(NSDictionary*)track;
 -(void)scrobble:(NSDictionary*)track startTime:(time_t)start_time;
-
--(id)initWithDelegate:(id)delegate;
 
 @end

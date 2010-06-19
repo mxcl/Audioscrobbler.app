@@ -153,11 +153,6 @@ static uint scrobble_time(uint duration)
         [lastfm scrobble:track startTime:start_time];
 }
 
--(void)updateNowPlaying:(NSDictionary*)dict
-{
-    [lastfm updateNowPlaying:dict];
-}
-
 -(void)start
 {
     [self announce:TrackStarted];
@@ -169,8 +164,8 @@ static uint scrobble_time(uint duration)
 
     // we wait a second so that we don't spam Last.fm and so that stuff like
     // Growl (for auth) doesn't fill the screen when you skip-skip-skip
-    [NSObject cancelPreviousPerformRequestsWithTarget:self];
-    [self performSelector:@selector(updateNowPlaying:) withObject:track afterDelay:1];
+    [NSObject cancelPreviousPerformRequestsWithTarget:lastfm];
+    [lastfm performSelector:@selector(updateNowPlaying:) withObject:track afterDelay:1];
 }
 
 -(void)load_album_art

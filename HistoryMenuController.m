@@ -41,11 +41,9 @@
     if([item isEnabled] == false)
         [menu removeItem:item];
     
-    NSURL* url = [Lastfm urlForTrack:[track objectForKey:@"Name"] by:[track objectForKey:@"Artist"]];
-    
     item = [[NSMenuItem alloc] initWithTitle:track.prettyTitle action:@selector(clicked:) keyEquivalent:@""];
     [item setTarget:self];
-    [item setRepresentedObject:url];
+    [item setRepresentedObject:track.url];
     [menu insertItem:item atIndex:0];
     [item release];
     

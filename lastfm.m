@@ -19,29 +19,11 @@
  ***************************************************************************/
 
 #import "lastfm.h"
-#include <CommonCrypto/CommonDigest.h>
+#import "NSDictionary+Track.h"
+#import <CommonCrypto/CommonDigest.h>
 
 #define KEYCHAIN_NAME "fm.last.Audioscrobbler"
 
-
-static NSString* encode(NSString* s)
-{
-    // removed () from included chars as they are legal unencoded and Last.fm seems to be OK with it
-    #define escape(s, excluding) [(NSString*)CFURLCreateStringByAddingPercentEscapes(nil, (CFStringRef)s, excluding, CFSTR("!*';:@&=+$,/?%#[]"), kCFStringEncodingUTF8) autorelease];
-
-    bool double_escape = [s rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"&/;+#%"]].location != NSNotFound;
-    
-    // RFC 2396 encode, but also use pluses rather than %20s, it's more legible
-    s = escape(s, CFSTR(" "));
-    s = [s stringByReplacingOccurrencesOfString:@" " withString:@"+"];
-
-    // Last.fm has odd double encoding rules
-    if(double_escape)
-        s = escape(s, nil);
-
-    return s;
-    #undef escape
-}
 
 static NSString* md5(NSString* s)
 {
@@ -56,18 +38,39 @@ static NSString* md5(NSString* s)
     return nil;
 }
 
-static int status(NSXMLDocument* xml)
-{
-    if ([[[[xml rootElement] attributeForName:@"status"] stringValue] isEqualToString:@"ok"])
-        return 1;
-    else
-        return [[[[[[xml rootElement] elementsForName:@"error"] lastObject] attributeForName:@"code"] stringValue] intValue];
-}
 
 
 @interface Lastfm()
--(int)getSession;
--(NSURL*)getToken;
+-(void)getSession;
+-(NSString*)getToken;
+-(NSXMLDocument*)readResponse:(NSMutableURLRequest*)rq;
+@end
+
+
+
+@interface LastfmError : NSObject {
+    int code;
+    NSString* message;
+}
+@property(assign) int code;
+@property(assign) NSString* message;
++(LastfmError*)badResponse;
+@end
+
+@implementation LastfmError
+@synthesize code, message;
++(LastfmError*)badResponse {
+    LastfmError* e = [[[LastfmError alloc] init] autorelease];
+    e.code = 11;
+    e.message = @"Last.fm is not responding, please try again later";
+    return e;
+}
++(LastfmError*)unexpectedError:(NSString*)msg {
+    LastfmError* e = [[[LastfmError alloc] init] autorelease];
+    e.code = 100;
+    e.message = msg;
+    return e;
+}
 @end
 
 
@@ -76,143 +79,212 @@ static int status(NSXMLDocument* xml)
 
 @synthesize username;
 
-+(NSURL*)urlForTrack:(NSString*)track by:(NSString*)artist
+
++(NSString*)urlEncode:(NSString*)s
 {
-    //TODO localise URL, maybe auth ws gives that? otherwise OS level locale
-    NSMutableString* path = [[@"http://www.last.fm/music/" mutableCopy] autorelease];
-    [path appendString:encode(artist)];
-    [path appendString:@"/_/"];
-    [path appendString:encode(track)];
-    return [NSURL URLWithString:path];
+    // removed () from included chars as they are legal unencoded and Last.fm seems to be OK with it
+#define escape(s, excluding) [(NSString*)CFURLCreateStringByAddingPercentEscapes(nil, (CFStringRef)s, excluding, CFSTR("!*';:@&=+$,/?%#[]"), kCFStringEncodingUTF8) autorelease];
+    
+    bool double_escape = [s rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"&/;+#%"]].location != NSNotFound;
+    
+    // RFC 2396 encode, but also use pluses rather than %20s, it's more legible
+    s = escape(s, CFSTR(" "));
+    s = [s stringByReplacingOccurrencesOfString:@" " withString:@"+"];
+    
+    // Last.fm has odd double encoding rules
+    if(double_escape)
+        s = escape(s, nil);
+    
+    return s;
+#undef escape
 }
 
 +(NSURL*)urlForUser:(NSString*)username
 {
     //TODO localise URL, maybe auth ws gives that? otherwise OS level locale
-    return [NSURL URLWithString:[@"http://www.last.fm/user/" stringByAppendingString:encode(username)]];
-}
-
-+(NSString*)durationString:(NSTimeInterval)ti
-{
-    uint const seconds = ti;
-    return [NSString stringWithFormat:@"%u:%02u", seconds / 60, seconds % 60];
+    return [NSURL URLWithString:[@"http://www.last.fm/user/" stringByAppendingString:[Lastfm urlEncode:username]]];
 }
 
 
 #pragma mark HTTP
 
-static NSData* signed_post_body(NSDictionary* vars)
+static NSString* signature(NSMutableDictionary* params)
 {
-    NSArray* keys = [[vars allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+    NSArray* keys = [[params allKeys] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
     NSMutableString* s = [NSMutableString stringWithCapacity:256];
-    for(id key in keys){
+    for (id key in keys) {
         [s appendString:key];
-        [s appendString:[vars objectForKey:key]];
+        [s appendString:[params objectForKey:key]];
     }
     [s appendString:@LASTFM_SHARED_SECRET];
+    return md5(s);
+}
 
-    NSString* sig = md5(s);
-    
-    [s setString:@""];
-    for(id key in vars)
-        [s appendFormat:@"%@=%@&", key, [vars objectForKey:key]];
+-(NSXMLDocument*)get:(NSMutableDictionary*)params to:(NSString*)method
+{
+    @try {        
+        NSMutableString* url = [NSMutableString stringWithCapacity:256];
+        [url appendString:@"http://ws.audioscrobbler.com/2.0/?"];
+        for (id key in params) {
+            [url appendString:key];
+            [url appendString:@"="];
+            [url appendString:[[params objectForKey:key] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            [url appendString:@"&"];
+        }
+        [url appendString:@"api_key=" LASTFM_API_KEY "&"];
+        [url appendString:@"method="];
+        [url appendString:method];
+        
+        NSMutableURLRequest* rq = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]
+                                                          cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                      timeoutInterval:10];
+        [rq setHTTPMethod:@"GET"];
+        
+        return [self readResponse:rq];
+    }
+    @catch (LastfmError* e) {        
+        [delegate lastfm:self errorCode:e.code errorMessage:e.message];
+    }
+    return nil;
+}
+
+static NSData* signed_post_body(NSMutableDictionary* params)
+{
+    NSMutableString* s = [NSMutableString stringWithCapacity:256];
+    for(id key in params) {
+        [s appendString:key];
+        [s appendString:@"="];
+        [s appendString:[params objectForKey:key]];
+        [s appendString:@"&"];
+    }
     [s appendString:@"api_sig="];
-    [s appendString:sig];
+    [s appendString:signature(params)];
     return [s dataUsingEncoding:NSUTF8StringEncoding];
 }
 
--(NSData*)post:(NSMutableDictionary*)vars to:(NSString*)method
+-(NSXMLDocument*)post:(NSMutableDictionary*)params to:(NSString*)method
 {
-    if (token && [self getSession] == 14 || !sk) {
-        [delegate lastfm:self requiresAuth:[self getToken]];
-        return nil;
+    @try {
+        if (!sk && !token) goto auth;
+        if (!sk && token) [self getSession];
+
+        [params setObject:sk forKey:@"sk"];
+        [params setObject:@LASTFM_API_KEY forKey:@"api_key"];
+        [params setObject:method forKey:@"method"];
+        NSData* body = signed_post_body(params);
+        
+        NSMutableURLRequest* rq = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://post.audioscrobbler.com/2.0/"]
+                                                          cachePolicy:NSURLRequestReloadIgnoringCacheData
+                                                      timeoutInterval:10];
+        [rq setHTTPMethod:@"POST"];
+        [rq setHTTPBody:body];
+        [rq setValue:[[NSNumber numberWithInteger:[body length]] stringValue] forHTTPHeaderField:@"Content-Length"];
+        [rq setValue:@"application/x-www-form-urlencoded; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
+        return [self readResponse:rq];        
     }
-
-    [vars setObject:@LASTFM_API_KEY forKey:@"api_key"];
-    [vars setObject:sk forKey:@"sk"];
-    [vars setObject:method forKey:@"method"];
-
-    NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://post.audioscrobbler.com/2.0/"]
-                                                           cachePolicy:NSURLRequestReloadIgnoringCacheData
-                                                       timeoutInterval:10];
-
-    NSData* body = signed_post_body(vars);
-
-    [request setHTTPMethod:@"POST"];
-    [request setHTTPBody:body];
-    [request setValue:@"fm.last.Audioscrobbler" forHTTPHeaderField:@"User-Agent"];
-    [request setValue:[[NSNumber numberWithInteger:[body length]] stringValue] forHTTPHeaderField:@"Content-Length"];
-    [request setValue:@"application/x-www-form-urlencoded; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
-
-    NSURLResponse* headers;
-    return [NSURLConnection sendSynchronousRequest:request returningResponse:&headers error:nil];
+    @catch (LastfmError* e) {
+        switch (e.code) {
+        case 15:             // This token has expired
+            [token release];
+            token = nil;
+        case 9:              // Invalid session key - Please re-authenticate
+            [sk release];
+            sk = nil;
+        case 14:             // This token has not been authorized
+            goto auth;
+        default:
+            [delegate lastfm:self errorCode:e.code errorMessage:e.message];
+            return nil;
+        }
+    }
+    
+auth:
+    @try {
+        if (!token) token = [[self getToken] retain];
+        NSString* url = [NSString stringWithFormat:@"http://www.last.fm/api/auth/?api_key=" LASTFM_API_KEY "&token=%@", token];
+        [delegate lastfm:self requiresAuth:[NSURL URLWithString:url]];
+    }
+    @catch (LastfmError* e) {
+        [delegate lastfm:self errorCode:e.code errorMessage:e.message];
+    }
+    return nil;
 }
 
+-(NSXMLDocument*)readResponse:(NSMutableURLRequest*)rq
+{
+    [rq setValue:@"com.methylblue.Audioscrobbler" forHTTPHeaderField:@"User-Agent"];
+
+    NSURLResponse* headers;
+    NSError* error = nil;
+    NSData* data = [NSURLConnection sendSynchronousRequest:rq returningResponse:&headers error:&error];
+    
+    if (error)
+        @throw [LastfmError badResponse];
+    
+    NSXMLDocument* xml = [[[NSXMLDocument alloc] initWithData:data options:NSXMLNodeOptionsNone error:nil] autorelease];
+    bool ok = [[[[xml rootElement] attributeForName:@"status"] stringValue] isEqualToString:@"ok"];
+
+    if (!ok) {
+        NSXMLElement* ee = [[[xml rootElement] elementsForName:@"error"] lastObject];
+        
+        if (!ee) @throw [LastfmError badResponse];
+
+        LastfmError* e = [[[LastfmError alloc] init] autorelease];
+        e.code = [[[ee attributeForName:@"code"] stringValue] intValue];
+        e.message = [ee stringValue];
+        @throw e;
+    }
+
+    return xml;
+}
 
 #pragma mark Authentication
 
--(NSURL*)getToken
+-(NSString*)getToken
 {
-    if (!token) {
-        NSURL* url = [NSURL URLWithString:@"http://ws.audioscrobbler.com/2.0/?method=auth.gettoken&api_key=" LASTFM_API_KEY];
-        NSXMLDocument* xml = [[NSXMLDocument alloc] initWithContentsOfURL:url options:NSUncachedRead error:nil];
-        token = [[[[xml.rootElement elementsForName:@"token"] lastObject] stringValue] retain];
-        [xml release];
-    }
-    
-    return [NSURL URLWithString:[@"http://www.last.fm/api/auth/?api_key=" LASTFM_API_KEY "&token=" stringByAppendingString:token]];
+    NSXMLDocument* xml = [self get:[NSMutableDictionary dictionary] to:@"auth.gettoken"];
+    return [[[xml.rootElement elementsForName:@"token"] lastObject] stringValue];
 }
 
--(int)getSession
+static void inline save(NSString* username, NSString* sk) {
+    const char* cstr = [username UTF8String];
+    OSStatus err = SecKeychainAddGenericPassword(NULL, //default keychain
+                                                 sizeof(KEYCHAIN_NAME),
+                                                 KEYCHAIN_NAME,
+                                                 strlen(cstr),
+                                                 cstr,
+                                                 32,
+                                                 [sk UTF8String],
+                                                 NULL);
+    if (err != noErr)
+        @throw [LastfmError unexpectedError:[NSString stringWithFormat:@"%s", GetMacOSStatusCommentString(err)]];
+    
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:username forKey:@"Username"];
+    [defaults synchronize];
+}
+
+-(void)getSession
 {
-    @try {
-        NSString* format = @"api_key" LASTFM_API_KEY "methodauth.getSessiontoken%@" LASTFM_SHARED_SECRET;
-        NSString* sig = md5([NSString stringWithFormat:format, token]);
-        NSURL* url = [NSURL URLWithString:[NSString stringWithFormat:@"http://ws.audioscrobbler.com/2.0/?method=auth.getSession&api_key=" LASTFM_API_KEY "&token=%@&api_sig=%@", token, sig]];
+    #define DICT NSMutableDictionary dictionaryWithObjectsAndKeys:token, @"token",
+    NSMutableDictionary* params;
+    params = [DICT @"auth.getsession", @"method", @LASTFM_API_KEY, @"api_key", nil];
+    params = [DICT signature(params), @"api_sig", nil];
+    #undef DICT
 
-        NSError* error;
-        NSXMLDocument* xml = [[[NSXMLDocument alloc] initWithContentsOfURL:url options:NSUncachedRead error:&error] autorelease];
+    NSXMLDocument* xml = [self get:params to:@"auth.getsession"];
+    
+    [token release]; // consumed
+    token = nil;
 
-        if (error)
-            //@throw [@"An error occurred while authenticating:\n\n" stringByAppendingString:[error localizedDescription]];
-            return 14; // HACK because initWithContentsOfURL bails on the 403 we get for lastfm failure conditions
+    NSXMLElement* session = [[[xml rootElement] elementsForName:@"session"] lastObject];
+    sk = [[[[session elementsForName:@"key"] lastObject] stringValue] retain];
+    username = [[[[session elementsForName:@"name"] lastObject] stringValue] retain];
 
-        int const code = status(xml);
-        if (code > 1)
-            return code;
+    if (!username || !sk)
+        @throw [LastfmError badResponse];
 
-        NSXMLElement* session = [[[xml rootElement] elementsForName:@"session"] lastObject];
-        sk = [[[[session elementsForName:@"key"] lastObject] stringValue] retain];
-        username = [[[[session elementsForName:@"name"] lastObject] stringValue] retain];
-        [token release];
-        token = nil; // consumed
-
-        if (!username || !sk)
-            @throw @"There was an error during authentication, try again later.";
-
-        const char* cusername = [username UTF8String];
-        OSStatus err = SecKeychainAddGenericPassword(NULL, //default keychain
-                                                     sizeof(KEYCHAIN_NAME),
-                                                     KEYCHAIN_NAME,
-                                                     strlen(cusername),
-                                                     cusername,
-                                                     32,
-                                                     [sk UTF8String],
-                                                     NULL);
-        NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:username forKey:@"Username"];
-        [defaults synchronize];
-        
-        if (err != noErr)
-            @throw [NSString stringWithFormat:@"%s", GetMacOSStatusCommentString(err)];
-
-        return 1;
-    }
-    @catch (NSString* msg) {
-        sk = token = username = nil;
-        [delegate lastfm:self error:msg];
-    }
-    return 100;
+    save(username, sk);
 }
 
 
@@ -226,14 +298,17 @@ static void correct_empty(NSMutableDictionary* d, NSString* key)
 }
 
 #define PACK(dict, track) \
-    [dict setObject:[track valueForKey:@"Name"] forKey:@"track"]; \
-    [dict setObject:[track valueForKey:@"Artist"] forKey:@"artist"]; \
+    [dict setObject:[track objectForKey:@"Name"] forKey:@"track"]; \
+    [dict setObject:[track objectForKey:@"Artist"] forKey:@"artist"]; \
     correct_empty(dict, @"track"); \
     correct_empty(dict, @"artist");
 
 #define PACK_MOAR(dict, track) \
     PACK(dict, track); \
-    [dict setObject:[track valueForKey:@"Album"] forKey:@"album"];
+    [dict setObject:[track objectForKey:@"Album"] forKey:@"album"]; \
+    [dict setObject:[[NSNumber numberWithUnsignedInt:track.duration] stringValue] forKey:@"duration"]; \
+    { NSString* s = [track objectForKey:@"Album Artist"]; \
+        if (s) [dict setObject:s forKey:@"albumArtist"]; }
 
 -(void)love:(NSDictionary*)track
 {
@@ -247,7 +322,7 @@ static void correct_empty(NSMutableDictionary* d, NSString* key)
 
 -(void)share:(NSDictionary*)track with:(NSString*)user
 {
-    if (!track || !user) return;
+    if (!track || !user || user.length == 0) return;
 
     NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:6];
     PACK(dict, track);
@@ -276,21 +351,15 @@ static void correct_empty(NSMutableDictionary* d, NSString* key)
     NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:6];
     PACK_MOAR(dict, track);
 
-    //TODO rest of optional parameters including albumArtist
-    
-    NSData* data = [self post:dict to:@"user.updateNowPlaying"];
-    
-    NSXMLDocument* xml = [[[NSXMLDocument alloc] initWithData:data options:0 error:nil] autorelease];
-    
-    NSLog(@"%@", [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease]);
-    
+    NSXMLDocument* xml = [self post:dict to:@"user.updateNowPlaying"];
+
     #define NODE(x) [[[[xml rootElement] elementsForName:x] lastObject] stringValue]
     NSString* Artist = NODE(@"artist");
     NSString* Album = NODE(@"album");
     NSString* Name = NODE(@"track");
     #undef NODE
-    
-    #define NEQ(x) ![x isEqualToString:[track objectForKey:@#x]]
+
+    #define NEQ(x) (![x isEqualToString:[track objectForKey:@#x]] && x.length > 0)
     if (NEQ(Artist) || NEQ(Album) || NEQ(Name)) {
         NSMutableDictionary* dict = [[track mutableCopy] autorelease];
         [dict setObject:Artist forKey:@"Artist"];

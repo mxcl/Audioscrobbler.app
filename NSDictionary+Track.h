@@ -2,7 +2,6 @@
 #import <Cocoa/Cocoa.h>
 
 @interface NSDictionary (mxcl)
-
 @property(readonly) bool unrated;
 @property(readonly) int64_t pid;
 @property(readonly) int rating;
@@ -11,16 +10,13 @@
 @property(readonly) NSString* album;
 @property(readonly) int playerState;
 @property(readonly) NSString* prettyTitle;
-
+@property(readonly) NSURL* url;
+@property(readonly) unsigned int duration;
 @end
 
-
 @interface NSMutableDictionary (mxcl)
-
 -(void)setArtist:(NSString*)artist;
 -(void)setTitle:(NSString*)title;
 -(void)setAlbum:(NSString*)album;
-
 -(bool)isEqualToTrack:(NSDictionary*)track;
-
 @end

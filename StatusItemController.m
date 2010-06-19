@@ -188,7 +188,7 @@ static NSString* downloads()
     NSDictionary* dict = [userData userInfo];
     uint transition = [[dict objectForKey:@"Transition"] unsignedIntValue];
     NSString* name = [dict objectForKey:@"Name"];
-    uint const duration = [(NSNumber*)[dict objectForKey:@"Total Time"] longLongValue] / 1000;
+    uint const duration = [[dict objectForKey:@"Total Time"] longLongValue] / 1000;
     NSString* notificationName = ASGrowlTrackResumed;
     
 #define UPDATE_TITLE_MENU \
@@ -282,15 +282,16 @@ static NSString* downloads()
                                  identifier:ASGrowlAuthenticationRequired];
 }
 
--(void)lastfm:(Lastfm*)lastfm error:(NSString*)message
+-(void)lastfm:(Lastfm*)lastfm errorCode:(int)code errorMessage:(NSString*)message
 {
-    [GrowlApplicationBridge notifyWithTitle:@"Error Occurred :("
+    [GrowlApplicationBridge notifyWithTitle:[NSString stringWithFormat:@"Error Code %d", code]
                                 description:message
                            notificationName:ASGrowlErrorCommunication
                                    iconData:nil
                                    priority:2
                                    isSticky:false
-                               clickContext:nil];
+                               clickContext:nil
+                                 identifier:[message stringByAppendingString:ASGrowlErrorCommunication]];
 }
 
 -(void)lastfm:(Lastfm*)lastfm metadata:(NSDictionary*)metadata betterdata:(NSDictionary*)betterdata
@@ -304,6 +305,7 @@ static NSString* downloads()
                                clickContext:nil];
 }
 
+
 -(void)growlNotificationWasClicked:(id)dict
 {
     if ([dict isKindOfClass:[NSString class]])
@@ -316,11 +318,10 @@ static NSString* downloads()
             [self love:self];
         else
             [lastfm love:dict];
-        // need some kind of feedback
+        // TODO need some kind of feedback
     }
     else
-        [[NSWorkspace sharedWorkspace] openURL:[Lastfm urlForTrack:[dict objectForKey:@"Name"]
-                                                                by:[dict objectForKey:@"Artist"]]];
+        [[NSWorkspace sharedWorkspace] openURL:[dict url]];
 }
 
 -(IBAction)love:(id)sender
@@ -332,8 +333,7 @@ static NSString* downloads()
 
 -(IBAction)tag:(id)sender
 {
-    NSDictionary* t = listener.track;
-    NSURL* url = [Lastfm urlForTrack:t.title by:t.artist];
+    NSURL* url = listener.track.url;
     NSString* path = [[url path] stringByAppendingPathComponent:@"+tags"];
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:path relativeToURL:url]];
 }
