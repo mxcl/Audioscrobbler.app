@@ -64,14 +64,14 @@ static NSString* md5(NSString* s)
 @synthesize code, method, message;
 +(id)badResponse:(NSString*)method {
     LastfmError* e = [[[LastfmError alloc] init] autorelease];
-    e.code = 11;
-    e.message = @"Last.fm is not responding, please try again later";
+    e.code = -1;
+    e.message = @"The response from Last.fm was invalid";
     e.method = method;
     return e;
 }
 +(id)unexpectedError:(NSString*)msg {
     LastfmError* e = [[[LastfmError alloc] init] autorelease];
-    e.code = -1;
+    e.code = -2;
     e.message = msg;
     return e;
 }
@@ -84,7 +84,7 @@ static NSString* md5(NSString* s)
 }
 -(NSString*)prettyMessage {
     return method
-        ? [message stringByAppendingFormat:@" for method: %@", method]
+        ? [message stringByAppendingFormat:@" for method: %@.", method]
         : message;
 }
 -(void)setMessage:(NSString*)s {
@@ -169,7 +169,7 @@ static NSString* signature(NSMutableDictionary* params)
     return md5(s);
 }
 
-static NSData* signed_post_body(NSMutableDictionary* params)
+static NSMutableString* signed_post_body(NSMutableDictionary* params)
 {
     NSMutableString* s = [NSMutableString stringWithCapacity:256];
     for(id key in params) {
@@ -180,7 +180,7 @@ static NSData* signed_post_body(NSMutableDictionary* params)
     }
     [s appendString:@"api_sig="];
     [s appendString:signature(params)];
-    return [s dataUsingEncoding:NSUTF8StringEncoding];
+    return s;
 }
 
 -(NSXMLDocument*)post:(NSMutableDictionary*)params to:(NSString*)method
@@ -191,7 +191,12 @@ static NSData* signed_post_body(NSMutableDictionary* params)
     [params setObject:sk forKey:@"sk"];
     [params setObject:@LASTFM_API_KEY forKey:@"api_key"];
     [params setObject:method forKey:@"method"];
-    NSData* body = signed_post_body(params);
+    NSMutableString* bodystr = signed_post_body(params);
+    NSData* body = [bodystr dataUsingEncoding:NSUTF8StringEncoding];
+    
+    [bodystr replaceOccurrencesOfString:sk withString:@"****" options:0 range:NSMakeRange(0, bodystr.length)];
+    [bodystr replaceOccurrencesOfString:@LASTFM_API_KEY withString:@"****" options:0 range:NSMakeRange(0, bodystr.length)];
+    NSLog(@"POST for `%@':\n%@", method, bodystr);
     
     NSMutableURLRequest* rq = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://post.audioscrobbler.com/2.0/"]
                                                       cachePolicy:NSURLRequestReloadIgnoringCacheData
@@ -200,7 +205,7 @@ static NSData* signed_post_body(NSMutableDictionary* params)
     [rq setHTTPBody:body];
     [rq setValue:[[NSNumber numberWithInteger:[body length]] stringValue] forHTTPHeaderField:@"Content-Length"];
     [rq setValue:@"application/x-www-form-urlencoded; charset=UTF-8" forHTTPHeaderField:@"Content-Type"];
-    return [self readResponse:rq];    
+    return [self readResponse:rq];
 }
 
 -(void)handleError:(LastfmError*)e
@@ -257,6 +262,7 @@ static NSString* extract_method(NSURLRequest* rq)
     return @"method.unknown";
 }
 
+
 -(NSXMLDocument*)readResponse:(NSMutableURLRequest*)rq
 {
     [rq setValue:@"com.methylblue.Audioscrobbler" forHTTPHeaderField:@"User-Agent"];
@@ -272,16 +278,19 @@ static NSString* extract_method(NSURLRequest* rq)
     bool ok = [[xml.rootElement attributeForName:@"status"].stringValue isEqualToString:@"ok"];
 
     if (!ok) {
+        NSString* method = extract_method(rq);
+        NSLog(@"Response from `%@':\n%@", method, [xml.rootElement XMLStringWithOptions:NSXMLNodePrettyPrint]);
+        
         NSXMLElement* ee = [xml.rootElement elementsForName:@"error"].lastObject;
         if (!ee)
-            @throw [LastfmError badResponse:extract_method(rq)];
+            @throw [LastfmError badResponse:method];
 
         const int code = [ee attributeForName:@"code"].stringValue.intValue;
         
         LastfmError* e = [[[LastfmError alloc] init] autorelease];
         e.code = code;
         e.message = [ee stringValue];
-        e.method = extract_method(rq);
+        e.method = method;
         @throw e;
     }
 
