@@ -405,21 +405,19 @@ static void inline save(NSString* username, NSString* sk)
 
     NSXMLDocument* xml = [self request:POST params:dict to:@"user.updateNowPlaying"];
 
-    #define NODE(x) [[[[xml rootElement] elementsForName:x] lastObject] stringValue]
-    NSString* Artist = NODE(@"artist");
-    NSString* Album = NODE(@"album");
-    NSString* Name = NODE(@"track");
+    #define NODE(x) [[xml.rootElement elementsForName:x].lastObject stringValue]
+    NSString* artist = NODE(@"correctedArtist");
+    NSString* album = NODE(@"correctedAlbum");
+    NSString* title = NODE(@"correctedTrack");
     #undef NODE
-
-    #define NEQ(x) (![x isEqualToString:[track objectForKey:@#x]] && x.length > 0)
-    if (NEQ(Artist) || NEQ(Album) || NEQ(Name)) {
+    
+    if (artist || album || title) {
         NSMutableDictionary* dict = [[track mutableCopy] autorelease];
-        [dict setObject:Artist forKey:@"Artist"];
-        [dict setObject:Name forKey:@"Name"];
-        [dict setObject:Album forKey:@"Album"];
+        if (artist) dict.artist = artist;
+        if (title) dict.title = title;
+        if (album) dict.album = album;
         [delegate lastfm:self metadata:track betterdata:dict];
     }
-    #undef NEQ
 }
 
 -(id)initWithDelegate:(id)d
