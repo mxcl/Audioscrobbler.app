@@ -1,5 +1,6 @@
 /Audioscrobbler.xcodeproj/*.mode*v3
 /Audioscrobbler.xcodeproj/*.pbxuser
+/Audioscrobbler.xcodeproj/project.xcworkspace/
+/Audioscrobbler.xcodeproj/xcuserdata/
 /build/
 .DS_Store
-
