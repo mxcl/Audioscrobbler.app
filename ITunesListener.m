@@ -200,14 +200,32 @@ static void would_play_again_growl(NSDictionary* d)
                                clickContext:dict];
 }
 
+static void ignore_growl(NSString* title, NSString* reason)
+{
+    [GrowlApplicationBridge notifyWithTitle:@"Will Not Scrobble"
+                                description:[NSString stringWithFormat:@"“%@” is %@.", title, reason]
+                           notificationName:ASGrowlTrackIgnored
+                                   iconData:nil
+                                   priority:0
+                                   isSticky:false
+                               clickContext:nil];
+}
+
 -(void)onPlayerInfo:(NSNotification*)note
 {
     NSDictionary* newtrack = note.userInfo;
-
-    //TODO test that a playlist of just one track on repeat scrobbles consistently
     
     switch (newtrack.playerState) {
     case STATE_PLAYING:
+        if (itunes.currentTrack.podcast) {
+            ignore_growl(newtrack.title, @"a podcast");
+            goto stop;
+        }
+        if (![itunes.currentTrack.kind hasSuffix:@"audio file"]) {
+            ignore_growl(newtrack.title, @"not music");
+            goto stop;
+        }
+
         if (track.pid != newtrack.pid) {
             [self submit];
             
@@ -242,8 +260,9 @@ static void would_play_again_growl(NSDictionary* d)
         break;
 
     case STATE_STOPPED:
-        [self submit];
         [self announce:PlaybackStopped];
+    stop:
+        [self submit];
         state = STATE_STOPPED;
         [track release];
         track = nil;

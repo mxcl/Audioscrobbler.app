@@ -32,3 +32,4 @@ enum ASTransition {
 #define ASGrowlAuthenticationRequired @"Authentication Required"
 #define ASGrowlErrorCommunication @"Error Communication"
 #define ASGrowlCorrectionSuggestion @"Correction Suggestion"
+#define ASGrowlTrackIgnored @"Track Ignored"

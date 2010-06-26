@@ -99,6 +99,7 @@ static NSString* downloads()
                     ASGrowlAuthenticationRequired,
                     ASGrowlErrorCommunication,
                     ASGrowlCorrectionSuggestion,
+                    ASGrowlTrackIgnored,
                     nil];
     NSArray* defaults = [NSArray arrayWithObjects:
                          ASGrowlTrackStarted,
@@ -108,6 +109,7 @@ static NSString* downloads()
                          ASGrowlAuthenticationRequired,
                          ASGrowlErrorCommunication,
                          ASGrowlCorrectionSuggestion,
+                         ASGrowlTrackIgnored,
                          nil];
     return [NSDictionary dictionaryWithObjectsAndKeys:
             all, GROWL_NOTIFICATIONS_ALL, 
