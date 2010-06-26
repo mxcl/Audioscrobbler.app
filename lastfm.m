@@ -169,13 +169,48 @@ static NSString* signature(NSMutableDictionary* params)
     return md5(s);
 }
 
+static NSString* utf8_post_escape(NSString* s)
+{
+    unsigned const N = s.length;
+    unsigned ii[N];
+    unsigned x = 0;
+
+    for (int i = 0; i < N; ++i) {
+        const unichar uc = [s characterAtIndex:i];
+        const char c = ((char*)&uc)[0];
+        switch (c) {
+        case '&':
+        case '%':
+        case '=':
+            ii[x++] = i;
+        }
+    }
+    
+    if (x == 0) return s;
+
+    const char hexnumbers[] = "0123456789ABCDEF"; 
+    #define toHexHelper(c) hexnumbers[(c) & 0xf]
+
+    NSMutableString* ms = [s mutableCopy];
+    for (int i = x - 1; i >= 0; --i) {
+        const unsigned iii = ii[i];
+        const unichar uc = [s characterAtIndex:iii];
+        const char c = ((char*)&uc)[0];
+        NSString* triplet = [NSString stringWithFormat:@"%%%c%c", 
+                             toHexHelper((c & 0xf0) >> 4),
+                             toHexHelper(c & 0xf)];
+        [ms replaceCharactersInRange:NSMakeRange(iii, 1) withString:triplet];
+    }
+    return ms;
+}
+
 static NSMutableString* signed_post_body(NSMutableDictionary* params)
 {
     NSMutableString* s = [NSMutableString stringWithCapacity:256];
     for(id key in params) {
         [s appendString:key];
         [s appendString:@"="];
-        [s appendString:[params objectForKey:key]];
+        [s appendString:utf8_post_escape([params objectForKey:key])];
         [s appendString:@"&"];
     }
     [s appendString:@"api_sig="];
