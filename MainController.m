@@ -122,7 +122,7 @@ static NSString* downloads()
     status_item = [[[NSStatusBar systemStatusBar] statusItemWithLength:27] retain];
     [status_item setHighlightMode:YES];
     [status_item setImage:[NSImage imageNamed:@"icon.png"]];
-    [status_item setAlternateImage:[NSImage imageNamed:@"inverted_icon.png"]];
+    [status_item setAlternateImage:[NSImage imageNamed:@"icon_inverted.png"]];
     [status_item setEnabled:YES];
     [status_item setMenu:menu];
 
@@ -200,6 +200,7 @@ static NSString* downloads()
             [share setEnabled:true];
             [tag setEnabled:true];
             notificationName = ASGrowlTrackStarted;
+            status_item.image = [NSImage imageNamed:@"icon.png"];
             count++;
             // fall through
         case TrackResumed:{
@@ -235,6 +236,7 @@ static NSString* downloads()
             [tag setEnabled:false];
             [share setEnabled:false];
             [love setTitle:@"Love"];
+            status_item.image = [NSImage imageNamed:@"icon.png"];
             
             NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
             NSString* info = [NSString stringWithFormat:@"You played %@ tracks this session.",
@@ -311,10 +313,13 @@ static NSString* downloads()
         [history_menu removeItem:item];
     
     NSString* title = track.prettyTitle;
-    if (message)
+    if (message) {
+        status_item.image = [NSImage imageNamed:@"icon_red.png"];
         title = [title stringByAppendingFormat:@" (Failed: %@)", message];
-    else
+    } else {
+        status_item.image = [NSImage imageNamed:@"icon_green.png"];
         title = [title stringByAppendingFormat:@" (OK)"];
+    }
     
     item = [[NSMenuItem alloc] initWithTitle:title action:@selector(historyItemClicked:) keyEquivalent:@""];
     [item setTarget:self];
