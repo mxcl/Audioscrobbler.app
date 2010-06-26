@@ -21,14 +21,15 @@
 #import <Cocoa/Cocoa.h>
 @class ITunesApplication;
 @class Lastfm;
+@class HighResolutionTimer;
 
 @interface ITunesListener : NSObject {
     NSMutableDictionary* track;
     time_t start_time;
-    time_t pause_time;
     char state;
     ITunesApplication* itunes;
     Lastfm* lastfm;
+    HighResolutionTimer* timer;
 }
 
 -(id)initWithLastfm:(Lastfm*)lastfm;

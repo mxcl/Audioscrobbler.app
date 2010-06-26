@@ -42,6 +42,8 @@
 		63D6DAF10F8396E000F4DCAA /* MainController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63D6DAF00F8396E000F4DCAA /* MainController.m */; };
 		63D6DB380F8399E000F4DCAA /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB360F8399E000F4DCAA /* icon.png */; };
 		63D6DB390F8399E000F4DCAA /* inverted_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 63D6DB370F8399E000F4DCAA /* inverted_icon.png */; };
+		63F19A1B11D67ED700205103 /* HighResolutionTimer.h in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 63F19A1911D67ED700205103 /* HighResolutionTimer.h */; };
+		63F19A1C11D67ED700205103 /* HighResolutionTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = 63F19A1A11D67ED700205103 /* HighResolutionTimer.m */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
@@ -55,6 +57,7 @@
 			files = (
 				6301E62A10061ABE00E87198 /* Sparkle.framework in Copy Frameworks */,
 				63D1D0C40F97FF9B004FBC05 /* Growl.framework in Copy Frameworks */,
+				63F19A1B11D67ED700205103 /* HighResolutionTimer.h in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,6 +97,8 @@
 		63D6DAF00F8396E000F4DCAA /* MainController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainController.m; sourceTree = "<group>"; };
 		63D6DB360F8399E000F4DCAA /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		63D6DB370F8399E000F4DCAA /* inverted_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = inverted_icon.png; sourceTree = "<group>"; };
+		63F19A1911D67ED700205103 /* HighResolutionTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HighResolutionTimer.h; sourceTree = "<group>"; };
+		63F19A1A11D67ED700205103 /* HighResolutionTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HighResolutionTimer.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Audioscrobbler.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Audioscrobbler.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -125,6 +130,8 @@
 				63024AE90F964063001B8E9B /* ITunesListener.h */,
 				63D1D1020F980532004FBC05 /* lastfm.h */,
 				63D1D1030F980532004FBC05 /* lastfm.m */,
+				63F19A1911D67ED700205103 /* HighResolutionTimer.h */,
+				63F19A1A11D67ED700205103 /* HighResolutionTimer.m */,
 				630EF82D1004ACC200EB28C2 /* AutoDash.h */,
 				630EF82E1004ACC200EB28C2 /* AutoDash.m */,
 				63451BC511BAD1C50087E3AB /* NSDictionary+Track.h */,
@@ -317,6 +324,7 @@
 				630EF82F1004ACC200EB28C2 /* AutoDash.m in Sources */,
 				63451BC711BAD1C50087E3AB /* NSDictionary+Track.m in Sources */,
 				6390167511CCE4DA00DCCC84 /* ShareWindowController.m in Sources */,
+				63F19A1C11D67ED700205103 /* HighResolutionTimer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

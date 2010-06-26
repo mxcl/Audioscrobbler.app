@@ -50,6 +50,6 @@
 -(void)updateNowPlaying:(NSDictionary*)track;
 -(void)scrobble:(NSDictionary*)track startTime:(time_t)start_time;
 
-+(unsigned)scrobblePointForTrackWithDurationInSeconds:(unsigned)duration;
++(NSTimeInterval)scrobblePointForTrackWithDurationInSeconds:(NSTimeInterval)duration;
 
 @end

@@ -19,8 +19,9 @@
  ***************************************************************************/
 
 #import "ITunesListener.h"
-#import "lastfm.h"
+#import "HighResolutionTimer.h"
 #import "iTunes.h"
+#import "lastfm.h"
 #import "NSDictionary+Track.h"
 #import <Growl/GrowlApplicationBridge.h>
 #import <time.h>
@@ -39,9 +40,10 @@ static time_t now()
 -(id)initWithLastfm:(Lastfm*)lfm
 {
     lastfm = [lfm retain];
-    start_time = pause_time = 0;
     state = STATE_STOPPED;
+    start_time = 0;
     itunes = [[SBApplication applicationWithBundleIdentifier:@"com.apple.iTunes"] retain];
+    timer = [[HighResolutionTimer alloc] initWithTarget:self action:@selector(submit)];
 
     [[NSDistributedNotificationCenter defaultCenter] addObserver:self
                                                         selector:@selector(onPlayerInfo:)
@@ -68,6 +70,7 @@ static time_t now()
 
 -(void)dealloc
 {
+    [timer release];
     [itunes release];
     [lastfm release];
     [super dealloc];
@@ -113,6 +116,7 @@ static time_t now()
 
 -(void)announce:(uint)transition
 {
+    // TODO should apply to everything, no? Not just the UI announcement.
     if ([self transitionInvalid:transition])
         return;
     
@@ -131,32 +135,22 @@ static time_t now()
 
 -(void)submit
 {
-    time_t time = now();
-
-    if (state == STATE_PAUSED)
-        pause_time = time - pause_time;
-
-    uint const playtime = time - (start_time + pause_time);
-    // we take off three seconds because durations often have a small error
-    uint const scrobtime = [Lastfm scrobblePointForTrackWithDurationInSeconds:track.duration];
-
-    if (playtime >= scrobtime)
-        [lastfm scrobble:track startTime:start_time];
+    [lastfm scrobble:track startTime:start_time];
 }
 
 -(void)start
 {
-    [self announce:TrackStarted];
-
     state = STATE_PLAYING;
-
-    pause_time = 0;
     start_time = now();
+    
+    [timer scheduleWithTimeout:[Lastfm scrobblePointForTrackWithDurationInSeconds:track.duration]];
 
     // we wait a second so that we don't spam Last.fm and so that stuff like
     // Growl (for auth) doesn't fill the screen when you skip-skip-skip
     [NSObject cancelPreviousPerformRequestsWithTarget:lastfm];
-    [lastfm performSelector:@selector(updateNowPlaying:) withObject:track afterDelay:1];
+    [lastfm performSelector:@selector(updateNowPlaying:) withObject:track afterDelay:2.0];
+
+    [self announce:TrackStarted];
 }
 
 -(void)load_album_art
@@ -227,22 +221,18 @@ static void ignore_growl(NSString* title, NSString* reason)
         }
 
         if (track.pid != newtrack.pid) {
-            [self submit];
-            
             [track release];
             track = [newtrack mutableCopy];
-            
             [self load_album_art];
             [self start];
         }
         else if (state == STATE_PAUSED) {
-            [self announce:TrackResumed];
             state = STATE_PLAYING;
-            pause_time = now() - pause_time;
+            [timer resume];
+            [self announce:TrackResumed];
         }
         else if ([track isEqualToTrack:newtrack]) {
             // user restarted the track that was already playing, probably
-            [self submit];
             [self start];
         }
         else {
@@ -254,18 +244,18 @@ static void ignore_growl(NSString* title, NSString* reason)
         break;
     
     case STATE_PAUSED:
-        [self announce:TrackPaused];
         state = STATE_PAUSED;
-        pause_time = now() - pause_time;
+        [timer pause];
+        [self announce:TrackPaused];
         break;
 
     case STATE_STOPPED:
-        [self announce:PlaybackStopped];
     stop:
-        [self submit];
+        [timer stop];
         state = STATE_STOPPED;
         [track release];
         track = nil;
+        [self announce:PlaybackStopped];
         break;
     }
 }
