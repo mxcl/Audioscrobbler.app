@@ -184,16 +184,12 @@ static NSString* downloads()
 
 -(void)onPlayerInfo:(NSNotification*)userData
 {
-    static uint count = 0;
-    
-    NSDictionary* dict = [userData userInfo];
-    uint transition = [[dict objectForKey:@"Transition"] unsignedIntValue];
-    NSString* name = [dict objectForKey:@"Name"];
-    uint const duration = [[dict objectForKey:@"Total Time"] longLongValue] / 1000;
+    NSDictionary* track = userData.userInfo;
+    uint transition = [[track objectForKey:@"Transition"] unsignedIntValue];
     NSString* notificationName = ASGrowlTrackResumed;
     
-#define UPDATE_TITLE_MENU \
-    [status setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", name, duration/60, duration%60]];
+#define UPDATE_TITLE_MENU { unsigned duration = track.duration; \
+    [status setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", track.title, duration/60, duration%60]]; }
     
     switch(transition){
         case TrackStarted:
@@ -206,28 +202,28 @@ static NSString* downloads()
             // fall through
         case TrackResumed:{
             UPDATE_TITLE_MENU
-            NSMutableString* desc = [[[dict objectForKey:@"Artist"] mutableCopy] autorelease];
+            NSMutableString* desc = [[[track objectForKey:@"Artist"] mutableCopy] autorelease];
             [desc appendString:@"\n"];
-            [desc appendString:[dict objectForKey:@"Album"]];
-            [GrowlApplicationBridge notifyWithTitle:name
+            [desc appendString:[track objectForKey:@"Album"]];
+            [GrowlApplicationBridge notifyWithTitle:track.title
                                         description:desc
                                    notificationName:notificationName
-                                           iconData:[dict objectForKey:@"Album Art"]
+                                           iconData:[track objectForKey:@"Album Art"]
                                            priority:0
                                            isSticky:false
-                                       clickContext:dict
+                                       clickContext:track
                                          identifier:ASGrowlTrackStarted];
             break;}
         
         case TrackPaused:
-            [status setTitle:[name stringByAppendingString:@" [paused]"]];
+            [status setTitle:[track.title stringByAppendingString:@" [paused]"]];
             [GrowlApplicationBridge notifyWithTitle:@"Playback Paused"
-                                        description:[[dict objectForKey:@"Player Name"] stringByAppendingString:@" became paused"]
+                                        description:@"iTunes was paused"
                                    notificationName:ASGrowlTrackPaused
                                            iconData:nil
                                            priority:0
                                            isSticky:true
-                                       clickContext:dict
+                                       clickContext:track
                                          identifier:ASGrowlTrackStarted];
             break;
             
@@ -256,7 +252,7 @@ static NSString* downloads()
         case TrackMetadataChanged:
             UPDATE_TITLE_MENU
             [GrowlApplicationBridge notifyWithTitle:@"Track Metadata Updated"
-                                        description:dict.prettyTitle
+                                        description:track.prettyTitle
                                    notificationName:ASGrowlSubmissionStatus
                                            iconData:nil
                                            priority:-1

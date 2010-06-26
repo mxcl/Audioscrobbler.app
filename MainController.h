@@ -40,6 +40,8 @@
     ITunesListener* listener;
     Lastfm* lastfm;
     ShareWindowController* sharewc;
+
+    unsigned count;
 }
 
 -(IBAction)love:(id)sender;
