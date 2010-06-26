@@ -11,7 +11,9 @@
 @property(readonly) int playerState;
 @property(readonly) NSString* prettyTitle;
 @property(readonly) NSURL* url;
-@property(readonly) unsigned int duration;
+@property(readonly) unsigned duration;
+@property(readonly) NSNumber* trackNumber;
+@property(readonly) NSString* albumArtist;
 @end
 
 @interface NSMutableDictionary (mxcl)

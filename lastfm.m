@@ -347,25 +347,16 @@ static void inline save(NSString* username, NSString* sk)
 
 #pragma mark WS
 
-static void correct_empty(NSMutableDictionary* d, NSString* key)
-{
-    NSString* o = (NSString*)[d objectForKey:key];
-    if(!o || [o length] == 0)
-        [d setObject:@"[unknown]" forKey:key];
-}
-
 #define PACK(dict, track) \
-    [dict setObject:[track objectForKey:@"Name"] forKey:@"track"]; \
-    [dict setObject:[track objectForKey:@"Artist"] forKey:@"artist"]; \
-    correct_empty(dict, @"track"); \
-    correct_empty(dict, @"artist");
+    [dict setObject:track.title forKey:@"track"]; \
+    [dict setObject:track.artist forKey:@"artist"]; \
+    { NSNumber* n = track.trackNumber; if (n) [dict setObject:n.stringValue forKey:@"trackNumber"]; }
 
 #define PACK_MOAR(dict, track) \
     PACK(dict, track); \
-    [dict setObject:[track objectForKey:@"Album"] forKey:@"album"]; \
-    [dict setObject:[[NSNumber numberWithUnsignedInt:track.duration] stringValue] forKey:@"duration"]; \
-    { NSString* s = [track objectForKey:@"Album Artist"]; \
-        if (s) [dict setObject:s forKey:@"albumArtist"]; }
+    [dict setObject:[NSString stringWithFormat:@"%d", track.duration] forKey:@"duration"]; \
+    { NSString* s = track.album; if (s) [dict setObject:s forKey:@"album"]; } \
+    { NSString* s = track.albumArtist; if (s) [dict setObject:s forKey:@"albumArtist"]; }
 
 -(void)love:(NSDictionary*)track
 {

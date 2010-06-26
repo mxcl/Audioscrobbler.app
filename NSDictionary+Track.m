@@ -10,7 +10,9 @@
 -(NSString*)album { return [self objectForKey:@"Album"]; }
 -(int64_t)pid { return [[self objectForKey:@"PersistentID"] longLongValue]; }
 -(int)rating { return [[self objectForKey:@"Rating"] intValue]; }
--(uint)duration { return [[self objectForKey:@"Total Time"] longLongValue] / 1000; }
+-(unsigned)duration { return [[self objectForKey:@"Total Time"] longLongValue] / 1000; }
+-(NSNumber*)trackNumber { return [self objectForKey:@"Track Number"]; }
+-(NSString*)albumArtist { return [self objectForKey:@"Album Artist"]; }
 -(int)playerState
 {
     NSString* s = [self objectForKey:@"Player State"];
