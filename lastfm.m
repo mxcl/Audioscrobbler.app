@@ -125,6 +125,14 @@ static NSString* md5(NSString* s)
 }
 
 
++(unsigned)scrobblePointForTrackWithDurationInSeconds:(unsigned)duration
+{
+    if (duration > 240*2) return 240;
+    if (duration < 30*2) return 30;
+    return duration/2;
+}
+
+
 #pragma mark HTTP
 
 -(NSXMLDocument*)get:(NSMutableDictionary*)params to:(NSString*)method

@@ -33,13 +33,6 @@ static time_t now()
     return t;
 }
 
-static uint scrobble_time(uint duration)
-{
-    if (duration > 240*2) return 240;
-    if (duration < 30*2) return 30;
-    return duration/2;
-}
-
 
 @implementation ITunesListener
 
@@ -144,10 +137,9 @@ static uint scrobble_time(uint duration)
     if (state == STATE_PAUSED)
         pause_time = time - pause_time;
 
-    uint const duration = [[track objectForKey:@"Total Time"] longLongValue] / 1000;
     uint const playtime = time - (start_time + pause_time);
     // we take off three seconds because durations often have a small error
-    uint const scrobtime = scrobble_time(duration) - 3;
+    uint const scrobtime = [Lastfm scrobblePointForTrackWithDurationInSeconds:track.duration];
 
     if (playtime >= scrobtime)
         [lastfm scrobble:track startTime:start_time];
