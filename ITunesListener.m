@@ -47,8 +47,8 @@ static time_t now()
                                                         selector:@selector(onPlayerInfo:)
                                                             name:@"com.apple.iTunes.playerInfo"
                                                           object:nil];
-#if __AS_DEBUGGING__    
-    if ([itunes isRunning] && itunes.playerState == ITunesEPlSPlaying)
+
+    if (itunes.isRunning && itunes.playerState == ITunesEPlSPlaying)
     {
         ITunesTrack* t = itunes.currentTrack;
         NSMutableDictionary* dict = [NSMutableDictionary dictionary];
@@ -62,7 +62,6 @@ static time_t now()
                                                          object:nil
                                                        userInfo:dict]];
     }
-#endif
     
     return self;
 }
