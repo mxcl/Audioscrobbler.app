@@ -382,16 +382,18 @@ static void inline save(NSString* username, NSString* sk)
 
 #pragma mark WS
 
+static inline NSString* nonil(NSString* s) { return s ? s : @""; }
+
 #define PACK(dict, track) \
-    [dict setObject:track.title forKey:@"track"]; \
-    [dict setObject:track.artist forKey:@"artist"]; \
+    [dict setObject:nonil(track.title) forKey:@"track"]; \
+    [dict setObject:nonil(track.artist) forKey:@"artist"]; \
     { NSNumber* n = track.trackNumber; if (n) [dict setObject:n.stringValue forKey:@"trackNumber"]; }
 
 #define PACK_MOAR(dict, track) \
     PACK(dict, track); \
     [dict setObject:[NSString stringWithFormat:@"%d", track.duration] forKey:@"duration"]; \
     { NSString* s = track.album; if (s) [dict setObject:s forKey:@"album"]; } \
-    { NSString* s = track.albumArtist; if (s) [dict setObject:s forKey:@"albumArtist"]; }
+//    { NSString* s = track.albumArtist; if (s) [dict setObject:s forKey:@"albumArtist"]; }
 
 -(void)love:(NSDictionary*)track
 {
