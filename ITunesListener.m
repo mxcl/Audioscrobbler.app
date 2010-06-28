@@ -51,15 +51,19 @@ static time_t now()
                                                           object:nil];
 
     if (itunes.isRunning && itunes.playerState == ITunesEPlSPlaying)
-    {
+    {        
         ITunesTrack* t = itunes.currentTrack;
+        
+        unsigned long long pid;
+        [[NSScanner scannerWithString:t.persistentID] scanHexLongLong:&pid];
+        
         NSMutableDictionary* dict = [NSMutableDictionary dictionary];
         [dict setObject:t.name forKey:@"Name"];
         [dict setObject:t.artist forKey:@"Artist"];
         [dict setObject:t.album forKey:@"Album"];
         [dict setObject:[NSNumber numberWithLongLong:((int64_t)t.duration)*1000] forKey:@"Total Time"];
         [dict setObject:@"Playing" forKey:@"Player State"];
-        [dict setObject:[NSNumber numberWithLongLong:1] forKey:@"PersistentID"];
+        [dict setObject:[NSNumber numberWithLongLong:pid] forKey:@"PersistentID"];
         [self onPlayerInfo:[NSNotification notificationWithName:@"com.apple.iTunes.playerInfo"
                                                          object:nil
                                                        userInfo:dict]];
