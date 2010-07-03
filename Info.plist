@@ -23,7 +23,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string>Audioscrobbler</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>© Last.fm, Max Howell, 2009</string>
+	<string>© Last.fm, Max Howell, 2009–2010</string>
 	<key>NSAppleScriptEnabled</key>
 	<true/>
 	<key>NSMainNibFile</key>
