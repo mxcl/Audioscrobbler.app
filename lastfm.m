@@ -22,6 +22,7 @@
 #import "lastfm_api.h"
 #import "NSDictionary+Track.h"
 #import <CommonCrypto/CommonDigest.h>
+#import "NSXMLNode+mxcl.h"
 
 #define KEYCHAIN_NAME "fm.last.Audioscrobbler"
 
@@ -329,7 +330,7 @@ static NSString* extract_method(NSURLRequest* rq)
         NSString* method = extract_method(rq);
         NSLog(@"Response from `%@':\n%@", method, [xml.rootElement XMLStringWithOptions:NSXMLNodePrettyPrint]);
         
-        NSXMLElement* ee = [xml.rootElement elementsForName:@"error"].lastObject;
+        NSXMLElement* ee = [xml.rootElement childNamed:@"error"];
         if (!ee)
             @throw [LastfmError badResponse:method];
 
@@ -350,7 +351,7 @@ static NSString* extract_method(NSURLRequest* rq)
 -(NSString*)getToken
 {
     NSXMLDocument* xml = [self get:[NSMutableDictionary dictionary] to:@"auth.gettoken"];
-    return [[xml.rootElement elementsForName:@"token"].lastObject stringValue];
+    return [[xml.rootElement childNamed:@"token"] stringValue];
 }
 
 static void inline save(NSString* username, NSString* sk)
@@ -382,9 +383,9 @@ static void inline save(NSString* username, NSString* sk)
     [token release]; // consumed
     token = nil;
 
-    NSXMLElement* session = [xml.rootElement elementsForName:@"session"].lastObject;
-    sk = [[[session elementsForName:@"key"].lastObject stringValue] retain];
-    username = [[[session elementsForName:@"name"].lastObject stringValue] retain];
+    NSXMLElement* session = [xml.rootElement childNamed:@"session"];
+    sk = [[[session childNamed:@"key"] stringValue] retain];
+    username = [[[session childNamed:@"name"] stringValue] retain];
 
     if (!username || !sk)
         @throw [LastfmError badResponse:@"auth.getsession"];
