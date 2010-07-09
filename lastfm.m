@@ -471,6 +471,22 @@ static inline NSString* nonil(NSString* s) { return s ? s : @""; }
     }
 }
 
+-(NSDictionary*)getFingerprintMetadata:(unsigned long long)fpid
+{
+    NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithObject:[NSNumber numberWithUnsignedLongLong:fpid] forKey:@"fingerprintid"];
+    NSXMLNode* xml = [self request:POST params:dict to:@"user.updateNowPlaying"];
+	
+	NSXMLNode* track = [xml.rootElement childNamed:@"track"];
+	NSString* title = [track childNamed:@"name"];
+	NSString* artist = [[track childNamed:@"artist"] childNamed:@"name"];
+
+	[dict removeAllObjects];
+	[dict setObject:title forKey:@"Track"];
+	[dict setObject:artist forKey:@"Artist"];
+
+	return dict;
+}
+
 -(id)initWithDelegate:(id)d
 {
     token = nil;
