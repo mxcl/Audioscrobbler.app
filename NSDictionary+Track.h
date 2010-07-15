@@ -20,5 +20,5 @@
 -(void)setArtist:(NSString*)artist;
 -(void)setTitle:(NSString*)title;
 -(void)setAlbum:(NSString*)album;
--(bool)isEqualToTrack:(NSDictionary*)track;
+-(void)setRating:(int)newrating;
 @end

@@ -23,7 +23,6 @@
 #import "iTunes.h"
 #import "lastfm.h"
 #import "NSDictionary+Track.h"
-#import <Growl/GrowlApplicationBridge.h>
 #import <time.h>
 
 static time_t now()
@@ -35,12 +34,29 @@ static time_t now()
 }
 
 
+// Can't make this a category sadly, due to ScriptingFramework oddness
+static NSData* itunes_current_track_artwork_as_data(ITunesApplication* itunes)
+{
+    @try {
+        ITunesArtwork* iart = [itunes.currentTrack.artworks objectAtIndex:0];
+        // NSImage is more useful, but Growl needs a TIFF and this way we
+        // save on allocations, thus keeping our memory footprint down
+        return [iart.data.TIFFRepresentation retain];
+    }
+    @catch(id e) {
+        // seems to throw sometimes even if we check for the right stuff first
+        return nil;
+    }
+}
+
+
 @implementation ITunesListener
 
--(id)initWithLastfm:(Lastfm*)lfm
+-(id)initWithLastfm:(Lastfm*)lfm delegate:(id)helegate
 {
+    delegate = helegate;
     lastfm = [lfm retain];
-    state = STATE_STOPPED;
+    state = StateStopped;
     start_time = 0;
     itunes = [[SBApplication applicationWithBundleIdentifier:@"com.apple.iTunes"] retain];
     timer = [[HighResolutionTimer alloc] initWithTarget:self action:@selector(submit)];
@@ -77,97 +93,14 @@ static time_t now()
     [timer release];
     [itunes release];
     [lastfm release];
+    [track release];
+    [art release];
     [super dealloc];
-}
-
-
--(bool)transitionInvalid:(uint)transition
-{
-    switch (state) {
-    case STATE_STOPPED:
-        switch (transition) {
-        case TrackStarted:
-            return false;
-        case PlaybackStopped:
-        case TrackPaused:
-        case TrackMetadataChanged:
-        case TrackResumed:
-            return true;
-        }
-    case STATE_PAUSED:
-        switch (transition) {
-        case PlaybackStopped:
-        case TrackMetadataChanged:
-        case TrackResumed:
-        case TrackStarted:
-            return false;
-        case TrackPaused:
-            return true;
-        }
-    case STATE_PLAYING:
-        switch (transition) {
-        case PlaybackStopped:
-        case TrackPaused:
-        case TrackMetadataChanged:
-        case TrackStarted:
-            return false;
-        case TrackResumed:
-            return true;
-        }
-    }
-    return true;
-}
-
--(void)announce:(uint)transition
-{
-    // TODO should apply to everything, no? Not just the UI announcement.
-    if ([self transitionInvalid:transition])
-        return;
-    
-    NSMutableDictionary* dict = [track mutableCopy];
-    [dict setObject:[NSNumber numberWithUnsignedInt:transition] forKey:@"Transition"];
-    
-    NSNotification*notification = [NSNotification notificationWithName:@"playerInfo"
-                                                                object:self
-                                                              userInfo:dict];
-    [[NSNotificationQueue defaultQueue] enqueueNotification:notification
-                                               postingStyle:NSPostNow
-                                               coalesceMask:NSNotificationCoalescingOnName
-                                                   forModes:nil];
-    [dict release];
 }
 
 -(void)submit
 {
     [lastfm scrobble:track startTime:start_time];
-}
-
--(void)start
-{
-    state = STATE_PLAYING;
-    start_time = now();
-    
-    [timer scheduleWithTimeout:[Lastfm scrobblePointForTrackWithDurationInSeconds:track.duration]];
-
-    // we wait a second so that we don't spam Last.fm and so that stuff like
-    // Growl (for auth) doesn't fill the screen when you skip-skip-skip
-    [NSObject cancelPreviousPerformRequestsWithTarget:lastfm];
-    [lastfm performSelector:@selector(updateNowPlaying:) withObject:track afterDelay:2.0];
-
-    [self announce:TrackStarted];
-}
-
--(void)load_album_art
-{
-    @try {
-        ITunesArtwork* art = (ITunesArtwork*)[itunes.currentTrack.artworks objectAtIndex:0];
-        // NSImage is more useful, but Growl needs a TIFF and this way we
-        // save on allocations, thus keeping our memory footprint down
-        [track setObject:[[art data] TIFFRepresentation] forKey:@"Album Art"];
-    }
-    @catch(id e) {
-        // for some reason [art exists] returns true, but it will still throw!
-    }
 }
 
 -(void)amendMetadataIfAppropriate:(NSDictionary*)dict
@@ -178,35 +111,10 @@ static time_t now()
         track.artist = dict.artist;
         track.title = dict.title;
         track.album = dict.album;
-        [self announce:TrackMetadataChanged];
+        [delegate iTunesTrackMetadataUpdated:track];
     }
 
     #undef EQUAL
-}
-
-static void would_play_again_growl(NSDictionary* d)
-{
-    NSMutableDictionary* dict = [[d mutableCopy] autorelease];
-    [dict setObject:ASGrowlLoveTrackQuery forKey:@"Notification Name"];
-        
-    [GrowlApplicationBridge notifyWithTitle:@"A+++++ Would Play Again!"
-                                description:@"Click this notification to love this track at Last.fm"
-                           notificationName:ASGrowlLoveTrackQuery
-                                   iconData:nil
-                                   priority:0
-                                   isSticky:false
-                               clickContext:dict];
-}
-
-static void ignore_growl(NSString* title, NSString* reason)
-{
-    [GrowlApplicationBridge notifyWithTitle:@"Will Not Scrobble"
-                                description:[NSString stringWithFormat:@"“%@” is %@.", title, reason]
-                           notificationName:ASGrowlTrackIgnored
-                                   iconData:nil
-                                   priority:0
-                                   isSticky:false
-                               clickContext:nil];
 }
 
 -(void)onPlayerInfo:(NSNotification*)note
@@ -214,59 +122,78 @@ static void ignore_growl(NSString* title, NSString* reason)
     NSDictionary* newtrack = note.userInfo;
     
     switch (newtrack.playerState) {
-    case STATE_PLAYING:
+    case StatePlaying:
         if (itunes.currentTrack.podcast) {
-            ignore_growl(newtrack.title, @"a podcast");
+            [delegate iTunesWontScrobble:newtrack because:@"a podcast"];
             goto stop;
         }
         if (![itunes.currentTrack.kind hasSuffix:@"audio file"]) {
-            ignore_growl(newtrack.title, @"not music");
+            [delegate iTunesWontScrobble:newtrack because:@"not music"];
             goto stop;
         }
 
         if (track.pid != newtrack.pid) {
             [track release];
+            [art release];
             track = [newtrack mutableCopy];
-            [self load_album_art];
-            [self start];
+            art = itunes_current_track_artwork_as_data(itunes);
+            goto start;
         }
-        else if (state == STATE_PAUSED) {
-            state = STATE_PLAYING;
+        else if (state == StatePaused) {
+            state = StatePlaying;
             [timer resume];
-            [self announce:TrackResumed];
+            [delegate iTunesTrackResumed:track art:art];
         }
-        else if ([track isEqualToTrack:newtrack]) {
+        else if ([track isEqualToDictionary:newtrack]) {
             // user restarted the track that was already playing, probably
-            [self start];
+            goto start;
         }
         else {
-            if (track.unrated && newtrack.rating >= 80)
-                would_play_again_growl(newtrack);
-
             [self amendMetadataIfAppropriate:newtrack];
+
+            if (track.unrated && newtrack.rating >= 80) {
+                track.rating = newtrack.rating;
+                [delegate iTunesTrackWasRatedFourStarsOrAbove:track];
+            }
         }
         break;
-    
-    case STATE_PAUSED:
-        state = STATE_PAUSED;
-        [timer pause];
-        [self announce:TrackPaused];
+            
+    start:
+        state = StatePlaying;
+        start_time = now();
+        
+        [timer scheduleWithTimeout:[Lastfm scrobblePointForTrackWithDurationInSeconds:track.duration]];
+        
+        // we wait a bit so that we don't spam Last.fm when you skip-skip-skip
+        [NSObject cancelPreviousPerformRequestsWithTarget:lastfm];
+        [lastfm performSelector:@selector(updateNowPlaying:) withObject:track afterDelay:2.0];
+        
+        [delegate iTunesTrackStarted:track art:art];
         break;
 
-    case STATE_STOPPED:
+    case StatePaused:
+        if (state == StatePaused || state == StateStopped)
+            break;
+        state = StatePaused;
+        [timer pause];
+        [delegate iTunesTrackPaused:track];
+        break;
+
+    case StateStopped:
     stop:
+        if (state == StateStopped)
+            break;
+        state = StateStopped;
         [timer stop];
-        state = STATE_STOPPED;
         [track release];
+        [art release];
         track = nil;
-        [self announce:PlaybackStopped];
+        art = nil;
+        [delegate iTunesPlaybackStopped];
         break;
     }
 }
 
--(NSDictionary*)track
-{
-    return track;
-}
+@synthesize track;
 
 @end

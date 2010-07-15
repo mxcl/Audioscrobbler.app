@@ -100,6 +100,7 @@ static NSString* downloads()
                     ASGrowlErrorCommunication,
                     ASGrowlCorrectionSuggestion,
                     ASGrowlTrackIgnored,
+                    ASGrowlSubmissionStatus,
                     nil];
     NSArray* defaults = [NSArray arrayWithObjects:
                          ASGrowlTrackStarted,
@@ -110,6 +111,7 @@ static NSString* downloads()
                          ASGrowlErrorCommunication,
                          ASGrowlCorrectionSuggestion,
                          ASGrowlTrackIgnored,
+                         ASGrowlSubmissionStatus,
                          nil];
     return [NSDictionary dictionaryWithObjectsAndKeys:
             all, GROWL_NOTIFICATIONS_ALL, 
@@ -126,18 +128,13 @@ static NSString* downloads()
     [status_item setEnabled:YES];
     [status_item setMenu:menu];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(onPlayerInfo:)
-                                                 name:@"playerInfo"
-                                               object:nil];
-
     [GrowlApplicationBridge setGrowlDelegate:self];
 
     if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"AutoDash"] boolValue] == true)
         autodash = [[AutoDash alloc] init];
 
     [NSApp setMainMenu:app_menu]; // so the close shortcut will work
-    
+
 /// Start at Login item
     LSSharedFileListRef login_items_ref = LSSharedFileListCreate(NULL, kLSSharedFileListSessionLoginItems, NULL);
     if(login_items_ref){
@@ -166,7 +163,7 @@ static NSString* downloads()
 #endif
 
     lastfm = [[Lastfm alloc] initWithDelegate:self];
-    listener = [[ITunesListener alloc] initWithLastfm:lastfm];
+    listener = [[ITunesListener alloc] initWithLastfm:lastfm delegate:self];
 }
 
 -(void)dealloc
@@ -184,86 +181,119 @@ static NSString* downloads()
     return false;
 }
 
--(void)onPlayerInfo:(NSNotification*)userData
+-(void)updateTitleMenu:(NSDictionary*)track
 {
-    NSDictionary* track = userData.userInfo;
-    uint transition = [[track objectForKey:@"Transition"] unsignedIntValue];
-    NSString* notificationName = ASGrowlTrackResumed;
-    
-#define UPDATE_TITLE_MENU { unsigned duration = track.duration; \
-    [status setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", track.title, duration/60, duration%60]]; }
-    
-    switch(transition){
-        case TrackStarted:
-            [love setEnabled:true];
-            [love setTitle:@"Love"];
-            [share setEnabled:true];
-            [tag setEnabled:true];
-            notificationName = ASGrowlTrackStarted;
-            status_item.image = [NSImage imageNamed:@"icon.png"];
-            count++;
-            // fall through
-        case TrackResumed:{
-            UPDATE_TITLE_MENU
-            NSMutableString* desc = [[[track objectForKey:@"Artist"] mutableCopy] autorelease];
-            [desc appendString:@"\n"];
-            [desc appendString:[track objectForKey:@"Album"]];
-            [GrowlApplicationBridge notifyWithTitle:track.title
-                                        description:desc
-                                   notificationName:notificationName
-                                           iconData:[track objectForKey:@"Album Art"]
-                                           priority:0
-                                           isSticky:false
-                                       clickContext:track
-                                         identifier:ASGrowlTrackStarted];
-            break;}
-        
-        case TrackPaused:
-            [status setTitle:[track.title stringByAppendingString:@" [paused]"]];
-            [GrowlApplicationBridge notifyWithTitle:@"Playback Paused"
-                                        description:@"iTunes was paused"
-                                   notificationName:ASGrowlTrackPaused
-                                           iconData:nil
-                                           priority:0
-                                           isSticky:true
-                                       clickContext:track
-                                         identifier:ASGrowlTrackStarted];
-            break;
-            
-        case PlaybackStopped:
-            [status setTitle:@"Ready"];
-            [love setEnabled:false];
-            [tag setEnabled:false];
-            [share setEnabled:false];
-            [love setTitle:@"Love"];
-            status_item.image = [NSImage imageNamed:@"icon.png"];
-            
-            NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
-            NSString* info = [NSString stringWithFormat:@"You played %@ tracks this session.",
-                              [formatter stringFromNumber:[NSNumber numberWithUnsignedInt:count]]];
-            [formatter release];
-            count = 0;
+    unsigned duration = track.duration;
+    [status setTitle:[NSString stringWithFormat:@"%@ [%d:%02d]", track.title, duration/60, duration%60]];
+}
 
-            [GrowlApplicationBridge notifyWithTitle:@"Playlist Ended"
-                                        description:info
-                                   notificationName:ASGrowlPlaylistEnded
-                                           iconData:nil
-                                           priority:0
-                                           isSticky:false
-                                       clickContext:nil];
-            break;
+-(void)announceTrack:(NSDictionary*)track art:(NSData*)art notificationName:(NSString*)notificationName
+{
+    NSMutableString* desc = [[[track objectForKey:@"Artist"] mutableCopy] autorelease];
+    [desc appendString:@"\n"];
+    [desc appendString:[track objectForKey:@"Album"]];
+    [GrowlApplicationBridge notifyWithTitle:track.title
+                                description:desc
+                           notificationName:notificationName
+                                   iconData:art
+                                   priority:0
+                                   isSticky:false
+                               clickContext:track
+                                 identifier:ASGrowlTrackStarted];
+}
 
-        case TrackMetadataChanged:
-            UPDATE_TITLE_MENU
-            [GrowlApplicationBridge notifyWithTitle:@"Track Metadata Updated"
-                                        description:track.prettyTitle
-                                   notificationName:ASGrowlSubmissionStatus
-                                           iconData:nil
-                                           priority:-1
-                                           isSticky:false
-                                       clickContext:nil];
-            break;
-    }
+-(void)iTunesTrackStarted:(NSDictionary*)track art:(NSData*)art
+{
+    [love setEnabled:true];
+    [love setTitle:@"Love"];
+    [share setEnabled:true];
+    [tag setEnabled:true];
+    status_item.image = [NSImage imageNamed:@"icon.png"];
+    count++;
+    [self updateTitleMenu:track];
+    [self announceTrack:track art:art notificationName:ASGrowlTrackStarted];
+}
+
+-(void)iTunesTrackResumed:(NSDictionary *)track art:(NSData *)art
+{
+    [self updateTitleMenu:track];
+    [self announceTrack:track art:art notificationName:ASGrowlTrackResumed];
+}
+
+-(void)iTunesTrackPaused:(NSDictionary*)track
+{
+    [status setTitle:[track.title stringByAppendingString:@" [paused]"]];
+    [GrowlApplicationBridge notifyWithTitle:@"Playback Paused"
+                                description:@"iTunes was paused"
+                           notificationName:ASGrowlTrackPaused
+                                   iconData:nil
+                                   priority:0
+                                   isSticky:true
+                               clickContext:track
+                                 identifier:ASGrowlTrackStarted];
+}
+
+-(void)iTunesPlaybackStopped
+{
+    [status setTitle:@"Ready"];
+    [love setEnabled:false];
+    [tag setEnabled:false];
+    [share setEnabled:false];
+    [love setTitle:@"Love"];
+    status_item.image = [NSImage imageNamed:@"icon.png"];
+
+    NSNumberFormatter* formatter = [[NSNumberFormatter alloc] init];
+    NSString* info = [NSString stringWithFormat:@"You played %@ tracks this session.",
+                      [formatter stringFromNumber:[NSNumber numberWithUnsignedInt:count]]];
+    [formatter release];
+    count = 0;
+
+    [GrowlApplicationBridge notifyWithTitle:@"Playlist Ended"
+                                description:info
+                           notificationName:ASGrowlPlaylistEnded
+                                   iconData:nil
+                                   priority:0
+                                   isSticky:false
+                               clickContext:nil];
+}
+
+-(void)iTunesTrackMetadataUpdated:(NSDictionary*)track
+{
+    //TODO say, but already scrobbled! If so.
+    
+    [self updateTitleMenu:track];
+    [GrowlApplicationBridge notifyWithTitle:@"Track Metadata Updated"
+                                description:track.prettyTitle
+                           notificationName:ASGrowlSubmissionStatus
+                                   iconData:nil
+                                   priority:-1
+                                   isSticky:false
+                               clickContext:nil];
+}
+
+-(void)iTunesTrackWasRatedFourStarsOrAbove:(NSDictionary*)track
+{
+    NSMutableDictionary* dict = [[track mutableCopy] autorelease];
+    [dict setObject:ASGrowlLoveTrackQuery forKey:@"Notification Name"];
+
+    [GrowlApplicationBridge notifyWithTitle:@"A+++++ Would Play Again!"
+                                description:@"Click this notification to love this track at Last.fm"
+                           notificationName:ASGrowlLoveTrackQuery
+                                   iconData:nil
+                                   priority:0
+                                   isSticky:false
+                               clickContext:dict];
+}
+
+-(void)iTunesWontScrobble:(NSDictionary*)track because:(NSString*)reason
+{
+    [GrowlApplicationBridge notifyWithTitle:@"Will Not Scrobble"
+                                description:[NSString stringWithFormat:@"“%@” is %@.", track.prettyTitle, reason]
+                           notificationName:ASGrowlTrackIgnored
+                                   iconData:nil
+                                   priority:0
+                                   isSticky:false
+                               clickContext:nil];    
 }
 
 -(void)lastfm:(Lastfm*)lastfm requiresAuth:(NSURL*)url
@@ -279,7 +309,7 @@ static NSString* downloads()
                                    iconData:nil
                                    priority:1
                                    isSticky:true
-                               clickContext:[url absoluteString] // for some fucked up reason, this had to be a string
+                               clickContext:[url absoluteString] // click context must be NSCoding compliant
                                  identifier:ASGrowlAuthenticationRequired];
 }
 
@@ -309,7 +339,7 @@ static NSString* downloads()
 -(void)lastfm:(Lastfm*)lastfm scrobbled:(NSDictionary*)track failureMessage:(NSString*)message
 {
     NSMenuItem* item = [history_menu itemAtIndex:0];
-    if(false == [item isEnabled])
+    if (!item.isEnabled)
         [history_menu removeItem:item];
     
     NSString* title = track.prettyTitle;
@@ -353,6 +383,15 @@ static NSString* downloads()
     }
     else
         [[NSWorkspace sharedWorkspace] openURL:[dict url]];
+}
+
+-(void)growlNotificationTimedOut:(id)dict
+{
+    // this because "not all displays support clickContext"
+    
+    if ([dict isKindOfClass:[NSString class]]) {
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:dict]];
+    }
 }
 
 -(IBAction)love:(id)sender

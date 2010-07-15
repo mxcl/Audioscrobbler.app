@@ -23,17 +23,34 @@
 @class Lastfm;
 @class HighResolutionTimer;
 
+
+@protocol ITunesDelegate <NSObject>
+@optional
+-(void)iTunesTrackStarted:(NSDictionary*)track art:(NSData*)art;
+-(void)iTunesTrackPaused:(NSDictionary*)track;
+-(void)iTunesTrackResumed:(NSDictionary*)track art:(NSData*)art;
+-(void)iTunesPlaybackStopped;
+
+-(void)iTunesTrackWasRatedFourStarsOrAbove:(NSDictionary*)track;
+-(void)iTunesWontScrobble:(NSDictionary*)track because:(NSString*)reason;
+-(void)iTunesTrackMetadataUpdated:(NSDictionary*)track;
+@end
+
+
 @interface ITunesListener : NSObject {
     NSMutableDictionary* track;
+    NSData* art;
     time_t start_time;
     char state;
     ITunesApplication* itunes;
     Lastfm* lastfm;
     HighResolutionTimer* timer;
+    id <ITunesDelegate> delegate;
 }
 
--(id)initWithLastfm:(Lastfm*)lastfm;
--(NSDictionary*)track;
+@property(readonly) NSDictionary* track;
+
+-(id)initWithLastfm:(Lastfm*)lastfm delegate:(id)delegate;
 -(void)onPlayerInfo:(NSNotification*)userData;
 
 @end

@@ -7,19 +7,11 @@
 #endif
 
 
-#define STATE_PLAYING 0
-#define STATE_PAUSED 1
-#define STATE_STOPPED 2
-#define STATE_ERROR 3
-
-
-enum ASTransition {
-    TrackStarted,
-    TrackPaused,
-    TrackResumed,
-    PlaybackStopped,
-
-    TrackMetadataChanged
+enum ASState {
+    StateStopped,
+    StatePlaying,
+    StatePaused,
+    StateUnknown
 };
 
 

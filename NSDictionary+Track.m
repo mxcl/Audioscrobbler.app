@@ -16,10 +16,10 @@
 -(int)playerState
 {
     NSString* s = [self objectForKey:@"Player State"];
-    if ([s isEqualToString:@"Playing"]) return STATE_PLAYING;
-    if ([s isEqualToString:@"Paused"]) return STATE_PAUSED;
-    if ([s isEqualToString:@"Stopped"]) return STATE_STOPPED;
-    return STATE_ERROR;
+    if ([s isEqualToString:@"Playing"]) return StatePlaying;
+    if ([s isEqualToString:@"Paused"]) return StatePaused;
+    if ([s isEqualToString:@"Stopped"]) return StateStopped;
+    return StateUnknown;
 }
 
 -(bool)unrated
@@ -57,18 +57,10 @@
 -(void)setTitle:(NSString*)title { [self setObject:title forKey:@"Name"]; }
 -(void)setAlbum:(NSString*)album { [self setObject:album forKey:@"Album"]; }
 
--(bool)isEqualToTrack:(NSDictionary*)track
+-(void)setRating:(int)newrating
 {
-    id o = [self objectForKey:@"Album Art"];
-    bool b = false;
-    @try {
-        [self removeObjectForKey:@"Album Art"];
-        b = [self isEqualToDictionary:track];
-    }
-    @finally {
-        if (o) [self setObject:o forKey:@"Album Art"];
-    }
-    return b;
+    [self removeObjectForKey:@"Rating Computed"];
+    [self setObject:[NSNumber numberWithInt:newrating] forKey:@"Rating"];
 }
 
 @end

@@ -21,11 +21,12 @@
 #import <Growl/GrowlApplicationBridge.h>
 #import <Cocoa/Cocoa.h>
 #import "lastfm.h"
+#import "ITunesListener.h"
 @class AutoDash;
 @class ShareWindowController;
 
 
-@interface MainController : NSObject <GrowlApplicationBridgeDelegate, LastfmDelegate>
+@interface MainController : NSObject <GrowlApplicationBridgeDelegate, LastfmDelegate, ITunesDelegate>
 {
     NSStatusItem* status_item;
     IBOutlet NSMenu* menu;
