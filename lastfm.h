@@ -45,7 +45,7 @@
 
 -(id)initWithDelegate:(id)delegate;
 
--(void)love:(NSDictionary*)track;
+-(bool)love:(NSDictionary*)track;
 -(void)share:(NSDictionary*)track with:(NSString*)username;
 -(void)updateNowPlaying:(NSDictionary*)track;
 -(void)scrobble:(NSDictionary*)track startTime:(time_t)start_time;

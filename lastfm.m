@@ -396,14 +396,14 @@ static inline NSString* nonil(NSString* s) { return s ? s : @""; }
     { NSString* s = track.album; if (s) [dict setObject:s forKey:@"album"]; } \
 //    { NSString* s = track.albumArtist; if (s) [dict setObject:s forKey:@"albumArtist"]; }
 
--(void)love:(NSDictionary*)track
+-(bool)love:(NSDictionary*)track
 {
-    if (!track) return;
+    if (!track) return false;
 
     NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:5];
     PACK(dict, track);
-    
-    [self request:POST params:dict to:@"track.love"];
+
+    return [self request:POST params:dict to:@"track.love"];
 }
 
 -(void)share:(NSDictionary*)track with:(NSString*)user
