@@ -39,12 +39,19 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
 {
     EventHotKeyID hkid;
     GetEventParameter(e, kEventParamDirectObject, typeEventHotKeyID, NULL, sizeof(hkid), NULL, &hkid);
+    MainController* mc = userdata;
     switch(hkid.id){
         case 1:
-            [(MainController*)userdata tag:userdata];
+            [mc tag:userdata];
             break;
         case 2:
-            [(MainController*)userdata share:userdata];
+            [mc share:userdata];
+            break;
+        case 3:
+            [mc love:userdata];
+            break;
+        case 4:
+            [mc lyrics:userdata];
             break;
     }
     return noErr;
@@ -146,7 +153,7 @@ static NSString* downloads()
 #if __AS_DEBUGGING__
     [[menu itemAtIndex:[menu numberOfItems]-1] setTitle:@"Quit Debugscrobbler"];
 #else
-/// global shortcut
+/// global shortcuts
     EventTypeSpec type;
     type.eventClass = kEventClassKeyboard;
     type.eventKind = kEventHotKeyPressed;
@@ -154,12 +161,19 @@ static NSString* downloads()
 
     EventHotKeyID kid;
     EventHotKeyRef kref;
-    kid.signature='htk1';
-    kid.id=1;
-    RegisterEventHotKey(kVK_ANSI_T, cmdKey+optionKey+controlKey, kid, GetApplicationEventTarget(), 0, &kref);
-    kid.signature='htk2';
-    kid.id=2;
-    RegisterEventHotKey(kVK_ANSI_S, cmdKey+optionKey+controlKey, kid, GetApplicationEventTarget(), 0, &kref);
+    
+    #define HOTKEY(key, sig, __id) \
+        kid.signature = sig; \
+        kid.id = __id; \
+        RegisterEventHotKey(kVK_ANSI_##key, cmdKey+optionKey+controlKey, kid, GetApplicationEventTarget(), 0, &kref);
+    
+    HOTKEY(T, 'htk1', 1);
+    HOTKEY(S, 'htk2', 2);
+    HOTKEY(3, 'htk3', 3);
+    HOTKEY(L, 'htk4', 4);
+
+    #undef HOTKEY
+
 #endif
 
     lastfm = [[Lastfm alloc] initWithDelegate:self];
@@ -398,9 +412,11 @@ static NSString* downloads()
 
 -(IBAction)love:(id)sender
 {
-    [lastfm love:listener.track];
-    [love setEnabled:false];
-    [love setTitle:@"Loved"];
+    const bool b = [lastfm love:listener.track];
+    if (b) {
+        [love setEnabled:false];
+        [love setTitle:@"Loved"];
+    }
 }
 
 -(IBAction)tag:(id)sender
