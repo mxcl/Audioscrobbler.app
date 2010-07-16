@@ -48,6 +48,16 @@
     return [NSURL URLWithString:path];
 }
 
+-(NSURL*)lyricWikiUrl
+{
+    NSString* artist = [self.artist stringByReplacingOccurrencesOfString:@" " withString:@"_"];
+    NSString* title = [self.title stringByReplacingOccurrencesOfString:@" " withString:@"_"];
+    artist = [artist stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    title = [title stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString* url = [NSString stringWithFormat:@"http://lyrics.wikia.com/%@:%@", artist, title];
+    return [NSURL URLWithString:url];
+}
+
 @end
 
 

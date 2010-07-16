@@ -37,6 +37,7 @@
     IBOutlet NSMenuItem* love;
     IBOutlet NSMenuItem* share;
     IBOutlet NSMenuItem* tag;
+    IBOutlet NSMenuItem *lyrics;
     AutoDash* autodash;
     ITunesListener* listener;
     Lastfm* lastfm;
@@ -53,5 +54,6 @@
 -(IBAction)activateAutoDash:(id)sender;
 -(IBAction)about:(id)sender;
 -(IBAction)moreRecentHistory:(id)sender;
+-(IBAction)lyrics:(id)sender;
 
 @end

@@ -208,6 +208,7 @@ static NSString* downloads()
     [love setTitle:@"Love"];
     [share setEnabled:true];
     [tag setEnabled:true];
+    [lyrics setEnabled:true];
     status_item.image = [NSImage imageNamed:@"icon.png"];
     count++;
     [self updateTitleMenu:track];
@@ -239,6 +240,7 @@ static NSString* downloads()
     [love setEnabled:false];
     [tag setEnabled:false];
     [share setEnabled:false];
+    [lyrics setEnabled:false];
     [love setTitle:@"Love"];
     status_item.image = [NSImage imageNamed:@"icon.png"];
 
@@ -416,6 +418,11 @@ static NSString* downloads()
     [sharewc setTrack:listener.track];
     [sharewc setLastfm:lastfm];
     [sharewc.window makeKeyWindow];
+}
+
+-(IBAction)lyrics:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:listener.track.lyricWikiUrl];
 }
 
 -(IBAction)startAtLogin:(id)sender

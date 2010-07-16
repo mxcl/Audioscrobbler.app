@@ -14,6 +14,7 @@
 @property(readonly) unsigned duration;
 @property(readonly) NSNumber* trackNumber;
 @property(readonly) NSString* albumArtist;
+@property(readonly) NSURL* lyricWikiUrl;
 @end
 
 @interface NSMutableDictionary (mxcl)
