@@ -128,6 +128,8 @@ static NSString* downloads()
 
 -(void)awakeFromNib
 {
+	[NSURLCache sharedURLCache].memoryCapacity = 0; // save memory
+
     status_item = [[[NSStatusBar systemStatusBar] statusItemWithLength:27] retain];
     [status_item setHighlightMode:YES];
     [status_item setImage:[NSImage imageNamed:@"icon.png"]];
