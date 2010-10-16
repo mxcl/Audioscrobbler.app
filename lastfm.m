@@ -41,6 +41,17 @@ static NSString* md5(NSString* s)
 }
 
 
+@interface NSXMLElement (mxcl)
+- (NSXMLElement *)firstElementForName:(id)name;
+@end
+@implementation NSXMLElement (mxcl)
+- (NSXMLElement *)firstElementForName:(id)name {
+    NSArray *elements = [self elementsForName:name];
+    return elements.count ? [elements objectAtIndex:0] : nil;
+}
+@end
+
+
 
 @interface Lastfm()
 -(void)getSession;
@@ -58,7 +69,6 @@ static NSString* md5(NSString* s)
 @property(assign) int code;
 @property(assign) NSString* message;
 @property(assign) NSString* method;
-+(LastfmError*)badResponse:(NSString*)method;
 @end
 
 @implementation LastfmError
@@ -234,7 +244,7 @@ static NSMutableString* signed_post_body(NSMutableDictionary* params)
     [bodystr replaceOccurrencesOfString:@LASTFM_API_KEY withString:@"****" options:0 range:NSMakeRange(0, bodystr.length)];
     NSLog(@"POST for `%@':\n%@", method, bodystr);
     
-    NSMutableURLRequest* rq = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://post.audioscrobbler.com/2.0/"]
+    NSMutableURLRequest* rq = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://ws.audioscrobbler.com/2.0/"]
                                                       cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                   timeoutInterval:10];
     [rq setHTTPMethod:@"POST"];
@@ -308,7 +318,7 @@ static NSString* extract_method(NSURLRequest* rq)
     NSData* data = [NSURLConnection sendSynchronousRequest:rq returningResponse:&headers error:&error];
     
     if (error)
-        @throw [LastfmError badResponse:extract_method(rq)];
+        @throw [LastfmError unexpectedError:[error localizedDescription]];
     
     NSXMLDocument* xml = [[[NSXMLDocument alloc] initWithData:data options:NSXMLNodeOptionsNone error:nil] autorelease];
     bool ok = [[xml.rootElement attributeForName:@"status"].stringValue isEqualToString:@"ok"];
@@ -441,19 +451,19 @@ static inline NSString* nonil(NSString* s) { return s ? s : @""; }
     NSMutableDictionary* dict = [NSMutableDictionary dictionaryWithCapacity:6];
     PACK_MOAR(dict, track);
 
-    NSXMLDocument* xml = [self request:POST params:dict to:@"user.updateNowPlaying"];
-
-    #define NODE(x) [[xml.rootElement elementsForName:x].lastObject stringValue]
-    NSString* artist = NODE(@"correctedArtist");
-    NSString* album = NODE(@"correctedAlbum");
-    NSString* title = NODE(@"correctedTrack");
-    #undef NODE
+    NSXMLDocument* xml = [self request:POST params:dict to:@"track.updateNowPlaying"];
+    NSXMLElement* nowplayingNode = [xml.rootElement firstElementForName:@"nowplaying"];
+    NSXMLElement* artist = [nowplayingNode firstElementForName:@"artist"];
+    NSXMLElement* album = [nowplayingNode firstElementForName:@"album"];
+    NSXMLElement* title = [nowplayingNode firstElementForName:@"track"];
     
-    if (artist || album || title) {
+    #define isCorrected(x) [[[x attributeForName:@"corrected"] stringValue] isEqualToString:@"1"]
+    
+    if (isCorrected(artist) || isCorrected(album) || isCorrected(title)) {
         NSMutableDictionary* dict = [[track mutableCopy] autorelease];
-        if (artist) dict.artist = artist;
-        if (title) dict.title = title;
-        if (album) dict.album = album;
+        if (artist) dict.artist = artist.stringValue;
+        if (title) dict.title = title.stringValue;
+        if (album) dict.album = album.stringValue;
         [delegate lastfm:self metadata:track betterdata:dict];
     }
 }
