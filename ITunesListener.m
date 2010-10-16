@@ -45,8 +45,8 @@ static NSData* itunes_current_track_artwork_as_data(ITunesApplication* itunes)
     }
     @catch(id e) {
         // seems to throw sometimes even if we check for the right stuff first
-        return nil;
     }
+    return nil;
 }
 
 
