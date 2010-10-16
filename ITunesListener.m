@@ -44,6 +44,7 @@ static NSData* itunes_current_track_artwork_as_data(ITunesApplication* itunes)
         return [iart.data.TIFFRepresentation retain];
     }
     @catch(id e) {
+        NSLog(@"%@", e);
         // seems to throw sometimes even if we check for the right stuff first
     }
     return nil;
