@@ -190,6 +190,7 @@ static NSString* utf8_post_escape(NSString* s)
         switch (c) {
         case '&':
         case '%':
+        case '+':
         case '=':
             ii[x++] = i;
         }
