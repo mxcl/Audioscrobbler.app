@@ -188,6 +188,9 @@ static NSString* utf8_post_escape(NSString* s)
 
     for (int i = 0; i < N; ++i) {
         const unichar uc = [s characterAtIndex:i];
+        if (uc > 127 ) {
+            continue;
+        }
         const char c = ((char*)&uc)[0];
         switch (c) {
         case '&':
