@@ -463,7 +463,7 @@ static NSString* downloads()
             CFRelease(item);
         }
     }
-    else if (item = audioscrobbler_session_login_item(login_items_ref)){
+    else if ((item = audioscrobbler_session_login_item(login_items_ref))){
         LSSharedFileListItemRemove(login_items_ref, item);
         [sender setState:NSOffState];
     }
