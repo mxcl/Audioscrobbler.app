@@ -22,6 +22,10 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* main.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* main.xib */; };
+		27035FF41796095F0042A03C /* icon_green@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2771906117933E09007B5DF8 /* icon_green@2x.png */; };
+		27035FF51796095F0042A03C /* icon_inverted@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2771906217933E09007B5DF8 /* icon_inverted@2x.png */; };
+		27035FF61796095F0042A03C /* icon_red@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2771906317933E09007B5DF8 /* icon_red@2x.png */; };
+		27035FF71796095F0042A03C /* icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2771906417933E09007B5DF8 /* icon@2x.png */; };
 		6301E62410061AB900E87198 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6301E62310061AB900E87198 /* Sparkle.framework */; };
 		6301E62A10061ABE00E87198 /* Sparkle.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 6301E62310061AB900E87198 /* Sparkle.framework */; };
 		63024AEC0F9640A8001B8E9B /* ITunesListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 63024AEB0F9640A8001B8E9B /* ITunesListener.m */; };
@@ -70,6 +74,10 @@
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
 		1DDD58150DA1D0A300B32029 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/main.xib; sourceTree = "<group>"; };
+		2771906117933E09007B5DF8 /* icon_green@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_green@2x.png"; sourceTree = "<group>"; };
+		2771906217933E09007B5DF8 /* icon_inverted@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_inverted@2x.png"; sourceTree = "<group>"; };
+		2771906317933E09007B5DF8 /* icon_red@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_red@2x.png"; sourceTree = "<group>"; };
+		2771906417933E09007B5DF8 /* icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon@2x.png"; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -203,6 +211,10 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				2771906117933E09007B5DF8 /* icon_green@2x.png */,
+				2771906217933E09007B5DF8 /* icon_inverted@2x.png */,
+				2771906317933E09007B5DF8 /* icon_red@2x.png */,
+				2771906417933E09007B5DF8 /* icon@2x.png */,
 				63D6DB360F8399E000F4DCAA /* icon.png */,
 				63A29EAA11D6B90500D2441D /* icon_inverted.png */,
 				63A29EAE11D6B92100D2441D /* icon_green.png */,
@@ -288,6 +300,10 @@
 				63A29EAC11D6B90500D2441D /* icon_inverted.png in Resources */,
 				63A29EAD11D6B90500D2441D /* icon_red.png in Resources */,
 				63A29EAF11D6B92100D2441D /* icon_green.png in Resources */,
+				27035FF41796095F0042A03C /* icon_green@2x.png in Resources */,
+				27035FF51796095F0042A03C /* icon_inverted@2x.png in Resources */,
+				27035FF61796095F0042A03C /* icon_red@2x.png in Resources */,
+				27035FF71796095F0042A03C /* icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,6 +376,7 @@
 		63ACA12E10079C54000A4069 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -370,6 +387,7 @@
 		63ACA12F10079C54000A4069 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				PRODUCT_NAME = Distribution;
@@ -382,6 +400,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -404,6 +423,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
