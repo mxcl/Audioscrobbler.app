@@ -23,6 +23,8 @@
 #import <CommonCrypto/CommonDigest.h>
 
 #define KEYCHAIN_NAME "fm.last.Audioscrobbler"
+#define LASTFM_API_KEY ""
+#define LASTFM_SHARED_SECRET ""
 
 
 enum HTTPMethod { GET, POST };
@@ -97,9 +99,6 @@ static NSString* md5(NSString* s)
     return method
         ? [message stringByAppendingFormat:@" for method: %@.", method]
         : message;
-}
--(void)setMessage:(NSString*)s {
-    message = s;
 }
 @end
 
@@ -192,6 +191,7 @@ static NSString* utf8_post_escape(NSString* s)
         switch (c) {
         case '&':
         case '%':
+        case '+':
         case '=':
             ii[x++] = i;
         }
