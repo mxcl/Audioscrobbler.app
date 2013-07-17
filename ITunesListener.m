@@ -55,6 +55,7 @@ static NSData* itunes_current_track_artwork_as_data(ITunesApplication* itunes)
 
 -(id)initWithLastfm:(Lastfm*)lfm delegate:(id)helegate
 {
+    self = [self init];
     delegate = helegate;
     lastfm = [lfm retain];
     state = StateStopped;

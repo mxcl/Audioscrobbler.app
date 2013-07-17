@@ -38,7 +38,7 @@ void CoreDockSendNotification(NSString *notificationName); // not public, but pr
 
 -(id)init
 {
-    [super init];
+    self = [super init];
 
 	mach_port_t port;
     IOMasterPort(MACH_PORT_NULL, &port);

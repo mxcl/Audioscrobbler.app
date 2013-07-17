@@ -59,19 +59,28 @@ static OSStatus MyHotKeyHandler(EventHandlerCallRef ref, EventRef e, void* userd
 
 static LSSharedFileListItemRef audioscrobbler_session_login_item(LSSharedFileListRef login_items_ref)
 {
+    LSSharedFileListItemRef login_item = NULL;
     FSRef as_fsref;
     if (!scrobsub_fsref(&as_fsref))
         return NULL;
+    CFURLRef as_cfurl = CFURLCreateFromFSRef(kCFAllocatorDefault, &as_fsref);
     UInt32 seed;
     NSArray *items = [(NSArray*)LSSharedFileListCopySnapshot(login_items_ref, &seed) autorelease];
     for (id id in items){
         FSRef fsref;
         LSSharedFileListItemRef item = (LSSharedFileListItemRef)id;
-        if (LSSharedFileListItemResolve(item, 0, NULL, &fsref) == noErr)
-            if (FSCompareFSRefs(&as_fsref, &fsref) == noErr)
-                return item;
+        if (LSSharedFileListItemResolve(item, 0, NULL, &fsref) == noErr) {
+            CFURLRef cfurl = CFURLCreateFromFSRef(kCFAllocatorDefault, &fsref);
+            if (CFEqual(as_cfurl, cfurl)) {
+                login_item = item;
+            }
+            CFRelease(cfurl);
+            if (login_item)
+                break;
+        }
     }
-    return NULL;        
+    CFRelease(as_cfurl);
+    return login_item;
 }
 
 static NSString* downloads()
@@ -463,7 +472,7 @@ static NSString* downloads()
             CFRelease(item);
         }
     }
-    else if (item = audioscrobbler_session_login_item(login_items_ref)){
+    else if ((item = audioscrobbler_session_login_item(login_items_ref))){
         LSSharedFileListItemRemove(login_items_ref, item);
         [sender setState:NSOffState];
     }

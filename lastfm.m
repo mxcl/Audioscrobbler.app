@@ -98,9 +98,6 @@ static NSString* md5(NSString* s)
         ? [message stringByAppendingFormat:@" for method: %@.", method]
         : message;
 }
--(void)setMessage:(NSString*)s {
-    message = s;
-}
 @end
 
 
@@ -212,7 +209,7 @@ static NSString* utf8_post_escape(NSString* s)
                              toHexHelper(c & 0xf)];
         [ms replaceCharactersInRange:NSMakeRange(iii, 1) withString:triplet];
     }
-    return ms;
+    return [ms autorelease];
 }
 
 static NSMutableString* signed_post_body(NSMutableDictionary* params)
