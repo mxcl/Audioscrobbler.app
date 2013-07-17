@@ -237,7 +237,7 @@
 				8D11072C0486CEB800E47090 /* Sources */,
 				8D11072E0486CEB800E47090 /* Frameworks */,
 				63D1D0C50F97FFB9004FBC05 /* Copy Frameworks */,
-				6301B3AB1001078B00839558 /* Compress Last.fm.wdgt */,
+				6301B3AB1001078B00839558 /* Setup and Compress Last.fm.wdgt */,
 			);
 			buildRules = (
 			);
@@ -294,7 +294,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6301B3AB1001078B00839558 /* Compress Last.fm.wdgt */ = {
+		6301B3AB1001078B00839558 /* Setup and Compress Last.fm.wdgt */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -302,13 +302,13 @@
 			inputPaths = (
 				"$(SRCROOT)/Last.fm.wdgt",
 			);
-			name = "Compress Last.fm.wdgt";
+			name = "Setup and Compress Last.fm.wdgt";
 			outputPaths = (
 				$BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Last.fm.wdgt.tar.bz2,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd $SOURCE_ROOT\ndst=\"$BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Last.fm.wdgt.tar.bz2\"\ntar cjf $dst Last.fm.wdgt";
+			shellScript = "cd $SOURCE_ROOT\nkey=$(grep LASTFM_API_KEY lastfm_api.h| egrep -o '[a-z0-9]{32}')\nsed \"s/#{LASTFM_API_KEY}/$key/\" Last.fm.wdgt/main.js.in > Last.fm.wdgt/main.js\ndst=\"$BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Last.fm.wdgt.tar.bz2\"\ntar cjf $dst Last.fm.wdgt";
 			showEnvVarsInLog = 0;
 		};
 		63ACA12C10079C54000A4069 /* ShellScript */ = {

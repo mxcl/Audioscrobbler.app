@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #import "lastfm.h"
+#import "lastfm_api.h"
 #import "NSDictionary+Track.h"
 #import <CommonCrypto/CommonDigest.h>
 

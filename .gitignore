@@ -3,4 +3,6 @@
 /Audioscrobbler.xcodeproj/project.xcworkspace/
 /Audioscrobbler.xcodeproj/xcuserdata/
 /build/
+/lastfm_api.h
+/Last.fm.wdgt/main.js
 .DS_Store
