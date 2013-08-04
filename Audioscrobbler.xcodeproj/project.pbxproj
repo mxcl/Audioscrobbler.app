@@ -381,6 +381,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				PRODUCT_NAME = Distribution;
+				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -391,6 +392,7 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				PRODUCT_NAME = Distribution;
+				SDKROOT = macosx10.7;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -413,7 +415,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = __AS_DEBUGGING__;
 				INFOPLIST_FILE = Info.plist;
 				PRODUCT_NAME = Audioscrobbler;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.7;
 			};
 			name = Debug;
 		};
@@ -435,7 +437,7 @@
 				GCC_THREADSAFE_STATICS = NO;
 				INFOPLIST_FILE = Info.plist;
 				PRODUCT_NAME = Audioscrobbler;
-				SDKROOT = macosx;
+				SDKROOT = macosx10.7;
 			};
 			name = Release;
 		};
