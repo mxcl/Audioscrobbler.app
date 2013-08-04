@@ -23,7 +23,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string>Audioscrobbler</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>© Max Howell, 2009–2010</string>
+	<string>© Max Howell (2009–2010), Mike McQuaid (2013)</string>
 	<key>NSAppleScriptEnabled</key>
 	<true/>
 	<key>NSMainNibFile</key>
