@@ -141,7 +141,11 @@ static NSString* downloads()
 
     status_item = [[[NSStatusBar systemStatusBar] statusItemWithLength:27] retain];
     [status_item setHighlightMode:YES];
-    [status_item setImage:[NSImage imageNamed:@"icon"]];
+
+    NSImage *icon = [NSImage imageNamed:@"icon"];
+    [icon setTemplate:YES];
+
+    [status_item setImage:icon];
     [status_item setAlternateImage:[NSImage imageNamed:@"icon_inverted"]];
     [status_item setEnabled:YES];
     [status_item setMenu:menu];
