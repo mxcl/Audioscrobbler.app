@@ -378,7 +378,7 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				PRODUCT_NAME = Distribution;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx10.9;
 			};
 			name = Debug;
 		};
@@ -387,7 +387,7 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				PRODUCT_NAME = Distribution;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx10.9;
 			};
 			name = Release;
 		};
@@ -403,7 +403,7 @@
 				GCC_PREFIX_HEADER = pc.h;
 				INFOPLIST_FILE = Info.plist;
 				PRODUCT_NAME = Audioscrobbler;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx10.9;
 			};
 			name = Debug;
 		};
@@ -419,7 +419,7 @@
 				GCC_PREFIX_HEADER = pc.h;
 				INFOPLIST_FILE = Info.plist;
 				PRODUCT_NAME = Audioscrobbler;
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx10.9;
 			};
 			name = Release;
 		};
