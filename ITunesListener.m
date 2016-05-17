@@ -125,11 +125,7 @@ static NSData* itunes_current_track_artwork_as_data(ITunesApplication* itunes)
     
     switch (newtrack.playerState) {
     case StatePlaying:
-        if (itunes.currentTrack.podcast) {
-            [delegate iTunesWontScrobble:newtrack because:@"a podcast"];
-            goto stop;
-        }
-        if (![itunes.currentTrack.kind hasSuffix:@"audio file"]) {
+        if (itunes.currentTrack.mediaKind != ITunesEMdKMusic) {
             [delegate iTunesWontScrobble:newtrack because:@"not music"];
             goto stop;
         }
