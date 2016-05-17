@@ -130,7 +130,7 @@ static NSString* md5(NSString* s)
 +(NSURL*)urlForUser:(NSString*)username
 {
     //TODO localise URL, maybe auth ws gives that? otherwise OS level locale
-    return [NSURL URLWithString:[@"http://www.last.fm/user/" stringByAppendingString:[Lastfm urlEncode:username]]];
+    return [NSURL URLWithString:[@"https://www.last.fm/user/" stringByAppendingString:[Lastfm urlEncode:username]]];
 }
 
 
@@ -147,7 +147,7 @@ static NSString* md5(NSString* s)
 -(NSXMLDocument*)get:(NSMutableDictionary*)params to:(NSString*)method
 {
     NSMutableString* url = [NSMutableString stringWithCapacity:256];
-    [url appendString:@"http://ws.audioscrobbler.com/2.0/?"];
+    [url appendString:@"https://ws.audioscrobbler.com/2.0/?"];
     for (id key in params) {
         [url appendString:key];
         [url appendString:@"="];
@@ -246,7 +246,7 @@ static NSMutableString* signed_post_body(NSMutableDictionary* params)
     [bodystr replaceOccurrencesOfString:@LASTFM_API_KEY withString:@"****" options:0 range:NSMakeRange(0, bodystr.length)];
     NSLog(@"POST for `%@':\n%@", method, bodystr);
     
-    NSMutableURLRequest* rq = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://ws.audioscrobbler.com/2.0/"]
+    NSMutableURLRequest* rq = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://ws.audioscrobbler.com/2.0/"]
                                                       cachePolicy:NSURLRequestReloadIgnoringCacheData
                                                   timeoutInterval:10];
     [rq setHTTPMethod:@"POST"];
@@ -268,7 +268,7 @@ static NSMutableString* signed_post_body(NSMutableDictionary* params)
         case 14:
             @try {           // This token has not been authorized
                 if (!token) token = [[self getToken] retain];
-                NSString* url = [NSString stringWithFormat:@"http://www.last.fm/api/auth/?api_key=" LASTFM_API_KEY "&token=%@", token];
+                NSString* url = [NSString stringWithFormat:@"https://www.last.fm/api/auth/?api_key=" LASTFM_API_KEY "&token=%@", token];
                 [delegate lastfm:self requiresAuth:[NSURL URLWithString:url]];
                 break;
             }
