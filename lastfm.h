@@ -40,9 +40,6 @@
 
 @property(readonly) NSString* username;
 
-+(NSString*)urlEncode:(NSString*)url_component; // Last.fm has special URL encoding rules
-+(NSURL*)urlForUser:(NSString*)username; // the user's profile page
-
 -(id)initWithDelegate:(id)delegate;
 
 -(bool)love:(NSDictionary*)track;
@@ -50,6 +47,12 @@
 -(void)updateNowPlaying:(NSDictionary*)track;
 -(void)scrobble:(NSDictionary*)track startTime:(time_t)start_time;
 
+// only sets Track and Artist
+-(NSDictionary*)getFingerprintMetadata:(unsigned long long)fpid;
+
+// these do not make a network connection to Last.fm
 +(NSTimeInterval)scrobblePointForTrackWithDurationInSeconds:(NSTimeInterval)duration;
++(NSString*)urlEncode:(NSString*)url_component; // Last.fm has special URL encoding rules
++(NSURL*)urlForUser:(NSString*)username; // the user's profile page
 
 @end
