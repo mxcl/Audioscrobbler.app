@@ -41,7 +41,7 @@
 -(NSURL*)url
 {
     //TODO localise URL, maybe auth ws gives that? otherwise OS level locale
-    NSMutableString* path = [[@"http://www.last.fm/music/" mutableCopy] autorelease];
+    NSMutableString* path = [[@"https://www.last.fm/music/" mutableCopy] autorelease];
     [path appendString:[Lastfm urlEncode:self.artist]];
     [path appendString:@"/_/"];
     [path appendString:[Lastfm urlEncode:self.title]];
